@@ -4,6 +4,125 @@
 **Project:** Scholaport MVP
 **Repository:** `scholaport/courseport` (main branch)
 **Latest commit:** `341e844` — feat: add Scholaport MVP workflow engines and demo onboarding scope
+**Starting point:** The global reference-data foundation follow-up prompt supplied by the user
+**Current scope:** Database structure, reference-data research workflow, CSV seed package, validation, onboarding integration, coverage visibility, and country-by-country verification
+
+## June 26, 2026 update: Transcript OCR/converter pipeline hardening
+
+Scholaport's transcript pipeline now separates the upload, storage, Google Document AI OCR, translation, AI extraction, review, and confirmation stages with safe diagnostics:
+
+- uploaded files remain attached even when processing fails;
+- Google Document AI receives the real uploaded bytes with preserved or inferred MIME type;
+- safe stage/code errors are stored on the transcript row instead of showing only a generic OCR failure;
+- raw OCR is saved before AI extraction, so OCR success is not lost if extraction fails;
+- OpenAI transcript extraction runs after OCR when `OPENAI_API_KEY` is configured;
+- Gemini transcript extraction is available when `GEMINI_API_KEY` is configured;
+- mock AI extraction is disabled in the production `/api/v1/transcripts` route;
+- AI course candidates must be backed by OCR evidence before they can be saved as editable candidates;
+- document-level source detection remains reviewable and does not override onboarding automatically; and
+- manual entry remains available when OCR, translation, or AI extraction cannot produce safe course rows.
+
+New follow-up migration:
+
+- `supabase/migrations/202606260001_transcript_ai_extraction_pipeline.sql`
+
+This update still does not perform credit mapping, gap analysis, roadmap generation, counselor packets, or official transcript evaluation inside the transcript converter.
+
+## June 25, 2026 update: Transcript OCR + translation review layer
+
+Scholaport now includes the first real transcript-processing layer:
+
+- private transcript upload from `/transcript`;
+- server-only OCR provider chain for Google Document AI first and Azure Document Intelligence second;
+- server-only translation provider chain for Gemini and OpenAI;
+- mock OCR/translation providers retained for tests/local fixtures only, not for the production `/api/v1/transcripts` processing path;
+- deterministic language detection with provider-first and script fallback behavior;
+- Tamil, Hindi, Spanish, Arabic, Urdu, Mandarin, Filipino, Bengali, Russian, Ukrainian, English, and ambiguous-script review handling;
+- original OCR text and English academic translation stored separately;
+- deterministic transcript table parsing into candidate rows;
+- source framework matching against onboarding profile data;
+- mismatch review actions;
+- manual-entry fallback when live OCR/translation is unavailable or fails;
+- confirmation gate that copies reviewed candidates into `transcript_courses` only after student confirmation; and
+- tests covering provider selection, Tamil/Spanish translation, language fallback, parser behavior, mismatch detection, RLS, and frontend key hygiene.
+
+New implementation docs:
+
+- `OCR_TRANSCRIPT_PROCESSING.md`
+- `TRANSLATION_TRANSCRIPT_REVIEW.md`
+
+New migration:
+
+- `supabase/migrations/202606250001_transcript_ocr_translation_review.sql`
+
+This layer still does not perform official credit conversion, U.S. grade conversion, equivalency decisions, gap analysis, Pori decisions, or counselor packet finalization. It prepares confirmed transcript evidence for those future workflows.
+
+## June 25, 2026 update: Probable credit mapping engine
+
+Scholaport now includes a first credit-mapping layer after transcript confirmation:
+
+- confirmed `transcript_courses` are the only mapping input;
+- the server verifies transcript ownership before mapping;
+- probable mapping candidates are saved in `credit_mappings`;
+- mapping attempts are grouped in `credit_mapping_runs`;
+- verified `mapping_rules` are preferred when available;
+- exact reference category matching and deterministic multilingual taxonomy run before AI;
+- vector similarity has a safe pgvector-ready hook and skips when embeddings are unavailable;
+- structured AI mapping is server-only and schema-validated when `OPENAI_API_KEY` or `GEMINI_API_KEY` is configured;
+- low/unclear or state-specific mappings require counselor review;
+- the `/transcript` UI now shows probable mapping results, confidence badges, edit/confirm/reject actions, and counselor-review controls.
+
+This layer still does not run gap analysis, generate a roadmap, produce counselor packets, convert marks into GPA, or claim official transfer approval. It stores enough evidence for the future gap-analysis engine to compare probable mapped credit against destination requirements.
+
+New implementation doc:
+
+- `CREDIT_MAPPING_ENGINE.md`
+
+New migration:
+
+- `supabase/migrations/202606250002_credit_mapping_engine.sql`
+
+## June 25, 2026 update: Graduation gap analysis engine
+
+Scholaport now includes Feature 3, the deterministic graduation gap detector:
+
+- confirmed transcript courses and persisted credit mappings are required before analysis;
+- the selected destination framework and graduation requirements are loaded from Supabase;
+- mappings are aggregated by destination requirement ID first, then by mapped subject bucket;
+- high-confidence/no-review mappings count as likely earned;
+- medium mappings count as possible/partial;
+- low, unclear, rejected, and review-required mappings do not fully satisfy requirements;
+- state-specific requirements such as U.S. History, Government, Texas STAAR/EOC, Georgia EOC, Health, and PE are protected from generic foreign coursework;
+- one `gap_analyses` row and one `gap_requirements` row per requirement are persisted;
+- stale-analysis triggers mark old gap analyses stale when mappings or confirmed courses change;
+- `/gaps` now shows prerequisite states, run/regenerate controls, dashboard summary, risk badges, requirement cards, missing/review sections, and counselor questions.
+
+This layer still does not generate the roadmap, counselor packet, Pori/RAG advisor response, PathMatch, Twin Connect, or official graduation eligibility.
+
+New implementation doc:
+
+- `GAP_ANALYSIS_ENGINE.md`
+
+New migration:
+
+- `supabase/migrations/202606250003_graduation_gap_analysis_engine.sql`
+
+## Important note about this report
+
+This report was reconstructed from:
+
+- the original follow-up prompt;
+- the current repository files;
+- the Supabase migrations;
+- the seed templates and seed package;
+- the import and semantic-validation scripts;
+- the current frontend implementation;
+- the completed country-validator results; and
+- the research/audit history created during this work.
+
+Most of this repository is currently uncommitted or untracked in Git, so this is a verified **current-state implementation report**, not a perfect line-by-line Git diff from a clean historical commit.
+
+This report is now a living project record. It is updated after each completed Scholaport task so the team has one current explanation of scope, implementation, validation, and remaining work.
 
 ---
 
