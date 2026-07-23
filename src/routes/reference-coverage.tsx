@@ -1,8 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Database, ExternalLink, ShieldCheck } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import { PassportShell, StatusPill } from "@/components/PassportShell";
+import { PremiumDatabaseIcon, PremiumShieldIcon } from "@/components/icons/PremiumIcon";
+import { ClayScene, JourneyStage } from "@/components/journey/JourneyVisuals";
 import { getReferenceCoverage } from "@/lib/reference-api";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/reference-coverage")({
   head: () => ({ meta: [{ title: "Reference Coverage · Scholaport" }] }),
@@ -10,20 +13,47 @@ export const Route = createFileRoute("/reference-coverage")({
 });
 
 function ReferenceCoveragePage() {
+  const { t } = useI18n();
   const coverage = useQuery({ queryKey: ["reference-coverage"], queryFn: getReferenceCoverage });
   return (
-    <PassportShell
-      eyebrow="Internal data operations"
-      title="Reference data coverage"
-      description="A factual inventory of what exists in Supabase. Counts of zero are intentional and mean research has not been imported yet."
-      action={
-        <StatusPill tone="navy">
-          <Database className="mr-1 h-3 w-3" /> Internal view
-        </StatusPill>
-      }
-    >
-      <section className="overflow-hidden rounded-[24px] border border-[#CDD3DE]/70 bg-white shadow-card">
-        {coverage.isLoading && <State text="Loading reference coverage…" />}
+    <PassportShell>
+      <JourneyStage
+        tone="navy"
+        eyebrow={t("Evidence library")}
+        title="Coverage is visible only when the source trail is visible."
+        description="The inventory below reports real imported records. Empty counts stay empty instead of being filled with inferred education claims."
+        action={
+          <StatusPill tone="navy">
+            <PremiumDatabaseIcon className="mr-1 h-3 w-3" /> Internal view
+          </StatusPill>
+        }
+        art={
+          <ClayScene
+            asset="reference-library"
+            eager
+            orbit={false}
+            mode="inline"
+            className="max-w-[360px]"
+          />
+        }
+        layout="compact"
+      >
+        <div className="mt-5 flex flex-wrap gap-2">
+          <StatusPill tone="mint">{coverage.data?.length ?? 0} country rows</StatusPill>
+          <StatusPill tone="yellow">
+            {(coverage.data ?? []).reduce((sum, row) => sum + row.dataSources, 0)} sources
+          </StatusPill>
+        </div>
+      </JourneyStage>
+      <section className="reference-coverage-table mt-5 overflow-hidden border border-[#CDD3DE]/70 bg-white shadow-card">
+        <div className="reference-coverage-table__intro">
+          <div>
+            <p className="journey-eyebrow">{t("Reference coverage")}</p>
+            <h2>{t("Imported evidence by country")}</h2>
+          </div>
+          <p>{t("Counts reflect stored records, not estimated education coverage.")}</p>
+        </div>
+        {coverage.isLoading && <State text={t("Loading reference coverage…")} />}
         {coverage.error && (
           <State
             error
@@ -36,26 +66,31 @@ function ReferenceCoveragePage() {
         )}
         {coverage.data && (
           <div className="overflow-x-auto">
-            <table className="min-w-[1100px] w-full text-left">
-              <thead className="bg-[#0A175A] text-[10px] uppercase tracking-[0.12em] text-white/65">
+            <table className="min-w-[1040px] w-full text-left">
+              <caption className="sr-only">{t("Reference coverage")}</caption>
+              <thead className="bg-[#0A175A] text-[10px] uppercase tracking-[0.12em] text-white/72">
                 <tr>
-                  <Header>Country</Header>
-                  <Header>Priority</Header>
-                  <Header>MVP visibility</Header>
-                  <Header>Jurisdictions</Header>
-                  <Header>Curricula</Header>
-                  <Header>Courses</Header>
-                  <Header>Frameworks</Header>
-                  <Header>Requirements</Header>
-                  <Header>Programs</Header>
-                  <Header>Sources</Header>
-                  <Header>Coverage</Header>
+                  <Header sticky>{t("Country")}</Header>
+                  <Header>{t("MVP visibility")}</Header>
+                  <Header>{t("Priority")}</Header>
+                  <Header>{t("Jurisdictions")}</Header>
+                  <Header>{t("Curricula")}</Header>
+                  <Header>{t("Courses")}</Header>
+                  <Header>{t("Frameworks")}</Header>
+                  <Header>{t("Requirements")}</Header>
+                  <Header>{t("Programs")}</Header>
+                  <Header>{t("Sources")}</Header>
+                  <Header>{t("Coverage")}</Header>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#E8EBF0]">
                 {coverage.data.map((row) => (
-                  <tr key={row.country.id} className="text-xs hover:bg-[#F6F8FB]">
-                    <Cell>
+                  <tr
+                    key={row.country.id}
+                    className="group text-xs odd:bg-[#FAFCFB] hover:bg-[#EAF8F5]"
+                  >
+                    <Cell sticky>
+                      <span className="reference-country-code">{row.country.iso2}</span>
                       <span className="font-bold">{row.country.name}</span>
                       <span className="ml-2 text-[10px] text-[#9AA3B2]">{row.country.iso3}</span>
                     </Cell>
@@ -88,7 +123,7 @@ function ReferenceCoveragePage() {
         )}
       </section>
       <section className="mt-5 flex gap-3 rounded-[20px] border border-[#01C3AD]/25 bg-[#01C3AD]/[0.06] p-5">
-        <ShieldCheck className="h-5 w-5 shrink-0 text-[#019A8A]" />
+        <PremiumShieldIcon className="h-5 w-5 shrink-0 text-[#019A8A]" />
         <div>
           <h2 className="text-sm font-bold">Coverage labels are evidence labels</h2>
           <p className="mt-1 text-xs leading-5 text-[#5A6380]">
@@ -102,11 +137,24 @@ function ReferenceCoveragePage() {
   );
 }
 
-function Header({ children }: { children: React.ReactNode }) {
-  return <th className="px-4 py-3 font-bold">{children}</th>;
+function Header({ children, sticky = false }: { children: React.ReactNode; sticky?: boolean }) {
+  return (
+    <th
+      scope="col"
+      className={`px-4 py-4 font-bold ${sticky ? "sticky left-0 z-20 bg-[#0A175A]" : ""}`}
+    >
+      {children}
+    </th>
+  );
 }
-function Cell({ children }: { children: React.ReactNode }) {
-  return <td className="px-4 py-3">{children}</td>;
+function Cell({ children, sticky = false }: { children: React.ReactNode; sticky?: boolean }) {
+  return (
+    <td
+      className={`px-4 py-4 ${sticky ? "sticky left-0 z-10 min-w-[190px] bg-inherit shadow-[8px_0_16px_-16px_#07113f]" : ""}`}
+    >
+      {children}
+    </td>
+  );
 }
 function NumberCell({ value }: { value: number }) {
   return (

@@ -1,19 +1,20 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import { ArrowRight, ChevronRight } from "lucide-react";
+import { PassportShell, StatusPill } from "@/components/PassportShell";
 import {
-  ArrowRight,
-  ChevronRight,
-  Clock3,
-  FileCheck2,
-  Flag,
-  MessageCircleQuestion,
-  Plane,
-  ScanLine,
-  ShieldCheck,
-  Sparkles,
-} from "lucide-react";
-import { PassportShell, PassportStamp, StatusPill } from "@/components/PassportShell";
-import { getPassportSummary, getPathMatches } from "@/lib/scholaport-api";
+  PremiumAdvisorIcon,
+  PremiumPacketIcon,
+  PremiumPathMatchIcon,
+  PremiumRoadmapIcon,
+  PremiumShieldIcon,
+  PremiumTranscriptIcon,
+} from "@/components/icons/PremiumIcon";
+import { RequirementStructure, RouteCheckpoint } from "@/components/journey/JourneyVisuals";
+import { AcademicPassportPreview } from "@/components/passport/AcademicPassport";
+import { useAcademicPassportPreferences } from "@/hooks/use-academic-passport";
+import { getPassportSummary } from "@/lib/scholaport-api";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -30,8 +31,11 @@ export const Route = createFileRoute("/")({
 });
 
 function Dashboard() {
+  const { t } = useI18n();
   const passportQuery = useQuery({ queryKey: ["passport-summary"], queryFn: getPassportSummary });
-  const pathsQuery = useQuery({ queryKey: ["path-matches"], queryFn: getPathMatches });
+  const { preferences: passportPreferences } = useAcademicPassportPreferences(
+    passportQuery.data?.profile.user_id,
+  );
 
   if (passportQuery.isLoading) {
     return (
@@ -60,117 +64,116 @@ function Dashboard() {
 
   const { profile, transcript, gapAnalysis, gapRequirements, roadmapItems } = passportQuery.data;
   const name = [profile.first_name, profile.last_name].filter(Boolean).join(" ");
-  const initials =
-    `${profile.first_name.charAt(0)}${profile.last_name?.charAt(0) ?? ""}`.toUpperCase();
   const earned = gapAnalysis?.total_credits_mapped ?? 0;
   const required = gapAnalysis?.total_credits_required ?? 0;
   const percent = required > 0 ? Math.min(100, Math.round((earned / required) * 100)) : 0;
-  const firstPath = pathsQuery.data?.[0] ?? null;
   const missingCount = gapRequirements.filter((item) => item.status !== "satisfied").length;
+  const satisfiedCount = gapRequirements.filter((item) => item.status === "satisfied").length;
+  const partialCount = gapRequirements.filter(
+    (item) => item.status === "partially_satisfied",
+  ).length;
+  const passportStatus = transcript
+    ? gapAnalysis
+      ? `${missingCount} requirement ${missingCount === 1 ? "area" : "areas"} to review`
+      : "Transcript ready for gap analysis"
+    : "Transcript is the next step";
 
   return (
-    <PassportShell
-      eyebrow="Academic passport"
-      title={`Good afternoon, ${profile.first_name}.`}
-      description="Your journey is moving. Here’s what has been recorded, what still needs attention, and the clearest next step."
-      action={
-        <Link
-          to="/packet"
-          className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-[#0A175A] px-4 text-sm font-semibold text-white shadow-[0_8px_20px_rgba(10,23,90,.18)] transition hover:bg-[#1A2B7A]"
-        >
-          <FileCheck2 className="h-4 w-4" /> Build counselor packet
-        </Link>
-      }
-    >
-      <div className="passport-enter grid gap-5 xl:grid-cols-[minmax(0,1.55fr)_minmax(320px,.75fr)]">
-        <section className="relative overflow-hidden rounded-[24px] bg-[#0A175A] p-5 text-white shadow-[0_16px_40px_rgba(10,23,90,.16)] sm:p-7">
-          <div className="passport-grid absolute inset-0 opacity-20" />
-          <div className="absolute -right-24 -top-24 h-72 w-72 rounded-full border-[52px] border-[#01C3AD]/10" />
-          <div className="relative grid gap-7 lg:grid-cols-[1fr_auto]">
-            <div>
-              <div className="flex flex-wrap items-center gap-2">
-                <StatusPill tone="teal">
-                  <ShieldCheck className="mr-1 h-3 w-3" /> Authenticated profile
-                </StatusPill>
-                <span className="text-xs text-white/45">
-                  Updated {new Date(profile.updated_at).toLocaleDateString()}
-                </span>
+    <PassportShell>
+      <div className="grid gap-5 xl:grid-cols-[minmax(0,1.5fr)_minmax(330px,.72fr)]">
+        <section className="academic-passport-hero">
+          <div className="academic-passport-hero__copy">
+            <p className="journey-eyebrow">
+              {t("Good afternoon, {name} · Academic Passport", { name: profile.first_name })}
+            </p>
+            <h2>{t("Your journey, organized around you.")}</h2>
+            <p>
+              {t(
+                "Here’s what has been recorded, what still needs attention, and the clearest next step.",
+              )}
+              <span className="mt-2 block text-xs font-bold text-[#0A175A]/58">
+                {name} · Grade {profile.grade_at_transfer} · Class of{" "}
+                {profile.expected_graduation_year ?? "not set"}
+              </span>
+            </p>
+            <div className="academic-passport-hero__route">
+              <div>
+                <span>{t("Origin")}</span>
+                <strong>{profile.source_curriculum}</strong>
               </div>
-              <div className="mt-8 flex items-center gap-4">
-                <span className="grid h-16 w-16 shrink-0 place-items-center rounded-2xl bg-[#01C3AD] text-lg font-black text-[#060F3D]">
-                  {initials}
-                </span>
-                <div>
-                  <h2 className="font-display text-2xl font-bold tracking-[-0.04em]">{name}</h2>
-                  <p className="mt-1 text-sm text-white/55">
-                    Grade {profile.grade_at_transfer} · Class of{" "}
-                    {profile.expected_graduation_year ?? "—"}
-                  </p>
-                </div>
-              </div>
-              <div className="mt-8 flex flex-wrap items-center gap-3 text-sm">
-                <span className="inline-flex items-center gap-2 rounded-xl bg-white/[0.07] px-3 py-2.5">
-                  {profile.source_curriculum} · {profile.origin_country}
-                </span>
-                <Plane className="h-4 w-4 rotate-12 text-[#01C3AD]" />
-                <span className="inline-flex items-center gap-2 rounded-xl bg-white/[0.07] px-3 py-2.5">
-                  {profile.target_state}, {profile.destination_country}
-                </span>
-              </div>
-              <div className="mt-6 grid gap-4 border-t border-white/10 pt-5 text-xs sm:grid-cols-3">
-                <div>
-                  <p className="text-white/40">TARGET SCHOOL</p>
-                  <p className="mt-1.5 font-semibold text-white/85">
-                    {profile.target_school || "Not added"}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-white/40">EXPECTED GRADUATION</p>
-                  <p className="mt-1.5 font-semibold text-white/85">
-                    {profile.expected_graduation_year ?? "Not set"}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-white/40">PASSPORT ID</p>
-                  <p className="mt-1.5 font-mono text-[11px] font-semibold text-white/85">
-                    CP-{profile.id.slice(0, 8).toUpperCase()}
-                  </p>
-                </div>
+              <ArrowRight aria-hidden="true" />
+              <div>
+                <span>{t("Destination")}</span>
+                <strong>{profile.destination_framework_label ?? profile.target_state}</strong>
               </div>
             </div>
-            <div className="hidden items-center justify-center gap-2 lg:flex lg:flex-col">
-              <PassportStamp label="Origin" value={profile.source_curriculum.slice(0, 8)} />
-              <PassportStamp label="Destination" value={profile.target_state.slice(0, 8)} coral />
+            <div className="mt-4 flex flex-wrap gap-2">
+              <StatusPill tone="navy">
+                <PremiumShieldIcon className="mr-1 h-3 w-3" /> {t("Private profile")}
+              </StatusPill>
+              <StatusPill tone={transcript ? "mint" : "yellow"}>{passportStatus}</StatusPill>
             </div>
+            <Link
+              to="/packet"
+              className="mt-5 inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#0A175A] px-4 text-sm font-semibold text-white shadow-[0_8px_20px_rgba(10,23,90,.18)] transition hover:bg-[#1A2B7A]"
+            >
+              <PremiumPacketIcon className="h-4 w-4" /> {t("Build counselor packet")}
+            </Link>
+          </div>
+          <div className="academic-passport-hero__visual">
+            <AcademicPassportPreview
+              preferences={passportPreferences}
+              identity={{
+                name,
+                source: profile.source_curriculum,
+                sourceDetail: profile.source_jurisdiction_label ?? profile.origin_country,
+                destination: profile.destination_framework_label ?? profile.target_state,
+                destinationDetail:
+                  profile.destination_jurisdiction_label ?? profile.destination_country,
+                grade: profile.grade_at_transfer,
+                classYear: profile.expected_graduation_year,
+                status: passportStatus,
+              }}
+            />
           </div>
         </section>
 
-        <section className="rounded-[24px] border border-[#CDD3DE]/70 bg-white p-5 shadow-card sm:p-6">
+        <section className="journey-paper flex flex-col p-5 sm:p-6">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#9AA3B2]">
-                Graduation progress
+              <p className="journey-eyebrow !text-[#59647A] !opacity-100">
+                {t("Graduation progress")}
               </p>
-              <h2 className="mt-2 font-display text-xl font-bold tracking-[-0.03em]">
-                {gapAnalysis ? "Recorded analysis" : "No analysis yet"}
+              <h2 className="font-display text-2xl font-bold tracking-[-0.04em]">
+                {gapAnalysis ? t("Recorded analysis") : t("No analysis yet")}
               </h2>
             </div>
             {missingCount > 0 && <StatusPill tone="coral">{missingCount} gaps</StatusPill>}
           </div>
-          <div className="mt-6 flex items-center gap-6">
+          <div className="mt-7 flex items-center gap-5">
             <ProgressRing percent={percent} />
             <div>
               <p className="text-3xl font-black tracking-[-0.04em] text-[#0A175A]">
                 {earned}
                 <span className="text-base font-semibold text-[#9AA3B2]"> / {required || "—"}</span>
               </p>
-              <p className="mt-1 text-sm text-[#5A6380]">mapped credits</p>
+              <p className="mt-1 text-sm text-[#5A6380]">{t("mapped credits")}</p>
             </div>
           </div>
+          {gapRequirements.length > 0 && (
+            <div className="mt-6">
+              <RequirementStructure
+                satisfied={satisfiedCount}
+                partial={partialCount}
+                missing={Math.max(0, gapRequirements.length - satisfiedCount - partialCount)}
+                label={`${satisfiedCount} satisfied, ${partialCount} partial, and ${Math.max(0, gapRequirements.length - satisfiedCount - partialCount)} missing requirement sections`}
+              />
+            </div>
+          )}
           <div className="mt-6 space-y-3 border-t border-[#E8EBF0] pt-5">
             {gapRequirements.length === 0 ? (
               <p className="text-sm leading-6 text-[#5A6380]">
-                Upload a transcript and create a gap analysis to see verified progress.
+                {t("Upload a transcript and create a gap analysis to see verified progress.")}
               </p>
             ) : (
               gapRequirements.slice(0, 4).map((item) => {
@@ -200,17 +203,17 @@ function Dashboard() {
           </div>
           <Link
             to="/gaps"
-            className="mt-5 flex items-center justify-between rounded-xl bg-[#F86746]/8 px-3.5 py-3 text-sm font-semibold text-[#E65234] transition hover:bg-[#F86746]/12"
+            className="mt-auto flex min-h-12 items-center justify-between rounded-2xl bg-[#0A175A] px-4 py-3 text-sm font-bold text-white shadow-[0_8px_20px_rgba(10,23,90,.16)] transition hover:-translate-y-0.5"
           >
-            Open gap analysis <ArrowRight className="h-4 w-4" />
+            {t("Open gap analysis")} <ArrowRight className="h-4 w-4" />
           </Link>
         </section>
       </div>
 
-      <section className="mt-5 grid gap-4 md:grid-cols-3">
+      <section className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-[1.25fr_.9fr_.8fr]">
         <QuickAction
           to="/transcript"
-          icon={<ScanLine />}
+          icon={<PremiumTranscriptIcon />}
           eyebrow="Transcript"
           title={
             transcript
@@ -226,7 +229,7 @@ function Dashboard() {
         />
         <QuickAction
           to="/roadmap"
-          icon={<Flag />}
+          icon={<PremiumRoadmapIcon />}
           eyebrow="Next checkpoint"
           title={roadmapItems[0]?.title ?? "No roadmap yet"}
           body={
@@ -237,80 +240,67 @@ function Dashboard() {
         />
         <QuickAction
           to="/advisor"
-          icon={<MessageCircleQuestion />}
+          icon={<PremiumAdvisorIcon />}
           eyebrow="Advisor"
-          title="Open your conversation"
-          body="Advisor messages are stored securely with your account."
+          title="Coming soon"
+          body="The AI Advisor will unlock after it can answer from real saved transcript, mapping, gap, roadmap, and packet data."
           tone="navy"
         />
       </section>
 
       <div className="mt-5 grid gap-5 xl:grid-cols-[minmax(0,1.2fr)_minmax(340px,.8fr)]">
-        <section className="rounded-[24px] border border-[#CDD3DE]/70 bg-white p-5 shadow-card sm:p-6">
+        <section className="journey-paper p-5 sm:p-6">
           <div className="flex items-center justify-between gap-4">
             <div>
               <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#9AA3B2]">
-                Your route forward
+                {t("Your route forward")}
               </p>
               <h2 className="mt-1.5 font-display text-xl font-bold tracking-[-0.03em]">
-                Next checkpoints
+                {t("Next checkpoints")}
               </h2>
             </div>
             <Link to="/roadmap" className="text-sm font-bold text-[#019A8A]">
-              Open roadmap
+              {t("Open roadmap")}
             </Link>
           </div>
-          <div className="mt-6 space-y-1">
+          <div className="mt-6">
             {roadmapItems.length === 0 ? (
               <p className="rounded-xl bg-[#F6F8FB] p-4 text-sm text-[#5A6380]">
-                No roadmap items have been created for this passport.
+                {t("No roadmap items have been created for this passport.")}
               </p>
             ) : (
-              roadmapItems.slice(0, 3).map((item, index) => (
-                <div
-                  key={item.id}
-                  className="relative grid grid-cols-[36px_1fr_auto] gap-3 pb-5 last:pb-0"
-                >
-                  {index < Math.min(roadmapItems.length, 3) - 1 && (
-                    <span className="absolute left-[17px] top-8 h-[calc(100%-18px)] w-px bg-[#CDD3DE]" />
-                  )}
-                  <span
-                    className={`relative z-10 grid h-9 w-9 place-items-center rounded-full ${item.status === "completed" ? "bg-[#01C3AD] text-[#060F3D]" : "border border-[#CDD3DE] bg-white text-[#9AA3B2]"}`}
-                  >
-                    {index === 0 ? <Clock3 className="h-4 w-4" /> : index + 1}
-                  </span>
-                  <div>
-                    <p className="text-sm font-bold">{item.title}</p>
-                    <p className="mt-1 text-xs leading-5 text-[#5A6380]">{item.description}</p>
-                  </div>
-                  <span className="hidden text-[11px] font-semibold text-[#9AA3B2] sm:block">
-                    {item.semester_target}
-                  </span>
-                </div>
-              ))
+              roadmapItems
+                .slice(0, 3)
+                .map((item, index) => (
+                  <RouteCheckpoint
+                    key={item.id}
+                    index={index + 1}
+                    active={index === 0 && item.status !== "completed"}
+                    complete={item.status === "completed"}
+                    last={index === Math.min(roadmapItems.length, 3) - 1}
+                    title={item.title}
+                    detail={`${item.description} · ${item.semester_target}`}
+                  />
+                ))
             )}
           </div>
         </section>
 
-        <section className="relative overflow-hidden rounded-[24px] border border-[#01C3AD]/30 bg-[#01C3AD]/[0.07] p-5 sm:p-6">
-          <Sparkles className="absolute right-5 top-5 h-6 w-6 text-[#01C3AD]" />
-          <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#019A8A]">
-            PathMatch
-          </p>
-          <h2 className="mt-2 max-w-xs font-display text-xl font-bold leading-7 tracking-[-0.03em]">
-            {firstPath
-              ? `${firstPath.source_curriculum} → ${firstPath.target_state}`
-              : "No verified path available"}
+        <section className="relative overflow-hidden rounded-[30px] bg-[#FFE1D8] p-5 shadow-[0_18px_50px_rgba(10,23,90,.08)] sm:p-7">
+          <PremiumPathMatchIcon className="absolute right-6 top-6 h-7 w-7 text-[#F86746]" />
+          <p className="journey-eyebrow !text-[#C7462D] !opacity-100">PathMatch</p>
+          <h2 className="mt-2 max-w-xs font-display text-2xl font-bold leading-8 tracking-[-0.04em]">
+            {t("Coming soon")}
           </h2>
           <p className="mt-3 max-w-md text-sm leading-6 text-[#5A6380]">
-            {firstPath?.advice_for_future ??
-              "Verified reference paths will appear here when available."}
+            Verified, anonymized transfer paths will appear only after the consent, moderation, and
+            evidence pipeline is ready.
           </p>
           <Link
             to="/pathmatch"
-            className="mt-6 inline-flex h-10 items-center gap-2 rounded-xl bg-[#0A175A] px-4 text-sm font-semibold text-white"
+            className="relative mt-6 inline-flex h-11 items-center gap-2 rounded-2xl bg-[#0A175A] px-4 text-sm font-bold text-white shadow-[0_8px_20px_rgba(10,23,90,.16)]"
           >
-            Explore paths <ChevronRight className="h-4 w-4" />
+            {t("Explore paths")} <ChevronRight className="h-4 w-4" />
           </Link>
         </section>
       </div>
@@ -359,29 +349,47 @@ function QuickAction({
   body: string;
   tone: "teal" | "coral" | "navy";
 }) {
+  const { t } = useI18n();
   const colors = {
-    teal: "bg-[#01C3AD]/10 text-[#019A8A]",
-    coral: "bg-[#F86746]/10 text-[#E65234]",
-    navy: "bg-[#0A175A]/8 text-[#0A175A]",
+    teal: {
+      card: "bg-[#DFF8F1] border-[#BFEBDD]",
+      icon: "bg-[#01C3AD] text-[#07113F]",
+    },
+    coral: {
+      card: "bg-white border-[#F2D7D0]",
+      icon: "bg-[#F86746] text-[#07113F]",
+    },
+    navy: {
+      card: "bg-[#0A175A] border-[#0A175A] text-white",
+      icon: "bg-white/12 text-[#42D8D0]",
+    },
   };
   return (
     <Link
       to={to}
-      className="group flex min-h-36 items-start gap-4 rounded-[20px] border border-[#CDD3DE]/70 bg-white p-5 shadow-card transition duration-300 hover:-translate-y-0.5 hover:border-[#01C3AD]/40 hover:shadow-[0_10px_30px_rgba(10,23,90,.1)]"
+      className={`group flex min-h-40 items-start gap-4 rounded-[26px] border p-5 shadow-[0_16px_38px_rgba(10,23,90,.07)] transition duration-300 hover:-translate-y-1 ${colors[tone].card}`}
     >
       <span
-        className={`grid h-11 w-11 shrink-0 place-items-center rounded-[14px] [&>svg]:h-5 [&>svg]:w-5 ${colors[tone]}`}
+        className={`grid h-12 w-12 shrink-0 place-items-center rounded-[16px_16px_22px_16px] shadow-[inset_0_2px_rgba(255,255,255,.3),0_7px_14px_rgba(10,23,90,.12)] [&>svg]:h-5 [&>svg]:w-5 ${colors[tone].icon}`}
       >
         {icon}
       </span>
       <span className="min-w-0">
-        <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-[#9AA3B2]">
-          {eyebrow}
+        <span
+          className={`text-[10px] font-bold uppercase tracking-[0.15em] ${tone === "navy" ? "text-white/45" : "text-[#83909D]"}`}
+        >
+          {t(eyebrow)}
         </span>
-        <span className="mt-1 block text-base font-bold">{title}</span>
-        <span className="mt-1.5 block text-xs leading-5 text-[#5A6380]">{body}</span>
+        <span className="mt-1 block text-base font-bold">{t(title)}</span>
+        <span
+          className={`mt-1.5 block text-xs leading-5 ${tone === "navy" ? "text-white/58" : "text-[#59647A]"}`}
+        >
+          {t(body)}
+        </span>
       </span>
-      <ChevronRight className="ml-auto mt-2 h-4 w-4 shrink-0 text-[#CDD3DE] transition group-hover:translate-x-0.5 group-hover:text-[#01C3AD]" />
+      <ChevronRight
+        className={`ml-auto mt-2 h-4 w-4 shrink-0 transition group-hover:translate-x-0.5 ${tone === "navy" ? "text-white/35 group-hover:text-[#42D8D0]" : "text-[#B8C2C3] group-hover:text-[#01A995]"}`}
+      />
     </Link>
   );
 }

@@ -1,5 +1,5 @@
-import type { SubjectCategory } from "@/lib/mapping/types";
-import { SUBJECT_CATEGORIES } from "@/lib/mapping/types";
+import type { SubjectCategory } from "./types.ts";
+import { SUBJECT_CATEGORIES } from "./types.ts";
 
 const aliasMap: Array<{ category: SubjectCategory; aliases: string[] }> = [
   {
@@ -170,7 +170,11 @@ export function normalizeSubjectCategory(value: string | null | undefined): Subj
   if (/\benglish|language arts|literature|ela\b/.test(normalized)) {
     return "english_language_arts";
   }
-  if (/\bworld language|foreign language|lote|tamil|hindi|spanish|french|arabic|urdu|chinese\b/.test(normalized)) {
+  if (
+    /\bworld language|foreign language|lote|tamil|hindi|spanish|french|arabic|urdu|chinese\b/.test(
+      normalized,
+    )
+  ) {
     return "world_language";
   }
   if (/\bcomputer|informatics|ict|coding|programming\b/.test(normalized)) {
@@ -199,7 +203,11 @@ export function classifySubjectDeterministically(input: {
   const provided = normalizeCourseName(input.providedCategory);
   const normalizedProvided = normalizeSubjectCategory(input.providedCategory);
   if (input.providedCategory && normalizedProvided !== "unclear") {
-    return { category: normalizedProvided, matchedAlias: input.providedCategory, confidence: "high" };
+    return {
+      category: normalizedProvided,
+      matchedAlias: input.providedCategory,
+      confidence: "high",
+    };
   }
   const haystack = normalizeCourseName(
     `${input.translated ?? ""} ${input.original ?? ""} ${input.providedCategory ?? ""}`,

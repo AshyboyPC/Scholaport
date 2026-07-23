@@ -1,22 +1,26 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import {
-  AlertTriangle,
-  ArrowRight,
-  Check,
-  FileText,
-  Languages,
-  Loader2,
-  Plus,
-  RefreshCw,
-  Save,
-  ShieldCheck,
-  Trash2,
-  UploadCloud,
-} from "lucide-react";
-import { toast } from "sonner";
+import { ArrowRight, Check, Loader2, Plus, RefreshCw, Save, Trash2 } from "lucide-react";
 import { PassportShell } from "@/components/PassportShell";
+import {
+  PremiumCheckCircleIcon,
+  PremiumGlobeIcon,
+  PremiumShieldIcon,
+  PremiumTranscriptIcon,
+  PremiumUploadIcon,
+  PremiumWarningIcon,
+} from "@/components/icons/PremiumIcon";
+import {
+  ClayAsset,
+  ClayScene,
+  DocumentStack,
+  JourneyStage,
+  MappingRoute,
+} from "@/components/journey/JourneyVisuals";
+import { PassportEmblem } from "@/components/passport/AcademicPassport";
+import { useAcademicPassportPreferences } from "@/hooks/use-academic-passport";
+import { notifyError, notifySuccess } from "@/lib/app-feedback";
 import {
   addManualTranscriptCourse,
   confirmCreditMapping,
@@ -90,9 +94,9 @@ function TranscriptPage() {
   }
 
   async function processFile(file: File) {
-    if (file.size > 50 * 1024 * 1024) return toast.error("Please keep the file under 50 MB.");
+    if (file.size > 50 * 1024 * 1024) return notifyError("Please keep the file under 50 MB.");
     if (!["application/pdf", "image/jpeg", "image/png", "image/webp"].includes(file.type)) {
-      return toast.error("Upload a PDF, JPG, PNG, or WEBP transcript.");
+      return notifyError("Upload a PDF, JPG, PNG, or WEBP transcript.");
     }
     setUploading(true);
     setProcessing(true);
@@ -100,18 +104,18 @@ function TranscriptPage() {
     try {
       const { transcript, storageUploaded } = await createTranscriptUpload(file);
       if (!storageUploaded) {
-        toast.error("Private storage upload failed. Manual entry is available.");
+        notifyError("Private storage upload failed. Manual entry is available.");
       } else {
         const processed = await startTranscriptProcessing(transcript.id);
         if (processed.transcript?.requires_manual_entry) {
-          toast.error("Live processing needs setup. Manual entry is available.");
+          notifyError("Live processing needs setup. Manual entry is available.");
         } else {
-          toast.success("Transcript is ready for review.");
+          notifySuccess("Transcript is ready for review.", "complete");
         }
       }
       await refreshTranscriptData();
     } catch (error) {
-      toast.error(formatTranscriptError(error, "Upload failed."));
+      notifyError(formatTranscriptError(error, "Upload failed."));
       await refreshTranscriptData();
     } finally {
       setUploading(false);
@@ -124,10 +128,10 @@ function TranscriptPage() {
     setProcessing(true);
     try {
       await retryTranscriptProcessing(transcriptId);
-      toast.success("Transcript processing finished. Review is required.");
+      notifySuccess("Transcript processing finished. Review is required.", "complete");
       await refreshTranscriptData();
     } catch (error) {
-      toast.error(formatTranscriptError(error, "Retry failed."));
+      notifyError(formatTranscriptError(error, "Retry failed."));
     } finally {
       setProcessing(false);
     }
@@ -137,10 +141,10 @@ function TranscriptPage() {
     setConfirmingCourses(true);
     try {
       await confirmTranscriptCourses(transcriptId);
-      toast.success("Confirmed courses saved for future mapping.");
+      notifySuccess("Confirmed courses saved for future mapping.", "complete");
       await refreshTranscriptData();
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Unable to confirm courses.");
+      notifyError(error instanceof Error ? error.message : "Unable to confirm courses.");
     } finally {
       setConfirmingCourses(false);
     }
@@ -150,14 +154,15 @@ function TranscriptPage() {
     setMappingProcessing(true);
     try {
       const summary = await startCreditMapping(transcriptId);
-      toast.success(
+      notifySuccess(
         summary.status === "needs_review"
           ? "Probable mappings created. Review is needed."
           : "Probable mappings created.",
+        "generate",
       );
       await refreshTranscriptData();
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Unable to generate mappings.");
+      notifyError(error instanceof Error ? error.message : "Unable to generate mappings.");
     } finally {
       setMappingProcessing(false);
     }
@@ -167,10 +172,10 @@ function TranscriptPage() {
     setMappingProcessing(true);
     try {
       await regenerateCreditMappings(transcriptId);
-      toast.success("Probable mappings regenerated.");
+      notifySuccess("Probable mappings regenerated.", "generate");
       await refreshTranscriptData();
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Unable to regenerate mappings.");
+      notifyError(error instanceof Error ? error.message : "Unable to regenerate mappings.");
     } finally {
       setMappingProcessing(false);
     }
@@ -198,13 +203,10 @@ function TranscriptPage() {
     transcript?.ai_extraction_status === "failed" ||
     transcript?.ai_extraction_status === "skipped" ||
     transcript?.requires_manual_entry === true;
+  const { preferences: passportPreferences } = useAcademicPassportPreferences(profile?.user_id);
 
   return (
-    <PassportShell
-      eyebrow="Transcript intelligence"
-      title="Review every extracted course before Scholaport uses it."
-      description="Upload a transcript privately, review the original text beside the English academic translation, then confirm the final course list."
-    >
+    <PassportShell>
       <input
         ref={inputRef}
         type="file"
@@ -216,13 +218,67 @@ function TranscriptPage() {
         }}
       />
 
+      <JourneyStage
+        tone="navy"
+        eyebrow="Documents arrive here"
+        title={
+          isProcessing
+            ? "Your transcript is becoming course units."
+            : transcript
+              ? "Review the record before it moves forward."
+              : "Bring your transcript into the journey."
+        }
+        description={
+          transcript
+            ? `${transcript.original_filename ?? "Stored transcript"} · ${transcript.upload_status}`
+            : "Upload a real PDF or image. ScholaPort keeps the file private and waits for your confirmation before using extracted coursework."
+        }
+        action={
+          <button
+            disabled={uploading || isProcessing}
+            onClick={() => inputRef.current?.click()}
+            className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-[#01C3AD] px-5 text-sm font-black text-[#07113F] shadow-[0_8px_20px_rgba(1,169,149,.18)] disabled:opacity-60"
+          >
+            {uploading || isProcessing ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <PremiumUploadIcon className="h-4 w-4" />
+            )}
+            {transcript ? "Replace transcript" : "Choose transcript"}
+          </button>
+        }
+        art={
+          <ClayScene
+            asset="transcript-upload"
+            eager
+            className="transcript-clay-scene"
+          >
+            {isProcessing && (
+              <div className="absolute bottom-[5%] right-[2%] z-10 rounded-[22px] bg-white/94 p-4 text-[#0A175A] shadow-[0_16px_36px_rgba(0,0,0,.2)]">
+                <DocumentStack processing />
+                <p className="mt-2 max-w-[160px] text-xs font-bold">
+                  {processingMessages[messageIndex]}
+                </p>
+              </div>
+            )}
+          </ClayScene>
+        }
+        className="transcript-stage mb-6"
+        layout="wide"
+      >
+        <div className="passport-context-mark mt-5 w-fit">
+          <PassportEmblem />
+          Linked to your Academic Passport
+        </div>
+      </JourneyStage>
+
       <div className="mx-auto grid max-w-7xl gap-5 xl:grid-cols-[minmax(0,1fr)_330px]">
         <main className="space-y-5">
-          <section className="rounded-[20px] border border-[#CDD3DE]/70 bg-white shadow-card">
+          <section className="journey-paper overflow-hidden">
             <div className="flex flex-col gap-4 border-b border-[#E8EBF0] p-5 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-center gap-3">
                 <span className="grid h-11 w-11 place-items-center rounded-[14px] bg-[#0A175A]/8 text-[#0A175A]">
-                  <FileText className="h-5 w-5" />
+                  <PremiumTranscriptIcon className="h-5 w-5" />
                 </span>
                 <div>
                   <h2 className="font-display text-lg font-bold">Academic transcript</h2>
@@ -234,12 +290,12 @@ function TranscriptPage() {
               <button
                 disabled={uploading || isProcessing}
                 onClick={() => inputRef.current?.click()}
-                className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-[#01C3AD] px-4 text-xs font-bold text-[#060F3D] disabled:opacity-60"
+                className="inline-flex h-11 items-center justify-center gap-2 rounded-2xl bg-[#0A175A] px-4 text-xs font-bold text-white shadow-[0_8px_20px_rgba(10,23,90,.16)] disabled:opacity-60"
               >
                 {uploading || isProcessing ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
-                  <UploadCloud className="h-4 w-4" />
+                  <PremiumUploadIcon className="h-4 w-4" />
                 )}
                 {transcript ? "Replace file" : "Choose a file"}
               </button>
@@ -300,7 +356,7 @@ function TranscriptPage() {
         </main>
 
         <aside className="space-y-5">
-          <section className="rounded-[20px] bg-[#0A175A] p-5 text-white">
+          <section className="rounded-[28px] bg-[#0A175A] p-5 text-white shadow-[0_18px_45px_rgba(10,23,90,.14)]">
             <p className="text-[10px] font-bold uppercase tracking-[.16em] text-[#01C3AD]">
               Review status
             </p>
@@ -314,25 +370,25 @@ function TranscriptPage() {
             </p>
             <Link
               to="/gaps"
-              className="mt-5 flex h-11 items-center justify-center gap-2 rounded-xl bg-[#01C3AD] text-sm font-bold text-[#060F3D]"
+              className="mt-5 flex h-11 items-center justify-center gap-2 rounded-2xl bg-[#01C3AD] text-sm font-bold text-[#060F3D] shadow-[0_8px_20px_rgba(1,169,149,.18)]"
             >
               View gap analysis <ArrowRight className="h-4 w-4" />
             </Link>
           </section>
           <InfoPanel
-            icon={<ShieldCheck className="h-5 w-5" />}
+            icon={<PremiumShieldIcon className="h-5 w-5" />}
             title="Private storage"
             body="Files stay in the private transcript bucket scoped to your user ID."
           />
           <InfoPanel
-            icon={<Languages className="h-5 w-5" />}
+            icon={<PremiumGlobeIcon className="h-5 w-5" />}
             title="Multilingual review"
             body="Tamil, Hindi, Spanish, Arabic, Urdu, Mandarin, Filipino, Bengali, Russian, Ukrainian, English, and mixed-script transcripts are routed through language detection."
           />
           {transcript?.translation_status === "needs_review" && (
             <InfoPanel
               warning
-              icon={<AlertTriangle className="h-5 w-5" />}
+              icon={<PremiumWarningIcon className="h-5 w-5" />}
               title="Translation needs review"
               body="Edit the English translation before confirming. The original transcript text is preserved."
             />
@@ -347,7 +403,7 @@ function UploadState({ onChoose }: { onChoose: () => void }) {
   return (
     <div className="grid min-h-[380px] place-items-center p-8 text-center">
       <div className="max-w-lg">
-        <UploadCloud className="mx-auto h-10 w-10 text-[#01C3AD]" />
+        <PremiumUploadIcon className="mx-auto h-10 w-10 text-[#01C3AD]" />
         <h3 className="mt-4 font-display text-xl font-bold">Upload your transcript</h3>
         <p className="mt-2 text-sm leading-6 text-[#5A6380]">
           Scholaport stores the original file, extracts possible course rows, translates academic
@@ -357,7 +413,7 @@ function UploadState({ onChoose }: { onChoose: () => void }) {
           onClick={onChoose}
           className="mt-5 inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-[#0A175A] px-5 text-sm font-bold text-white"
         >
-          <UploadCloud className="h-4 w-4" /> Select transcript
+          <PremiumUploadIcon className="h-4 w-4" /> Select transcript
         </button>
       </div>
     </div>
@@ -433,7 +489,7 @@ function FailureState({ transcript, onRetry }: { transcript: Transcript; onRetry
   return (
     <div className="grid min-h-[360px] place-items-center p-8 text-center">
       <div className="max-w-lg">
-        <AlertTriangle className="mx-auto h-10 w-10 text-[#E65234]" />
+        <PremiumWarningIcon className="mx-auto h-10 w-10 text-[#E65234]" />
         <h3 className="mt-4 font-display text-xl font-bold">{title}</h3>
         <p className="mt-2 text-xs font-bold uppercase tracking-[.14em] text-[#B45B00]">
           Failed at {stageLabel}
@@ -512,7 +568,11 @@ function ReviewState({
             onClick={onConfirm}
             className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-[#01C3AD] px-4 text-xs font-bold text-[#060F3D] disabled:opacity-50"
           >
-            {confirming ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
+            {confirming ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Check className="h-4 w-4" />
+            )}
             {confirming ? "Confirming…" : "Confirm final course list"}
           </button>
         </div>
@@ -569,9 +629,9 @@ function FrameworkReview({
         await switchSelectedSourceFramework({ transcript_id: transcript.id, method });
       }
       await onRefresh();
-      toast.success("Framework choice saved.");
+      notifySuccess("Framework choice saved.");
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Unable to save framework choice.");
+      notifyError(error instanceof Error ? error.message : "Unable to save framework choice.");
     } finally {
       setChoosing(null);
     }
@@ -585,9 +645,9 @@ function FrameworkReview({
     >
       <div className="flex items-start gap-3">
         {mismatch ? (
-          <AlertTriangle className="mt-0.5 h-5 w-5 text-[#B45B00]" />
+          <PremiumWarningIcon className="mt-0.5 h-5 w-5 text-[#B45B00]" />
         ) : (
-          <Check className="mt-0.5 h-5 w-5 text-[#019A8A]" />
+          <PremiumCheckCircleIcon className="mt-0.5 h-5 w-5 text-[#019A8A]" />
         )}
         <div className="min-w-0 flex-1">
           <p className="text-sm font-bold">
@@ -650,9 +710,9 @@ function CandidateEditor({
     try {
       await saveEditedTranscriptCandidate(draft);
       await onRefresh();
-      toast.success("Candidate saved.");
+      notifySuccess("Candidate saved.");
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Unable to save row.");
+      notifyError(error instanceof Error ? error.message : "Unable to save row.");
     } finally {
       setSaving(false);
     }
@@ -663,9 +723,9 @@ function CandidateEditor({
     try {
       await deleteTranscriptCandidate(candidate.id);
       await onRefresh();
-      toast.success("Candidate removed.");
+      notifySuccess("Candidate removed.", "remove");
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Unable to delete row.");
+      notifyError(error instanceof Error ? error.message : "Unable to delete row.");
     } finally {
       setDeleting(false);
     }
@@ -730,7 +790,11 @@ function CandidateEditor({
             onClick={() => void remove()}
             className="inline-flex h-9 items-center justify-center gap-2 rounded-xl border border-[#F2CAC1] px-3 text-xs font-bold text-[#B8432E] disabled:opacity-60"
           >
-            {deleting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+            {deleting ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Trash2 className="h-4 w-4" />
+            )}
             {deleting ? "Deleting…" : "Delete"}
           </button>
           <button
@@ -762,7 +826,7 @@ function ManualCourseForm({
   const [saving, setSaving] = useState(false);
 
   async function add() {
-    if (!course.trim()) return toast.error("Enter the course name exactly as shown.");
+    if (!course.trim()) return notifyError("Enter the course name exactly as shown.");
     setSaving(true);
     try {
       await addManualTranscriptCourse({
@@ -777,16 +841,16 @@ function ManualCourseForm({
       setGrade("");
       setCategory("");
       await onSaved();
-      toast.success("Manual course added.");
+      notifySuccess("Manual course added.");
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Unable to add course.");
+      notifyError(error instanceof Error ? error.message : "Unable to add course.");
     } finally {
       setSaving(false);
     }
   }
 
   return (
-    <section className="rounded-[20px] border border-[#CDD3DE]/70 bg-white p-5 shadow-card">
+    <section className="journey-paper p-5">
       <div className="flex items-center gap-2">
         <Plus className="h-5 w-5 text-[#019A8A]" />
         <h3 className="font-display text-lg font-bold">Manual fallback</h3>
@@ -856,31 +920,34 @@ function CreditMappingReview({
   onRefresh: () => Promise<void>;
 }) {
   return (
-    <section className="rounded-[20px] border border-[#CDD3DE]/70 bg-white p-5 shadow-card">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-        <div>
-          <p className="text-[10px] font-bold uppercase tracking-[.14em] text-[#5A6380]">
-            Scholaport preview
-          </p>
-          <h3 className="mt-1 font-display text-lg font-bold">Probable credit map</h3>
-          <p className="mt-1 text-xs leading-5 text-[#5A6380]">
-            Destination: {destinationFramework}. Final credit decisions are made by your school.
-          </p>
+    <section className="schola-record-surface border border-[#CDD3DE]/70 bg-white p-5 shadow-card">
+      <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_180px] sm:items-center">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-[.14em] text-[#5A6380]">
+              Scholaport preview
+            </p>
+            <h3 className="mt-1 font-display text-lg font-bold">Probable credit map</h3>
+            <p className="mt-1 text-xs leading-5 text-[#5A6380]">
+              Destination: {destinationFramework}. Final credit decisions are made by your school.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <button
+              disabled={processing}
+              onClick={mappings.length ? onRegenerate : onGenerate}
+              className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-[#0A175A] px-4 text-xs font-bold text-white disabled:opacity-60"
+            >
+              {processing ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <RefreshCw className="h-4 w-4" />
+              )}
+              {mappings.length ? "Regenerate" : "Generate probable credit map"}
+            </button>
+          </div>
         </div>
-        <div className="flex flex-wrap gap-2">
-          <button
-            disabled={processing}
-            onClick={mappings.length ? onRegenerate : onGenerate}
-            className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-[#0A175A] px-4 text-xs font-bold text-white disabled:opacity-60"
-          >
-            {processing ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <RefreshCw className="h-4 w-4" />
-            )}
-            {mappings.length ? "Regenerate" : "Generate probable credit map"}
-          </button>
-        </div>
+        <ClayAsset asset="credit-mapping" className="mx-auto w-full max-w-[170px]" />
       </div>
 
       {!mappings.length ? (
@@ -923,6 +990,7 @@ function CreditMappingEditor({
     review_reason: mapping.review_reason ?? "",
   });
   const [saving, setSaving] = useState(false);
+  const [statusAction, setStatusAction] = useState<"confirm" | "reject" | "review" | null>(null);
 
   async function save() {
     setSaving(true);
@@ -940,23 +1008,26 @@ function CreditMappingEditor({
         counselor_review_required: ["low", "unclear"].includes(draft.mapping_confidence),
       });
       await onRefresh();
-      toast.success("Probable mapping saved.");
+      notifySuccess("Probable mapping saved.");
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Unable to save mapping.");
+      notifyError(error instanceof Error ? error.message : "Unable to save mapping.");
     } finally {
       setSaving(false);
     }
   }
 
   async function setStatus(action: "confirm" | "reject" | "review") {
+    setStatusAction(action);
     try {
       if (action === "confirm") await confirmCreditMapping(mapping.id);
       if (action === "reject") await rejectCreditMapping(mapping.id);
       if (action === "review") await markCreditMappingForCounselorReview(mapping.id);
       await onRefresh();
-      toast.success("Mapping review updated.");
+      notifySuccess("Mapping review updated.", action === "confirm" ? "complete" : "save");
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Unable to update mapping.");
+      notifyError(error instanceof Error ? error.message : "Unable to update mapping.");
+    } finally {
+      setStatusAction(null);
     }
   }
 
@@ -964,7 +1035,7 @@ function CreditMappingEditor({
   const reviewNeeded = mapping.counselor_review_required ?? mapping.needs_counselor_review ?? true;
 
   return (
-    <article className="rounded-[16px] border border-[#E1E5EC] bg-[#F8FAFC] p-4">
+    <article className="rounded-[22px] border border-[#DDE4E5] bg-white p-4 shadow-[0_12px_30px_rgba(10,23,90,.05)]">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
         <div>
           <p className="text-sm font-bold">
@@ -997,6 +1068,47 @@ function CreditMappingEditor({
             {mapping.mapping_status ?? mapping.status ?? "candidate"}
           </Badge>
         </div>
+      </div>
+
+      <div className="mt-4">
+        <MappingRoute
+          source={
+            <span>
+              <small className="block text-[9px] uppercase tracking-[.12em] text-[#83909D]">
+                Source course
+              </small>
+              <span className="mt-1 block truncate">
+                {mapping.translated_course_name ||
+                  mapping.original_course_name ||
+                  "Transcript course"}
+              </span>
+            </span>
+          }
+          destination={
+            <span>
+              <small className="block text-[9px] uppercase tracking-[.12em] text-[#83909D]">
+                Destination requirement
+              </small>
+              <span className="mt-1 block truncate">
+                {draft.probable_destination_equivalent ||
+                  draft.requirement_bucket ||
+                  "No likely equivalent yet"}
+              </span>
+            </span>
+          }
+          status={
+            (mapping.mapping_status ?? mapping.status) === "student_confirmed"
+              ? "confirmed"
+              : reviewNeeded || ["low", "unclear"].includes(confidenceValue)
+                ? "review"
+                : confidenceValue === "medium"
+                  ? "probable"
+                  : draft.probable_destination_equivalent
+                    ? "confirmed"
+                    : "unmapped"
+          }
+          detail={mapping.mapping_method ?? "Mapping method pending"}
+        />
       </div>
 
       <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-5">
@@ -1057,6 +1169,7 @@ function CreditMappingEditor({
       <div className="mt-3 flex flex-wrap justify-end gap-2">
         <button
           disabled={saving}
+          aria-busy={saving}
           onClick={() => void save()}
           className="inline-flex h-9 items-center justify-center gap-2 rounded-xl border border-[#CDD3DE] bg-white px-3 text-xs font-bold text-[#0A175A]"
         >
@@ -1064,22 +1177,35 @@ function CreditMappingEditor({
           Save edit
         </button>
         <button
+          disabled={Boolean(statusAction)}
+          aria-busy={statusAction === "review"}
           onClick={() => void setStatus("review")}
-          className="inline-flex h-9 items-center justify-center rounded-xl border border-[#F0A33A] bg-white px-3 text-xs font-bold text-[#B45B00]"
+          className="inline-flex h-9 items-center justify-center gap-2 rounded-xl border border-[#F0A33A] bg-white px-3 text-xs font-bold text-[#B45B00] disabled:opacity-60"
         >
+          {statusAction === "review" && <Loader2 className="h-4 w-4 animate-spin" />}
           Counselor review
         </button>
         <button
+          disabled={Boolean(statusAction)}
+          aria-busy={statusAction === "reject"}
           onClick={() => void setStatus("reject")}
-          className="inline-flex h-9 items-center justify-center rounded-xl border border-[#F2CAC1] bg-white px-3 text-xs font-bold text-[#B8432E]"
+          className="inline-flex h-9 items-center justify-center gap-2 rounded-xl border border-[#F2CAC1] bg-white px-3 text-xs font-bold text-[#B8432E] disabled:opacity-60"
         >
+          {statusAction === "reject" && <Loader2 className="h-4 w-4 animate-spin" />}
           Reject
         </button>
         <button
+          disabled={Boolean(statusAction)}
+          aria-busy={statusAction === "confirm"}
           onClick={() => void setStatus("confirm")}
-          className="inline-flex h-9 items-center justify-center gap-2 rounded-xl bg-[#01C3AD] px-3 text-xs font-bold text-[#060F3D]"
+          className="inline-flex h-9 items-center justify-center gap-2 rounded-xl bg-[#01C3AD] px-3 text-xs font-bold text-[#060F3D] disabled:opacity-60"
         >
-          <Check className="h-4 w-4" /> Confirm preview
+          {statusAction === "confirm" ? (
+            <Loader2 className="h-4 w-4 animate-spin" />
+          ) : (
+            <Check className="h-4 w-4" />
+          )}
+          Confirm preview
         </button>
       </div>
     </article>
@@ -1133,12 +1259,25 @@ function Field({
   );
 }
 
-function ChoiceButton({ label, onClick }: { label: string; onClick: () => void }) {
+function ChoiceButton({
+  label,
+  onClick,
+  busy = false,
+  disabled = false,
+}: {
+  label: string;
+  onClick: () => void;
+  busy?: boolean;
+  disabled?: boolean;
+}) {
   return (
     <button
       onClick={onClick}
-      className="inline-flex h-9 items-center justify-center rounded-xl border border-[#CDD3DE] bg-white px-3 text-xs font-bold text-[#0A175A]"
+      disabled={disabled}
+      aria-busy={busy}
+      className="inline-flex h-9 items-center justify-center gap-2 rounded-xl border border-[#CDD3DE] bg-white px-3 text-xs font-bold text-[#0A175A] disabled:opacity-60"
     >
+      {busy && <Loader2 className="h-4 w-4 animate-spin" />}
       {label}
     </button>
   );

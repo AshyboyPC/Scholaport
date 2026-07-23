@@ -1,24 +1,22 @@
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
-import {
-  GraduationCap,
-  MessageCircle,
-  FileText,
-  ListChecks,
-  Menu,
-  Plus,
-  Trash2,
-} from "lucide-react";
+import { Menu, Plus, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
+import {
+  PremiumAdvisorIcon,
+  PremiumGapIcon,
+  PremiumGraduationIcon,
+  PremiumTranscriptIcon,
+} from "@/components/icons/PremiumIcon";
 import { ScholaportLogo } from "@/components/ScholaportLogo";
 import { createThread, deleteThread, listThreads, type ThreadRecord } from "@/lib/threads";
 import { cn } from "@/lib/utils";
 
 const TABS = [
-  { to: "/chat", label: "Chat", icon: MessageCircle, match: "/chat" },
-  { to: "/transcript", label: "Transcript", icon: FileText, match: "/transcript" },
-  { to: "/gaps", label: "Gaps", icon: ListChecks, match: "/gaps" },
+  { to: "/chat", label: "Chat", icon: PremiumAdvisorIcon, match: "/chat" },
+  { to: "/transcript", label: "Transcript", icon: PremiumTranscriptIcon, match: "/transcript" },
+  { to: "/gaps", label: "Gaps", icon: PremiumGapIcon, match: "/gaps" },
 ];
 
 export function AppShell({
@@ -50,7 +48,7 @@ export function AppShell({
         </div>
         <Link to="/" aria-label="Home">
           <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 text-primary">
-            <GraduationCap className="h-4 w-4" />
+            <PremiumGraduationIcon className="h-4 w-4" />
           </span>
         </Link>
       </header>

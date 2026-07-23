@@ -1,19 +1,22 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  AlertTriangle,
-  ArrowRight,
-  Check,
-  CircleHelp,
-  Clock,
-  FileText,
-  Loader2,
-  RefreshCw,
-  ShieldAlert,
-} from "lucide-react";
+import { ArrowRight, Loader2, RefreshCw } from "lucide-react";
 import { useState, type ReactNode } from "react";
-import { toast } from "sonner";
 import { PassportShell } from "@/components/PassportShell";
+import { notifyError, notifySuccess } from "@/lib/app-feedback";
+import {
+  PremiumCheckCircleIcon,
+  PremiumClockIcon,
+  PremiumHelpIcon,
+  PremiumShieldIcon,
+  PremiumWarningIcon,
+} from "@/components/icons/PremiumIcon";
+import {
+  ClayScene,
+  EmptyJourneyState,
+  JourneyStage,
+  RequirementStructure,
+} from "@/components/journey/JourneyVisuals";
 import {
   getGapAnalysis,
   regenerateGapAnalysis,
@@ -42,9 +45,9 @@ function GapAnalysis() {
       if (regenerate) await regenerateGapAnalysis(transcript.id);
       else await startGapAnalysis(transcript.id);
       await queryClient.invalidateQueries({ queryKey: ["gap-analysis"] });
-      toast.success("Graduation gap preview updated.");
+      notifySuccess("Graduation gap preview updated.", "generate");
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Unable to run gap analysis.");
+      notifyError(error instanceof Error ? error.message : "Unable to run gap analysis.");
     } finally {
       setProcessing(false);
     }
@@ -135,7 +138,7 @@ function getBlockedState({
       title: "Destination graduation framework is still being verified.",
       body: "Choose a destination state/framework in onboarding before running gap analysis.",
       action: "Open profile",
-      to: "/profile" as const,
+      to: "/settings" as const,
     };
   }
   return null;
@@ -144,20 +147,21 @@ function getBlockedState({
 function PrerequisiteState({
   state,
 }: {
-  state: { title: string; body: string; action: string; to: "/transcript" | "/profile" };
+  state: { title: string; body: string; action: string; to: "/transcript" | "/settings" };
 }) {
   return (
-    <section className="rounded-[24px] border border-[#CDD3DE]/70 bg-white p-8 text-center shadow-card">
-      <FileText className="mx-auto h-10 w-10 text-[#01C3AD]" />
-      <h2 className="mt-4 font-display text-xl font-bold">{state.title}</h2>
-      <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-[#5A6380]">{state.body}</p>
-      <Link
-        to={state.to}
-        className="mt-5 inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-[#0A175A] px-5 text-sm font-bold text-white"
-      >
-        {state.action} <ArrowRight className="h-4 w-4" />
-      </Link>
-    </section>
+    <EmptyJourneyState
+      title={state.title}
+      description={state.body}
+      action={
+        <Link
+          to={state.to}
+          className="mt-2 inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-[#0A175A] px-5 text-sm font-bold text-white shadow-[0_8px_20px_rgba(10,23,90,.16)]"
+        >
+          {state.action} <ArrowRight className="h-4 w-4" />
+        </Link>
+      }
+    />
   );
 }
 
@@ -175,14 +179,14 @@ function ActionState({
   onClick: () => void;
 }) {
   return (
-    <section className="rounded-[24px] border border-[#CDD3DE]/70 bg-white p-8 text-center shadow-card">
-      <ShieldAlert className="mx-auto h-10 w-10 text-[#0A175A]" />
+    <section className="journey-paper p-8 text-center">
+      <PremiumShieldIcon className="mx-auto h-10 w-10 text-[#0A175A]" />
       <h2 className="mt-4 font-display text-xl font-bold">{title}</h2>
       <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-[#5A6380]">{body}</p>
       <button
         disabled={processing}
         onClick={onClick}
-        className="mt-5 inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-[#01C3AD] px-5 text-sm font-bold text-[#060F3D] disabled:opacity-60"
+        className="mt-5 inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-[#01C3AD] px-5 text-sm font-bold text-[#060F3D] shadow-[0_8px_20px_rgba(1,169,149,.18)] disabled:opacity-60"
       >
         {processing ? (
           <Loader2 className="h-4 w-4 animate-spin" />
@@ -220,35 +224,53 @@ function Dashboard({
         </section>
       )}
 
-      <section className="rounded-[24px] border border-[#CDD3DE]/70 bg-white p-6 shadow-card">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-          <div>
-            <RiskBadge risk={analysis.overall_risk_level ?? "gray"} />
-            <h2 className="mt-3 font-display text-2xl font-bold">Graduation gap preview</h2>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-[#5A6380]">
-              {analysis.summary_text || analysis.analysis_summary || "Review with your counselor."}
-            </p>
-            <p className="mt-2 text-xs text-[#5A6380]">
-              Destination: {destinationFramework} · Last updated{" "}
+      <JourneyStage
+        tone="coral"
+        eyebrow="Requirements become visible"
+        title="See the spaces still open in your plan."
+        description={
+          <>
+            {analysis.summary_text || analysis.analysis_summary || "Review with your counselor."}
+            <span className="mt-2 block text-xs">
+              Destination: {destinationFramework} · Updated{" "}
               {analysis.completed_at
                 ? new Date(analysis.completed_at).toLocaleString()
                 : "recently"}
-            </p>
-          </div>
+            </span>
+          </>
+        }
+        action={
           <button
             disabled={processing}
             onClick={onRegenerate}
-            className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-[#CDD3DE] bg-white px-4 text-xs font-bold text-[#0A175A]"
+            className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-[#0A175A] px-5 text-xs font-bold text-white shadow-[0_8px_20px_rgba(10,23,90,.16)]"
           >
             {processing ? (
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
               <RefreshCw className="h-4 w-4" />
             )}
-            Regenerate
+            Regenerate preview
           </button>
-        </div>
-        <div className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        }
+        art={
+          <ClayScene asset="requirement-gap" eager className="max-w-[480px]">
+            <div className="absolute bottom-[3%] right-[1%] z-10 rounded-[22px] bg-white/94 p-4 shadow-[0_16px_35px_rgba(10,23,90,.14)]">
+              <RequirementStructure
+                satisfied={green.length}
+                partial={yellow.length}
+                missing={red.length + gray.length}
+                label={`${green.length} likely satisfied, ${yellow.length} needing review, and ${red.length + gray.length} open requirement sections`}
+              />
+              <div className="mt-3 flex flex-wrap justify-center gap-2">
+                <RiskBadge risk={analysis.overall_risk_level ?? "gray"} />
+              </div>
+            </div>
+          </ClayScene>
+        }
+        layout="wide"
+      >
+        <div className="mt-6 grid gap-3 sm:grid-cols-2">
           <Metric
             label="likely earned"
             value={`${analysis.total_likely_earned_credits ?? analysis.total_credits_mapped}`}
@@ -263,17 +285,29 @@ function Dashboard({
             value={`${analysis.counselor_review_requirement_count ?? yellow.length}`}
           />
         </div>
-      </section>
+      </JourneyStage>
 
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1.25fr)_minmax(320px,.75fr)]">
         <main className="space-y-4">
-          <RequirementGroup title="Still missing" icon={<AlertTriangle />} items={red} />
-          <RequirementGroup title="Needs counselor review" icon={<CircleHelp />} items={yellow} />
-          <RequirementGroup title="Likely satisfied" icon={<Check />} items={green} />
-          <RequirementGroup title="Not enough verified data" icon={<Clock />} items={gray} />
+          <RequirementGroup title="Still missing" icon={<PremiumWarningIcon />} items={red} />
+          <RequirementGroup
+            title="Needs counselor review"
+            icon={<PremiumHelpIcon />}
+            items={yellow}
+          />
+          <RequirementGroup
+            title="Likely satisfied"
+            icon={<PremiumCheckCircleIcon />}
+            items={green}
+          />
+          <RequirementGroup
+            title="Not enough verified data"
+            icon={<PremiumClockIcon />}
+            items={gray}
+          />
         </main>
         <aside className="space-y-5">
-          <section className="rounded-[24px] bg-[#0A175A] p-5 text-white">
+          <section className="rounded-[30px] bg-[#0A175A] p-5 text-white shadow-[0_18px_45px_rgba(10,23,90,.14)]">
             <p className="text-[10px] font-bold uppercase tracking-[.14em] text-[#01C3AD]">
               Ask your counselor
             </p>
@@ -316,7 +350,7 @@ function RequirementGroup({
 }) {
   if (!items.length) return null;
   return (
-    <section className="rounded-[24px] border border-[#CDD3DE]/70 bg-white p-5 shadow-card">
+    <section className="schola-record-surface border border-[#CDD3DE]/70 bg-white p-5 shadow-card">
       <div className="flex items-center gap-2">
         <span className="text-[#0A175A] [&>svg]:h-5 [&>svg]:w-5">{icon}</span>
         <h3 className="font-display text-lg font-bold">{title}</h3>
@@ -337,7 +371,7 @@ function RequirementCard({ item }: { item: GapRequirement }) {
   const missing = item.missing_amount ?? item.credits_remaining;
   const percent = required ? Math.min(100, Math.round((likely / required) * 100)) : 0;
   return (
-    <article className="rounded-[16px] border border-[#E8EBF0] bg-[#F8FAFC] p-4">
+    <article className="schola-record-row border border-[#E8EBF0] bg-[#F8FAFC] p-4">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
         <div>
           <p className="text-sm font-bold">

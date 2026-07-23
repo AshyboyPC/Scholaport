@@ -1,28 +1,27 @@
 import { createFileRoute } from "@tanstack/react-router";
-import {
-  ArrowRight,
-  BookOpen,
-  CalendarDays,
-  ChartNoAxesColumn,
-  Compass,
-  Flag,
-  GraduationCap,
-  Search,
-  Stamp,
-  UsersRound,
-} from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { PassportShell, StatusPill } from "@/components/PassportShell";
+import {
+  PremiumBookIcon,
+  PremiumCalendarIcon,
+  PremiumCredentialIcon,
+  PremiumGapIcon,
+  PremiumRoadmapIcon,
+  PremiumSearchIcon,
+  PremiumTwinIcon,
+} from "@/components/icons/PremiumIcon";
+import { ClayScene, JourneyStage } from "@/components/journey/JourneyVisuals";
 import { getGuideArticle, getGuideTopics } from "@/lib/scholaport-api";
 
 const icons = {
-  Stamp,
-  Chart: ChartNoAxesColumn,
-  People: UsersRound,
-  Book: BookOpen,
-  Calendar: CalendarDays,
-  Flag,
+  Stamp: PremiumCredentialIcon,
+  Chart: PremiumGapIcon,
+  People: PremiumTwinIcon,
+  Book: PremiumBookIcon,
+  Calendar: PremiumCalendarIcon,
+  Flag: PremiumRoadmapIcon,
 };
 
 export const Route = createFileRoute("/guide")({
@@ -50,29 +49,41 @@ function GuidePage() {
     [guideTopics.data, query],
   );
   return (
-    <PassportShell
-      eyebrow="School survival guide"
-      title="The things everyone assumes you already know."
-      description="Friendly, practical explanations of U.S. school systems—built for students arriving from somewhere else."
-    >
-      <section className="relative overflow-hidden rounded-[24px] bg-[#01C3AD] p-6 text-[#060F3D] sm:p-8">
-        <Compass className="absolute -bottom-10 -right-4 h-44 w-44 rotate-12 text-white/20" />
-        <div className="relative max-w-2xl">
-          <StatusPill tone="navy">Start here · 12 minutes</StatusPill>
-          <h2 className="mt-4 font-display text-2xl font-black tracking-[-0.04em] sm:text-3xl">
-            Your first week, decoded.
-          </h2>
-          <p className="mt-2 max-w-xl text-sm leading-6 text-[#060F3D]/65">
-            From bell schedules to talking with teachers: the calm orientation we wish every
-            transfer student received.
-          </p>
-          <button className="mt-5 inline-flex h-11 items-center gap-2 rounded-xl bg-[#0A175A] px-4 text-sm font-bold text-white">
+    <PassportShell>
+      <JourneyStage
+        tone="teal"
+        eyebrow="Orientation route"
+        title="Your first week, decoded."
+        description="From bell schedules to talking with teachers: the calm orientation we wish every transfer student received."
+        art={
+          <ClayScene
+            asset="reference-library"
+            eager
+            orbit={false}
+            mode="compact"
+            className="max-w-[390px]"
+          />
+        }
+        layout="compact"
+        action={
+          <button
+            onClick={() => {
+              const firstTopic = topics[0];
+              if (firstTopic) setActive(firstTopic.slug);
+            }}
+            disabled={!topics.length}
+            className="mt-5 inline-flex h-12 items-center gap-2 rounded-2xl bg-[#0A175A] px-5 text-sm font-bold text-white shadow-[0_8px_20px_rgba(10,23,90,.16)] disabled:opacity-50"
+          >
             Open starter guide <ArrowRight className="h-4 w-4" />
           </button>
+        }
+      >
+        <div className="mt-5">
+          <StatusPill tone="navy">Start here · 12 minutes</StatusPill>
         </div>
-      </section>
+      </JourneyStage>
       <div className="relative mt-5">
-        <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#9AA3B2]" />
+        <PremiumSearchIcon className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#9AA3B2]" />
         <input
           value={query}
           onChange={(event) => setQuery(event.target.value)}
@@ -82,12 +93,12 @@ function GuidePage() {
       </div>
       <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {topics.map((topic) => {
-          const Icon = icons[topic.icon_name as keyof typeof icons] ?? BookOpen;
+          const Icon = icons[topic.icon_name as keyof typeof icons] ?? PremiumBookIcon;
           return (
             <button
               key={topic.slug}
               onClick={() => setActive(topic.slug)}
-              className="group rounded-[22px] border border-[#CDD3DE]/70 bg-white p-5 text-left shadow-card transition hover:-translate-y-0.5 hover:border-[#01C3AD]/50"
+              className="group rounded-[26px] border border-[#DDE4E5] bg-[#FFFDF8] p-5 text-left shadow-[0_14px_35px_rgba(10,23,90,.06)] transition hover:-translate-y-1 hover:border-[#01C3AD]/50"
             >
               <div className="flex items-start justify-between">
                 <span className="grid h-11 w-11 place-items-center rounded-[14px] bg-[#0A175A]/8 text-[#0A175A]">

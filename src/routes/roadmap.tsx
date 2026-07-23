@@ -1,25 +1,23 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  AlertTriangle,
-  ArrowRight,
-  CheckCircle2,
-  CircleHelp,
-  Clock3,
-  FileText,
-  ListChecks,
-  Loader2,
-  LockKeyhole,
-  NotebookPen,
-  Plus,
-  RefreshCw,
-  ShieldAlert,
-  Square,
-  XCircle,
-} from "lucide-react";
+import { ArrowRight, Loader2, Plus, RefreshCw, Square, XCircle } from "lucide-react";
 import { useMemo, useState, type ReactNode } from "react";
-import { toast } from "sonner";
 import { PassportShell, StatusPill } from "@/components/PassportShell";
+import {
+  PremiumCheckCircleIcon,
+  PremiumChecklistIcon,
+  PremiumClockIcon,
+  PremiumHelpIcon,
+  PremiumLockIcon,
+  PremiumShieldIcon,
+  PremiumSourceFileIcon,
+  PremiumTranscriptIcon,
+  PremiumWarningIcon,
+} from "@/components/icons/PremiumIcon";
+import { ClayScene, JourneyStage } from "@/components/journey/JourneyVisuals";
+import { PassportEmblem } from "@/components/passport/AcademicPassport";
+import { useAcademicPassportPreferences } from "@/hooks/use-academic-passport";
+import { notifyError, notifySuccess } from "@/lib/app-feedback";
 import {
   addManualRoadmapItem,
   generateAcademicRoadmap,
@@ -46,13 +44,16 @@ type BlockedState = {
   title: string;
   body: string;
   action: string;
-  to: "/transcript" | "/gaps" | "/profile" | "/onboarding";
+  to: "/transcript" | "/gaps" | "/settings" | "/onboarding";
 };
 
 function RoadmapPage() {
   const queryClient = useQueryClient();
   const query = useQuery({ queryKey: ["roadmap"], queryFn: getRoadmap });
   const [processing, setProcessing] = useState(false);
+  const { preferences: passportPreferences } = useAcademicPassportPreferences(
+    query.data?.profile?.user_id,
+  );
 
   const generateMutation = useMutation({
     mutationFn: (regenerate: boolean) => {
@@ -72,9 +73,12 @@ function RoadmapPage() {
     setProcessing(true);
     try {
       await generateMutation.mutateAsync(regenerate);
-      toast.success(regenerate ? "Roadmap regenerated." : "Academic roadmap generated.");
+      notifySuccess(
+        regenerate ? "Roadmap regenerated." : "Academic roadmap generated.",
+        "generate",
+      );
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Unable to generate roadmap.");
+      notifyError(error instanceof Error ? error.message : "Unable to generate roadmap.");
     } finally {
       setProcessing(false);
     }
@@ -108,6 +112,7 @@ function RoadmapPage() {
       ) : (
         <RoadmapDashboard
           data={query.data}
+          passportEmblem={undefined}
           processing={processing}
           onRegenerate={() => void runRoadmap(true)}
         />
@@ -154,7 +159,7 @@ function getBlockedState(data: Awaited<ReturnType<typeof getRoadmap>>): BlockedS
       title: "Destination graduation framework is still being verified.",
       body: "Choose or verify a destination framework before generating a roadmap.",
       action: "Open profile",
-      to: "/profile",
+      to: "/settings",
     };
   }
   if (!data.gapAnalysis) {
@@ -178,10 +183,12 @@ function getBlockedState(data: Awaited<ReturnType<typeof getRoadmap>>): BlockedS
 
 function RoadmapDashboard({
   data,
+  passportEmblem,
   processing,
   onRegenerate,
 }: {
   data: Awaited<ReturnType<typeof getRoadmap>>;
+  passportEmblem: Parameters<typeof PassportEmblem>[0]["emblem"];
   processing: boolean;
   onRegenerate: () => void;
 }) {
@@ -220,9 +227,9 @@ function RoadmapDashboard({
   ) {
     try {
       await updateMutation.mutateAsync({ id: item.id, status, note });
-      toast.success("Roadmap item updated.");
+      notifySuccess("Roadmap item updated.", status === "done" ? "complete" : "save");
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Unable to update roadmap item.");
+      notifyError(error instanceof Error ? error.message : "Unable to update roadmap item.");
     }
   }
 
@@ -236,32 +243,25 @@ function RoadmapDashboard({
         </section>
       )}
 
-      <section className="rounded-[24px] border border-[#CDD3DE]/70 bg-white p-6 shadow-card">
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
-          <div>
-            <div className="flex flex-wrap items-center gap-2">
-              <RiskBadge risk={roadmap?.overall_risk_level ?? "gray"} />
-              <StatusPill tone={roadmap?.timeline_urgency === "urgent" ? "coral" : "navy"}>
-                {labelize(roadmap?.timeline_urgency ?? "unknown")} timeline
-              </StatusPill>
-              {roadmap?.status === "needs_review" && (
-                <StatusPill tone="coral">Needs review</StatusPill>
-              )}
-            </div>
-            <h2 className="mt-3 font-display text-2xl font-bold">Academic roadmap preview</h2>
-            <p className="mt-2 max-w-3xl text-sm leading-6 text-[#5A6380]">
-              {roadmap?.summary_text || "Review these planning items with your counselor."}
-            </p>
-            <p className="mt-2 text-xs text-[#5A6380]">
-              {roadmap?.planning_horizon ?? "Timeline needs profile details"} · Last generated{" "}
+      <JourneyStage
+        tone="mint"
+        eyebrow="Gaps become checkpoints"
+        title="Move one clear step at a time."
+        description={
+          <>
+            {roadmap?.summary_text || "Review these planning items with your counselor."}
+            <span className="mt-2 block text-xs">
+              {roadmap?.planning_horizon ?? "Timeline needs profile details"} · Generated{" "}
               {roadmap?.generated_at ? new Date(roadmap.generated_at).toLocaleString() : "recently"}
-            </p>
-          </div>
+            </span>
+          </>
+        }
+        action={
           <div className="flex flex-wrap gap-2">
             <button
               disabled={processing}
               onClick={onRegenerate}
-              className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-[#CDD3DE] bg-white px-4 text-xs font-bold text-[#0A175A] disabled:opacity-60"
+              className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl border border-white/70 bg-white px-4 text-xs font-bold text-[#0A175A] shadow-[0_6px_16px_rgba(10,23,90,.08)] disabled:opacity-60"
             >
               {processing ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -272,20 +272,46 @@ function RoadmapDashboard({
             </button>
             <button
               onClick={() => setShowManual((value) => !value)}
-              className="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-[#01C3AD] px-4 text-xs font-bold text-[#060F3D]"
+              className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-[#0A175A] px-4 text-xs font-bold text-white shadow-[0_8px_20px_rgba(10,23,90,.16)]"
             >
               <Plus className="h-4 w-4" />
               Add task
             </button>
           </div>
+        }
+        art={
+          <ClayScene asset="academic-roadmap" eager className="max-w-[570px]">
+            <div className="absolute bottom-[4%] right-[2%] z-10 flex items-center gap-3 rounded-[20px] border border-white/80 bg-white/94 px-4 py-3 text-[#0A175A] shadow-[0_14px_32px_rgba(10,23,90,.14)]">
+              <span className="passport-nav-mark !h-10 !w-10 shrink-0">
+                <PassportEmblem emblem={passportEmblem} />
+              </span>
+              <div>
+                <p className="text-[10px] font-black uppercase tracking-[.13em] text-[#59647A]">
+                  Your position
+                </p>
+                <p className="mt-1 text-lg font-black">
+                  {completed} <span className="text-xs text-[#83909D]">of {items.length}</span>
+                </p>
+              </div>
+            </div>
+          </ClayScene>
+        }
+        layout="wide"
+      >
+        <div className="mt-5 flex flex-wrap items-center gap-2">
+          <RiskBadge risk={roadmap?.overall_risk_level ?? "gray"} />
+          <StatusPill tone={roadmap?.timeline_urgency === "urgent" ? "coral" : "navy"}>
+            {labelize(roadmap?.timeline_urgency ?? "unknown")} timeline
+          </StatusPill>
+          {roadmap?.status === "needs_review" && <StatusPill tone="coral">Needs review</StatusPill>}
         </div>
-        <div className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="mt-5 grid gap-3 sm:grid-cols-2">
           <Metric label="saved items" value={String(items.length)} />
           <Metric label="completed" value={String(completed)} />
           <Metric label="critical" value={String(roadmap?.critical_items ?? 0)} />
           <Metric label="counselor review" value={String(roadmap?.counselor_review_items ?? 0)} />
         </div>
-      </section>
+      </JourneyStage>
 
       {showManual && roadmap && <ManualItemForm roadmapId={roadmap.id} />}
 
@@ -294,49 +320,49 @@ function RoadmapDashboard({
           <ItemGroup
             title="Immediate next steps"
             items={grouped.immediate}
-            icon={<AlertTriangle />}
+            icon={<PremiumWarningIcon />}
             onStatus={setStatus}
             pending={updateMutation.isPending}
           />
           <ItemGroup
             title="Before course registration"
             items={grouped.registration}
-            icon={<ListChecks />}
+            icon={<PremiumChecklistIcon />}
             onStatus={setStatus}
             pending={updateMutation.isPending}
           />
           <ItemGroup
             title="Current or next semester"
             items={grouped.term}
-            icon={<Clock3 />}
+            icon={<PremiumClockIcon />}
             onStatus={setStatus}
             pending={updateMutation.isPending}
           />
           <ItemGroup
             title="Summer or alternative options"
             items={grouped.alternates}
-            icon={<ShieldAlert />}
+            icon={<PremiumShieldIcon />}
             onStatus={setStatus}
             pending={updateMutation.isPending}
           />
           <ItemGroup
             title="Counselor review items"
             items={grouped.counselor}
-            icon={<CircleHelp />}
+            icon={<PremiumHelpIcon />}
             onStatus={setStatus}
             pending={updateMutation.isPending}
           />
           <ItemGroup
             title="Completed or lower priority"
             items={grouped.lower}
-            icon={<CheckCircle2 />}
+            icon={<PremiumCheckCircleIcon />}
             onStatus={setStatus}
             pending={updateMutation.isPending}
           />
         </main>
 
         <aside className="space-y-5">
-          <section className="rounded-[24px] bg-[#0A175A] p-5 text-white">
+          <section className="rounded-[30px] bg-[#0A175A] p-5 text-white shadow-[0_18px_45px_rgba(10,23,90,.14)]">
             <p className="text-[10px] font-bold uppercase tracking-[.14em] text-[#01C3AD]">
               Counselor meeting checklist
             </p>
@@ -356,7 +382,7 @@ function RoadmapDashboard({
           </section>
           <section className="rounded-[24px] border border-[#CDD3DE]/70 bg-white p-5">
             <div className="flex gap-3">
-              <LockKeyhole className="h-5 w-5 shrink-0 text-[#0A175A]" />
+              <PremiumLockIcon className="h-5 w-5 shrink-0 text-[#0A175A]" />
               <div>
                 <p className="text-sm font-bold">Planning preview only</p>
                 <p className="mt-1 text-xs leading-5 text-[#5A6380]">
@@ -433,7 +459,7 @@ function ItemGroup({
 }) {
   if (!items.length) return null;
   return (
-    <section className="rounded-[24px] border border-[#CDD3DE]/70 bg-white p-5 shadow-card">
+    <section className="schola-record-surface border border-[#CDD3DE]/70 bg-white p-5 shadow-card">
       <div className="mb-4 flex items-center gap-2">
         <span className="grid h-9 w-9 place-items-center rounded-xl bg-[#0A175A]/8 text-[#0A175A]">
           {icon}
@@ -471,7 +497,7 @@ function RoadmapItemCard({
   const done = isDone(item);
   return (
     <article
-      className={`rounded-2xl border p-4 ${done ? "border-[#01C3AD]/30 bg-[#01C3AD]/[0.05]" : "border-[#E8EBF0] bg-white"}`}
+      className={`schola-record-row border p-4 ${done ? "border-[#01C3AD]/30 bg-[#01C3AD]/[0.05]" : "border-[#E8EBF0] bg-white"}`}
     >
       <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
         <div>
@@ -494,14 +520,14 @@ function RoadmapItemCard({
             disabled={pending}
             onClick={() => void onStatus(item, "in_progress", note || null)}
           >
-            <NotebookPen className="h-4 w-4" />
+            <PremiumSourceFileIcon className="h-4 w-4" />
           </IconButton>
           <IconButton
             label="Done"
             disabled={pending}
             onClick={() => void onStatus(item, "done", note || null)}
           >
-            <CheckCircle2 className="h-4 w-4" />
+            <PremiumCheckCircleIcon className="h-4 w-4" />
           </IconButton>
           <IconButton
             label="Blocked"
@@ -572,10 +598,10 @@ function ManualItemForm({ roadmapId }: { roadmapId: string }) {
       setTitle("");
       setDescription("");
       await queryClient.invalidateQueries({ queryKey: ["roadmap"] });
-      toast.success("Manual roadmap item added.");
+      notifySuccess("Manual roadmap item added.");
     },
     onError: (error) => {
-      toast.error(error instanceof Error ? error.message : "Unable to add roadmap item.");
+      notifyError(error instanceof Error ? error.message : "Unable to add roadmap item.");
     },
   });
   return (
@@ -617,7 +643,7 @@ function ManualItemForm({ roadmapId }: { roadmapId: string }) {
 function PrerequisiteState({ state }: { state: BlockedState }) {
   return (
     <section className="rounded-[24px] border border-[#CDD3DE]/70 bg-white p-8 text-center shadow-card">
-      <FileText className="mx-auto h-10 w-10 text-[#01C3AD]" />
+      <PremiumTranscriptIcon className="mx-auto h-10 w-10 text-[#01C3AD]" />
       <h2 className="mt-4 font-display text-xl font-bold">{state.title}</h2>
       <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-[#5A6380]">{state.body}</p>
       <Link
@@ -645,7 +671,7 @@ function ActionState({
 }) {
   return (
     <section className="rounded-[24px] border border-[#CDD3DE]/70 bg-white p-8 text-center shadow-card">
-      <ShieldAlert className="mx-auto h-10 w-10 text-[#0A175A]" />
+      <PremiumShieldIcon className="mx-auto h-10 w-10 text-[#0A175A]" />
       <h2 className="mt-4 font-display text-xl font-bold">{title}</h2>
       <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-[#5A6380]">{body}</p>
       <button

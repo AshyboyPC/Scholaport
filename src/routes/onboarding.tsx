@@ -1,19 +1,24 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import {
-  ArrowLeft,
-  ArrowRight,
-  Check,
-  GraduationCap,
-  MapPin,
-  Plane,
-  RefreshCw,
-  Sparkles,
-} from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, RefreshCw } from "lucide-react";
 import { useEffect, useState } from "react";
-import { toast } from "sonner";
 import { ScholaportLogo } from "@/components/ScholaportLogo";
 import { useAuth } from "@/components/AuthProvider";
+import {
+  PremiumGraduationIcon,
+  PremiumPathMatchIcon,
+  PremiumSourceFileIcon,
+  PremiumTemplateIcon,
+} from "@/components/icons/PremiumIcon";
+import { ClayScene } from "@/components/journey/JourneyVisuals";
+import { AcademicPassportBuilder } from "@/components/passport/AcademicPassport";
+import {
+  isAcademicPassportComplete,
+  type AcademicPassportPreferences,
+} from "@/lib/academic-passport";
+import { useAcademicPassportPreferences } from "@/hooks/use-academic-passport";
+import { useInterfacePreferences } from "@/hooks/use-interface-preferences";
+import { notifyError, notifySuccess } from "@/lib/app-feedback";
 import { upsertCurrentProfile } from "@/lib/scholaport-api";
 import {
   filterMvpDestinationFrameworks,
@@ -47,6 +52,8 @@ const OTHER_OPTION = "__other__";
 function Onboarding() {
   const navigate = useNavigate();
   const { user, profile, refreshProfile, signOut } = useAuth();
+  const currentYear = new Date().getFullYear();
+  const graduationYearOptions = Array.from({ length: 10 }, (_, index) => currentYear + index);
   const sourceCountries = useQuery({ queryKey: ["source-countries"], queryFn: getSourceCountries });
   const destinationCountries = useQuery({
     queryKey: ["destination-countries"],
@@ -65,8 +72,14 @@ function Onboarding() {
   const [programId, setProgramId] = useState("");
   const [selfReportedProgram, setSelfReportedProgram] = useState("");
   const [grade, setGrade] = useState("11");
-  const [graduationYear, setGraduationYear] = useState(String(new Date().getFullYear() + 1));
-  const [language, setLanguage] = useState("en");
+  const [graduationYear, setGraduationYear] = useState(String(currentYear + 1));
+  const [language, setLanguage] = useState(profile?.preferred_language ?? "en");
+  const { updatePreference: updateInterfacePreference } = useInterfacePreferences(
+    user?.id,
+    profile?.preferred_language,
+  );
+  const { preferences: passportPreferences, setPreferences: updatePassportPreferences } =
+    useAcademicPassportPreferences(user?.id);
   const [firstName, setFirstName] = useState(
     profile?.first_name ??
       (user?.user_metadata.first_name
@@ -104,7 +117,6 @@ function Onboarding() {
       if (defaultDestinationCountry) setDestinationCountryId(defaultDestinationCountry.id);
     }
   }, [destinationCountries.data, destinationCountryId]);
-
   const sourceJurisdictions = useQuery({
     queryKey: ["source-jurisdictions", sourceCountryId],
     queryFn: () => getJurisdictions(sourceCountryId),
@@ -265,33 +277,33 @@ function Onboarding() {
 
   const continueToNextStep = () => {
     if (step === 0 && (!sourceCountry || !isMvpSelectableSourceCountry(sourceCountry.iso3))) {
-      toast.error("For the current MVP, choose India as your source country.");
+      notifyError("For the current MVP, choose India as your source country.");
       return;
     }
     if (step === 0 && !sourceJurisdiction) {
-      toast.error("Choose Tamil Nadu or Andhra Pradesh as your source state.");
+      notifyError("Choose Tamil Nadu or Andhra Pradesh as your source state.");
       return;
     }
     if (step === 0 && !selectedCurriculum) {
-      toast.error("Choose the source curriculum that matches the selected state.");
+      notifyError("Choose the source curriculum that matches the selected state.");
       return;
     }
     if (
       step === 1 &&
       (!destinationCountry || !isMvpSelectableDestinationCountry(destinationCountry.iso3))
     ) {
-      toast.error("For the current MVP, choose United States as your destination country.");
+      notifyError("For the current MVP, choose United States as your destination country.");
       return;
     }
     if (step === 1 && !destinationJurisdiction) {
-      toast.error("Choose Georgia or Texas before selecting a framework.");
+      notifyError("Choose Georgia or Texas before selecting a framework.");
       return;
     }
     if (step === 1 && !selectedFramework) {
-      toast.error("Choose the graduation framework that applies to the selected state.");
+      notifyError("Choose the graduation framework that applies to the selected state.");
       return;
     }
-    setStep((current) => Math.min(2, current + 1));
+    setStep((current) => Math.min(3, current + 1));
   };
 
   const leaveOnboarding = async () => {
@@ -299,11 +311,18 @@ function Onboarding() {
       await signOut();
       await navigate({ to: "/login", replace: true });
     } catch (cause) {
-      toast.error(cause instanceof Error ? cause.message : "Unable to switch sessions.");
+      notifyError(cause instanceof Error ? cause.message : "Unable to switch sessions.");
     }
   };
 
-  const finishOnboarding = async () => {
+  const finishOnboarding = async (
+    preferencesToSave: AcademicPassportPreferences = passportPreferences,
+    customizationAlreadySaved = false,
+  ) => {
+    if (!isAcademicPassportComplete(preferencesToSave)) {
+      notifyError("Finish and save your Academic Passport choices before completing setup.");
+      return;
+    }
     if (
       !user ||
       !sourceCountry ||
@@ -313,10 +332,10 @@ function Onboarding() {
       !selectedCurriculum ||
       !selectedFramework
     ) {
-      toast.error("Complete the verified MVP route before creating your passport.");
+      notifyError("Complete the verified MVP route before creating your passport.");
       return;
     }
-    if (!firstName.trim()) return toast.error("Enter your first name to create your passport.");
+    if (!firstName.trim()) return notifyError("Enter your first name to create your passport.");
     setSaving(true);
     try {
       await upsertCurrentProfile({
@@ -347,11 +366,12 @@ function Onboarding() {
         applicable_cohort: selectedFramework?.cohort_label ?? null,
         framework_version_label: selectedFramework?.version_label ?? null,
       });
+      if (!customizationAlreadySaved) await updatePassportPreferences(preferencesToSave);
       await refreshProfile();
-      toast.success("Your Scholaport passport is ready.");
+      notifySuccess("Your Scholaport passport is ready.", "complete");
       await navigate({ to: "/", replace: true });
     } catch (cause) {
-      toast.error(cause instanceof Error ? cause.message : "Unable to save your passport.");
+      notifyError(cause instanceof Error ? cause.message : "Unable to save your passport.");
     } finally {
       setSaving(false);
     }
@@ -371,8 +391,8 @@ function Onboarding() {
 
   const steps = [
     <div key="origin">
-      <Icon icon={<Plane />} />
-      <p className="eyebrow">Step 1 of 3</p>
+      <Icon icon={<PremiumSourceFileIcon />} />
+      <p className="eyebrow">Step 1 of 4</p>
       <h1>Where did your learning begin?</h1>
       <p className="subcopy">
         For the current MVP, choose India, then select Tamil Nadu or Andhra Pradesh and the matching
@@ -500,8 +520,8 @@ function Onboarding() {
       )}
     </div>,
     <div key="destination">
-      <Icon icon={<MapPin />} />
-      <p className="eyebrow">Step 2 of 3</p>
+      <Icon icon={<PremiumTemplateIcon />} />
+      <p className="eyebrow">Step 2 of 4</p>
       <h1>Where are you headed?</h1>
       <p className="subcopy">
         For the current MVP, choose the United States, then select Georgia or Texas before
@@ -579,7 +599,7 @@ function Onboarding() {
           </select>
         </label>
         <label className="field">
-          <span>Expected graduation</span>
+          <span>Expected graduation class</span>
           <select
             value={graduationYear}
             onChange={(event) => {
@@ -588,10 +608,11 @@ function Onboarding() {
               setProgramId("");
             }}
           >
-            {[1, 2, 3, 4, 5, 6].map((offset) => {
-              const year = new Date().getFullYear() + offset;
-              return <option key={year}>{year}</option>;
-            })}
+            {graduationYearOptions.map((year) => (
+              <option key={year} value={year}>
+                Class of {year}
+              </option>
+            ))}
           </select>
         </label>
         <label className="field">
@@ -649,8 +670,8 @@ function Onboarding() {
       )}
     </div>,
     <div key="goal">
-      <Icon icon={<GraduationCap />} />
-      <p className="eyebrow">Step 3 of 3</p>
+      <Icon icon={<PremiumGraduationIcon />} />
+      <p className="eyebrow">Step 3 of 4</p>
       <h1>Set your graduation goal.</h1>
       <p className="subcopy">
         These are your own planning preferences, separate from official reference requirements.
@@ -710,11 +731,18 @@ function Onboarding() {
         </label>
         <label className="field sm:col-span-2">
           <span>Preferred language</span>
-          <select value={language} onChange={(event) => setLanguage(event.target.value)}>
+          <select
+            value={language}
+            onChange={(event) => {
+              const next = event.target.value as "en" | "ta" | "te" | "hi";
+              setLanguage(next);
+              updateInterfacePreference("language", next);
+            }}
+          >
             <option value="en">English</option>
+            <option value="ta">தமிழ்</option>
+            <option value="te">తెలుగు</option>
             <option value="hi">हिन्दी</option>
-            <option value="es">Español</option>
-            <option value="zh">中文</option>
           </select>
         </label>
       </div>
@@ -725,48 +753,84 @@ function Onboarding() {
         </CoverageNotice>
       )}
     </div>,
+    <div key="passport-look">
+      <p className="eyebrow !mt-0">Step 4 of 4</p>
+      <h1>Make your Academic Passport yours.</h1>
+      <p className="subcopy mb-6">
+        Choose your Passport identity, color, shape, and personal mark. This changes presentation
+        only, never academic results, confidence, gaps, or counselor review.
+      </p>
+      <AcademicPassportBuilder
+        userId={user?.id}
+        compact
+        preferences={passportPreferences}
+        onChange={updatePassportPreferences}
+        onSave={async (next) => {
+          await finishOnboarding(next, true);
+        }}
+        identity={{
+          name: [firstName, lastName].filter(Boolean).join(" ") || "Your name",
+          source: curriculumName || "Source curriculum",
+          sourceDetail: sourceJurisdiction?.name,
+          destination:
+            selectedFramework?.framework_name || destinationJurisdiction?.name || "Destination",
+          destinationDetail: destinationJurisdiction?.name,
+          grade,
+          classYear: graduationYear,
+          status: "Setup ready",
+        }}
+      />
+    </div>,
   ];
 
   return (
-    <main className="min-h-dvh bg-[#F6F8FB] px-4 py-5 sm:p-8">
-      <header className="mx-auto flex max-w-5xl items-center justify-between">
-        <ScholaportLogo className="h-11" showWordmark />
+    <main className="min-h-dvh bg-[#07113F] px-3 py-3 sm:p-6">
+      <header className="mx-auto flex max-w-[1400px] items-center justify-between px-2 py-2 sm:px-0">
+        <ScholaportLogo className="h-11" showWordmark inverse />
         <button
           type="button"
           onClick={() => void leaveOnboarding()}
-          className="text-xs font-bold text-[#5A6380] transition hover:text-[#0A175A]"
+          className="min-h-11 rounded-full border border-white/15 px-4 text-xs font-bold text-white/65 transition hover:bg-white/10 hover:text-white"
         >
           Switch account
         </button>
       </header>
-      <div className="mx-auto mt-8 grid max-w-5xl overflow-hidden rounded-[28px] border border-[#CDD3DE]/70 bg-white shadow-[0_18px_55px_rgba(10,23,90,.11)] lg:grid-cols-[280px_1fr]">
-        <aside className="relative hidden bg-[#0A175A] p-7 text-white lg:block">
-          <div className="passport-grid absolute inset-0 opacity-15" />
-          <div className="relative">
-            <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#01C3AD]">
-              Passport setup
+      <div className="mx-auto mt-4 grid max-w-[1400px] overflow-hidden rounded-[38px] bg-[#FFFDF8] shadow-[0_30px_90px_rgba(0,0,0,.24)] lg:grid-cols-[minmax(330px,.72fr)_minmax(0,1.28fr)]">
+        <aside className="onboarding-scene relative min-h-[300px] overflow-hidden bg-[#01C3AD] p-6 text-[#07113F] sm:p-8 lg:min-h-[720px]">
+          <div className="relative z-10">
+            <p className="text-[10px] font-black uppercase tracking-[0.18em] text-[#0A175A]/58">
+              Academic passage setup
             </p>
-            <div className="mt-10 space-y-6">
-              {["Academic origin", "Destination", "Graduation goal"].map((label, index) => (
-                <div key={label} className="relative flex items-center gap-3">
-                  {index < 2 && (
-                    <span className="absolute left-[15px] top-8 h-7 w-px bg-white/15" />
-                  )}
-                  <span
-                    className={`relative z-10 grid h-8 w-8 place-items-center rounded-full text-xs font-black ${index < step ? "bg-[#01C3AD] text-[#060F3D]" : index === step ? "bg-white text-[#0A175A]" : "border border-white/20 text-white/40"}`}
-                  >
-                    {index < step ? <Check className="h-4 w-4" /> : index + 1}
-                  </span>
-                  <span className={index === step ? "text-sm font-bold" : "text-sm text-white/40"}>
-                    {label}
-                  </span>
-                </div>
-              ))}
+            <h2 className="onboarding-scene__title mt-3 max-w-[10ch] font-display text-3xl font-bold leading-[1.03] tracking-[-.05em] sm:text-4xl">
+              Connect where you studied to where you’re going.
+            </h2>
+            <div className="mt-7 hidden space-y-5 lg:block">
+              {["Academic origin", "Destination", "Graduation goal", "Passport look"].map(
+                (label, index) => (
+                  <div key={label} className="relative flex items-center gap-3">
+                    {index < 3 && (
+                      <span className="absolute left-[17px] top-9 h-6 w-[5px] rounded-[2px] bg-[#0A175A]/15" />
+                    )}
+                    <span
+                      className={`relative z-10 grid h-9 w-9 place-items-center rounded-xl border-2 border-white/70 text-xs font-black shadow-[0_5px_12px_rgba(10,23,90,.12)] ${index < step ? "bg-[#BFEBDD] text-[#060F3D]" : index === step ? "bg-white text-[#0A175A]" : "bg-[#0A175A] text-white/55"}`}
+                    >
+                      {index < step ? <Check className="h-4 w-4" /> : index + 1}
+                    </span>
+                    <span
+                      className={
+                        index === step ? "text-sm font-extrabold" : "text-sm text-[#0A175A]/50"
+                      }
+                    >
+                      {label}
+                    </span>
+                  </div>
+                ),
+              )}
             </div>
-            <div className="mt-16 rounded-2xl border border-white/10 bg-white/[0.06] p-4">
-              <Sparkles className="h-5 w-5 text-[#01C3AD]" />
-              <p className="mt-3 text-xs font-bold">Your route so far</p>
-              <p className="mt-1 text-[10px] leading-4 text-white/45">
+            <div className="onboarding-scene__summary mt-6 max-w-md rounded-[20px] bg-white/62 p-4 shadow-[inset_0_1px_rgba(255,255,255,.8)] lg:mt-9">
+              <PremiumPathMatchIcon className="h-5 w-5 text-[#F86746]" />
+              <p className="mt-2 text-xs font-black">Your route so far</p>
+              <p className="mt-1 text-[10px] font-semibold leading-4 text-[#0A175A]/58">
                 {sourceCountry?.name ?? "Choose origin"} ·{" "}
                 {sourceJurisdiction?.name ?? "Choose source state"} ·{" "}
                 {curriculumName || "Curriculum pending"}
@@ -778,30 +842,56 @@ function Onboarding() {
               </p>
             </div>
           </div>
+          <div className="onboarding-scene__visual relative z-10 mt-3 lg:mt-5">
+            <ClayScene
+              asset={
+                step === 0
+                  ? "source-curriculum"
+                  : step === 1
+                    ? "destination-framework"
+                    : step === 2
+                      ? "academic-roadmap"
+                      : "secure-profile"
+              }
+              eager
+              mode="mobile-top"
+              className="mx-auto min-h-[230px] w-full max-w-[430px] lg:min-h-[270px]"
+            />
+          </div>
         </aside>
-        <section className="p-6 sm:p-10 lg:min-h-[620px]">
-          <div className="mx-auto max-w-xl">
+        <section className="p-6 sm:p-10 lg:min-h-[720px] lg:p-14">
+          <div className="mx-auto max-w-2xl">
             {steps[step]}
-            <div className="mt-10 flex items-center justify-between border-t border-[#E8EBF0] pt-5">
+            <div className="mt-10 flex items-center justify-between border-t border-[#E8EBF0] pt-6">
               <button
                 onClick={() => (step > 0 ? setStep(step - 1) : void leaveOnboarding())}
-                className="inline-flex h-11 items-center gap-2 rounded-xl border border-[#CDD3DE] px-4 text-sm font-bold"
+                className="inline-flex h-12 items-center gap-2 rounded-2xl border border-[#CDD3DE] bg-white px-4 text-sm font-bold shadow-[0_5px_14px_rgba(10,23,90,.05)]"
               >
                 <ArrowLeft className="h-4 w-4" /> Back
               </button>
-              <button
-                onClick={() => (step < 2 ? continueToNextStep() : void finishOnboarding())}
-                disabled={saving}
-                className="inline-flex h-11 items-center gap-2 rounded-xl bg-[#01C3AD] px-5 text-sm font-black text-[#060F3D] disabled:opacity-60"
-              >
-                {saving ? "Saving…" : step === 2 ? "Create passport" : "Continue"}{" "}
-                <ArrowRight className="h-4 w-4" />
-              </button>
+              <div className="flex flex-wrap justify-end gap-2">
+                <button
+                  onClick={() => (step < 3 ? continueToNextStep() : void finishOnboarding())}
+                  disabled={
+                    saving || (step === 3 && !isAcademicPassportComplete(passportPreferences))
+                  }
+                  className="inline-flex min-h-12 items-center gap-2 rounded-2xl bg-[#0A175A] px-5 text-sm font-black text-white shadow-[0_8px_20px_rgba(10,23,90,.16)] disabled:opacity-60"
+                >
+                  {saving
+                    ? "Saving…"
+                    : step === 3
+                      ? isAcademicPassportComplete(passportPreferences)
+                        ? "Create passport"
+                        : "Finish Passport steps"
+                      : "Continue"}{" "}
+                  <ArrowRight className="h-4 w-4" />
+                </button>
+              </div>
             </div>
           </div>
         </section>
       </div>
-      <style>{`.eyebrow{margin-top:24px;font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#019A8A}.subcopy{margin-top:10px;font-size:14px;line-height:24px;color:#5A6380}.field>span{display:block;margin-bottom:7px;font-size:11px;font-weight:800;color:#0A175A}.field select,.field input{height:46px;width:100%;border:1px solid #CDD3DE;border-radius:12px;padding:0 12px;font-size:14px;background:#fff;outline:none}.field select:disabled{background:#F6F8FB;color:#9AA3B2}.field select:focus,.field input:focus{border-color:#01C3AD;box-shadow:0 0 0 4px rgba(1,195,173,.1)}h1{margin-top:8px;font-size:30px;line-height:38px;font-weight:900;letter-spacing:-.045em;color:#0A175A}`}</style>
+      <style>{`.eyebrow{margin-top:24px;font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#01A995}.subcopy{margin-top:10px;font-size:14px;line-height:24px;color:#59647A}.field>span{display:block;margin-bottom:8px;font-size:11px;font-weight:800;color:#0A175A}.field select,.field input{height:50px;width:100%;border:1px solid #CDD3DE;border-radius:16px;padding:0 14px;font-size:14px;background:#fff;outline:none}.field select:disabled{background:#F3F6F4;color:#83909D}.field select:focus,.field input:focus{border-color:#01C3AD;box-shadow:0 0 0 4px rgba(1,195,173,.12)}h1{margin-top:8px;font-family:var(--font-display);font-size:clamp(32px,5vw,48px);line-height:1.06;font-weight:400;letter-spacing:-.018em;color:#0A175A}`}</style>
     </main>
   );
 }
@@ -837,7 +927,6 @@ function RetryNotice({ text, onRetry }: { text: string; onRetry: () => void }) {
 function FrameworkSummary({ framework }: { framework: DestinationFramework }) {
   const items = [
     ["Diploma", framework.credential_awarded],
-    ["Cohort", framework.cohort_label ?? framework.effective_year?.toString() ?? null],
     [
       "Credits",
       framework.total_credits_required

@@ -1,17 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  ArrowRight,
-  ClipboardList,
-  Download,
-  FileText,
-  Loader2,
-  Printer,
-  RefreshCw,
-  ShieldAlert,
-} from "lucide-react";
-import { toast } from "sonner";
+import { ArrowRight, Download, Loader2, Printer, RefreshCw } from "lucide-react";
 import { PassportShell, StatusPill } from "@/components/PassportShell";
+import {
+  PremiumChecklistIcon,
+  PremiumShieldIcon,
+  PremiumTranscriptIcon,
+} from "@/components/icons/PremiumIcon";
+import { ClayScene, CounselorSeal, JourneyStage } from "@/components/journey/JourneyVisuals";
+import { notifyError, notifySuccess } from "@/lib/app-feedback";
 import {
   generateCounselorPacket,
   getCounselorPacketDownloadUrl,
@@ -66,9 +63,12 @@ function PacketPage() {
   async function runPacket(regenerate = false) {
     try {
       await generateMutation.mutateAsync(regenerate);
-      toast.success(regenerate ? "Counselor packet regenerated." : "Counselor packet generated.");
+      notifySuccess(
+        regenerate ? "Counselor packet regenerated." : "Counselor packet generated.",
+        "generate",
+      );
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Unable to generate packet.");
+      notifyError(error instanceof Error ? error.message : "Unable to generate packet.");
     }
   }
 
@@ -179,127 +179,159 @@ function PacketPreview({
     try {
       await getCounselorPacketDownloadUrl(packet.id);
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "No packet download is available.");
+      notifyError(error instanceof Error ? error.message : "No packet download is available.");
     }
   }
 
   async function copyQuestions() {
     const text = (snapshot.counselorQuestions ?? []).join("\n");
     if (!text) {
-      toast.error("No counselor questions were saved for this packet.");
+      notifyError("No counselor questions were saved for this packet.");
       return;
     }
     await navigator.clipboard.writeText(text);
-    toast.success("Counselor questions copied.");
+    notifySuccess("Counselor questions copied.", "copy");
   }
 
   return (
-    <div className="grid gap-5 xl:grid-cols-[320px_minmax(0,1fr)]">
-      <aside className="space-y-5">
-        {stale && (
-          <section className="rounded-[18px] border border-[#F0A33A] bg-[#FFF8ED] p-4 text-xs leading-5 text-[#8A4D00]">
-            This packet may be outdated because your transcript, credit map, gap analysis, roadmap,
-            or profile changed. Regenerate it before sharing it with a counselor.
-            {packet?.stale_reason ? ` Reason: ${packet.stale_reason}.` : ""}
-          </section>
-        )}
-        <section className="rounded-[24px] border border-[#CDD3DE]/70 bg-white p-5 shadow-card">
-          <h2 className="font-display text-lg font-bold">Packet status</h2>
-          <div className="mt-4 flex flex-wrap gap-2">
-            <StatusPill tone={packet?.status === "stale" ? "coral" : "teal"}>
-              {labelize(packet?.status ?? "not ready")}
-            </StatusPill>
-            {packet?.pdf_generation_error && <StatusPill tone="gray">Printable HTML</StatusPill>}
-          </div>
-          <p className="mt-3 text-xs leading-5 text-[#5A6380]">
-            Generated{" "}
-            {packet?.generated_at ? new Date(packet.generated_at).toLocaleString() : "recently"}.
-            Raw private storage paths are not shown here.
-          </p>
-          {packet?.pdf_generation_error && (
-            <p className="mt-3 rounded-xl bg-[#FFF8ED] p-3 text-xs leading-5 text-[#8A4D00]">
-              {packet.pdf_generation_error}
-            </p>
-          )}
-        </section>
-        <section className="rounded-[24px] border border-[#CDD3DE]/70 bg-white p-5 shadow-card">
-          <h2 className="font-display text-lg font-bold">Controls</h2>
-          <div className="mt-4 grid gap-2">
+    <div className="space-y-6">
+      <JourneyStage
+        tone="teal"
+        eyebrow="The route becomes a handoff"
+        title="Your counselor packet is organized and ready to review."
+        description={
+          <>
+            {snapshot.summaryText ||
+              packet?.summary_text ||
+              "Saved ScholaPort records assembled into a counselor preview."}
+            <span className="mt-2 block text-xs">
+              {sections.length} saved sections · Generated{" "}
+              {packet?.generated_at ? new Date(packet.generated_at).toLocaleString() : "recently"}
+            </span>
+          </>
+        }
+        action={
+          <>
             <button
               onClick={() => window.print()}
-              className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-[#0A175A] text-xs font-bold text-white"
+              className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-[#0A175A] px-5 text-sm font-bold text-white shadow-[0_8px_20px_rgba(10,23,90,.16)]"
             >
-              <Printer className="h-4 w-4" /> Print / Save as PDF
+              <Printer className="h-4 w-4" /> Print / Save PDF
             </button>
-            <button
-              disabled={processing}
-              onClick={onRegenerate}
-              className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-[#CDD3DE] bg-white text-xs font-bold text-[#0A175A] disabled:opacity-60"
-            >
-              {processing ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <RefreshCw className="h-4 w-4" />
-              )}
-              Regenerate
-            </button>
-            <button
-              onClick={downloadStoredFile}
-              className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-[#CDD3DE] bg-white text-xs font-bold text-[#0A175A]"
-            >
-              <Download className="h-4 w-4" /> Download stored file
-            </button>
-            <button
-              onClick={() => void copyQuestions()}
-              className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-[#CDD3DE] bg-white text-xs font-bold text-[#0A175A]"
-            >
-              <ClipboardList className="h-4 w-4" /> Copy questions
-            </button>
-          </div>
-        </section>
-        <section className="rounded-[20px] bg-[#0A175A] p-5 text-white">
-          <div className="flex gap-3">
-            <ShieldAlert className="h-5 w-5 shrink-0 text-[#01C3AD]" />
-            <p className="text-xs leading-5 text-white/70">
-              This packet is not sent to a school automatically. Share it only when you choose.
+            <CounselorSeal>{stale ? "Refresh first" : "Review ready"}</CounselorSeal>
+          </>
+        }
+        art={<ClayScene asset="counselor-packet" eager className="max-w-[470px]" />}
+        className="print:hidden"
+        layout="wide"
+      />
+      <div className="grid gap-5 xl:grid-cols-[320px_minmax(0,1fr)]">
+        <aside className="space-y-5 print:hidden">
+          {stale && (
+            <section className="rounded-[18px] border border-[#F0A33A] bg-[#FFF8ED] p-4 text-xs leading-5 text-[#8A4D00]">
+              This packet may be outdated because your transcript, credit map, gap analysis,
+              roadmap, or profile changed. Regenerate it before sharing it with a counselor.
+              {packet?.stale_reason ? ` Reason: ${packet.stale_reason}.` : ""}
+            </section>
+          )}
+          <section className="journey-paper p-5">
+            <h2 className="font-display text-lg font-bold">Packet status</h2>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <StatusPill tone={packet?.status === "stale" ? "coral" : "teal"}>
+                {labelize(packet?.status ?? "not ready")}
+              </StatusPill>
+              {packet?.pdf_generation_error && <StatusPill tone="gray">Printable HTML</StatusPill>}
+            </div>
+            <p className="mt-3 text-xs leading-5 text-[#5A6380]">
+              Generated{" "}
+              {packet?.generated_at ? new Date(packet.generated_at).toLocaleString() : "recently"}.
+              Raw private storage paths are not shown here.
             </p>
-          </div>
-        </section>
-      </aside>
+            {packet?.pdf_generation_error && (
+              <p className="mt-3 rounded-xl bg-[#FFF8ED] p-3 text-xs leading-5 text-[#8A4D00]">
+                {packet.pdf_generation_error}
+              </p>
+            )}
+          </section>
+          <section className="journey-paper p-5">
+            <h2 className="font-display text-lg font-bold">Controls</h2>
+            <div className="mt-4 grid gap-2">
+              <button
+                onClick={() => window.print()}
+                className="inline-flex h-11 items-center justify-center gap-2 rounded-2xl bg-[#0A175A] text-xs font-bold text-white shadow-[0_8px_20px_rgba(10,23,90,.16)]"
+              >
+                <Printer className="h-4 w-4" /> Print / Save as PDF
+              </button>
+              <button
+                disabled={processing}
+                onClick={onRegenerate}
+                className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-[#CDD3DE] bg-white text-xs font-bold text-[#0A175A] disabled:opacity-60"
+              >
+                {processing ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <RefreshCw className="h-4 w-4" />
+                )}
+                Regenerate
+              </button>
+              <button
+                onClick={downloadStoredFile}
+                className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-[#CDD3DE] bg-white text-xs font-bold text-[#0A175A]"
+              >
+                <Download className="h-4 w-4" /> Download stored file
+              </button>
+              <button
+                onClick={() => void copyQuestions()}
+                className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-[#CDD3DE] bg-white text-xs font-bold text-[#0A175A]"
+              >
+                <PremiumChecklistIcon className="h-4 w-4" /> Copy questions
+              </button>
+            </div>
+          </section>
+          <section className="rounded-[26px] bg-[#0A175A] p-5 text-white shadow-[0_18px_45px_rgba(10,23,90,.14)]">
+            <div className="flex gap-3">
+              <PremiumShieldIcon className="h-5 w-5 shrink-0 text-[#01C3AD]" />
+              <p className="text-xs leading-5 text-white/70">
+                This packet is not sent to a school automatically. Share it only when you choose.
+              </p>
+            </div>
+          </section>
+        </aside>
 
-      <section className="rounded-[24px] border border-[#CDD3DE]/70 bg-[#E8EBF0] p-3 shadow-card sm:p-6">
-        <div className="mx-auto min-h-[900px] max-w-[840px] bg-white p-7 shadow-[0_14px_40px_rgba(10,23,90,.14)] sm:p-10 print:max-w-none print:shadow-none">
-          <header className="border-b-4 border-[#0A175A] pb-6">
-            <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#019A8A]">
-              Scholaport preview
-            </p>
-            <h1 className="mt-2 font-display text-3xl font-black tracking-[-0.04em]">
-              {snapshot.title || packet?.title || "Counselor packet"}
-            </h1>
-            <p className="mt-3 text-sm leading-6 text-[#5A6380]">
-              {snapshot.summaryText || packet?.summary_text}
-            </p>
-            {snapshot.disclaimerText && (
-              <p className="mt-4 rounded-xl bg-[#FFF8ED] p-4 text-xs leading-5 text-[#8A4D00]">
-                {snapshot.disclaimerText}
+        <section className="rounded-[30px] border border-[#DDE4E5] bg-[#E8EFED] p-3 shadow-[0_18px_50px_rgba(10,23,90,.08)] sm:p-6 print:border-0 print:bg-white print:p-0 print:shadow-none">
+          <div className="mx-auto min-h-[900px] max-w-[840px] bg-white p-7 shadow-[0_14px_40px_rgba(10,23,90,.14)] sm:p-10 print:max-w-none print:p-0 print:shadow-none">
+            <header className="border-b-4 border-[#0A175A] pb-6">
+              <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#019A8A]">
+                Scholaport preview
               </p>
-            )}
-          </header>
-          <div className="mt-7 space-y-7">
-            {sections.length ? (
-              sections.map((section) => <PacketSection key={section.key} section={section} />)
-            ) : (
-              <p className="rounded-xl bg-[#F6F8FB] p-4 text-sm text-[#5A6380]">
-                The saved packet record does not contain preview sections. Regenerate the packet.
+              <h1 className="mt-2 font-display text-3xl font-black tracking-[-0.04em]">
+                {snapshot.title || packet?.title || "Counselor packet"}
+              </h1>
+              <p className="mt-3 text-sm leading-6 text-[#5A6380]">
+                {snapshot.summaryText || packet?.summary_text}
               </p>
-            )}
+              {snapshot.disclaimerText && (
+                <p className="mt-4 rounded-xl bg-[#FFF8ED] p-4 text-xs leading-5 text-[#8A4D00]">
+                  {snapshot.disclaimerText}
+                </p>
+              )}
+            </header>
+            <div className="mt-7 space-y-7">
+              {sections.length ? (
+                sections.map((section) => <PacketSection key={section.key} section={section} />)
+              ) : (
+                <p className="rounded-xl bg-[#F6F8FB] p-4 text-sm text-[#5A6380]">
+                  The saved packet record does not contain preview sections. Regenerate the packet.
+                </p>
+              )}
+            </div>
+            <footer className="mt-10 border-t border-[#CDD3DE] pt-4 text-[10px] leading-5 text-[#9AA3B2]">
+              Packet ID: {packet?.id}. This packet summarizes student-confirmed and system-generated
+              planning information.
+            </footer>
           </div>
-          <footer className="mt-10 border-t border-[#CDD3DE] pt-4 text-[10px] leading-5 text-[#9AA3B2]">
-            Packet ID: {packet?.id}. This packet summarizes student-confirmed and system-generated
-            planning information.
-          </footer>
-        </div>
-      </section>
+        </section>
+      </div>
     </div>
   );
 }
@@ -394,7 +426,7 @@ function PrerequisiteState({
 }) {
   return (
     <section className="rounded-[24px] border border-[#CDD3DE]/70 bg-white p-8 text-center shadow-card">
-      <FileText className="mx-auto h-10 w-10 text-[#01C3AD]" />
+      <PremiumTranscriptIcon className="mx-auto h-10 w-10 text-[#01C3AD]" />
       <h2 className="mt-4 font-display text-xl font-bold">{state.title}</h2>
       <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-[#5A6380]">{state.body}</p>
       <Link
@@ -422,7 +454,7 @@ function ActionState({
 }) {
   return (
     <section className="rounded-[24px] border border-[#CDD3DE]/70 bg-white p-8 text-center shadow-card">
-      <ShieldAlert className="mx-auto h-10 w-10 text-[#0A175A]" />
+      <PremiumShieldIcon className="mx-auto h-10 w-10 text-[#0A175A]" />
       <h2 className="mt-4 font-display text-xl font-bold">{title}</h2>
       <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-[#5A6380]">{body}</p>
       <button

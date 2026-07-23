@@ -1,9 +1,175 @@
 # Scholaport Reference-Data Foundation Progress Report
 
-**Report date:** June 26, 2026  
+**Report date:** July 19, 2026
 **Project:** Scholaport MVP  
 **Starting point:** The global reference-data foundation follow-up prompt supplied by the user  
-**Current scope:** Database structure, reference-data research workflow, CSV seed package, validation, onboarding integration, coverage visibility, and country-by-country verification
+**Current scope:** Database structure, reference-data research workflow, CSV seed package, validation, onboarding integration, coverage visibility, country-by-country verification, transcript-to-packet product workflows, authentication recovery, and the completed Rhyme-inspired visual overhaul
+
+## July 19, 2026 update: Rhyme-inspired product overhaul and Academic Passport completion
+
+ScholaPort’s multi-pass visual overhaul is now implemented across the complete student product rather than being limited to onboarding or a small set of marketing-style screens.
+
+The final direction remains approximately 65% calm functional workspace, 25% integrated original soft-clay and custom SVG composition, and 10% bounded liquid-glass controls. Rhyme informed confidence, softness, route language, environmental framing, and dimensional composition; no Rhyme branding, travel asset, illustration, or exact layout was copied.
+
+The canonical visual implementation and evidence report is now:
+
+- `docs/scholaport-design-master.md`
+
+That master report replaces seven overlapping design/audit Markdown files and contains the full design system, implementation ledger, Taste Skill and GlassCN audit, asset manifest, Academic Passport architecture, route scores, responsive QA, limitations, final verification, and all 92 screenshot references.
+
+### Authentication loading and recovery
+
+The earlier “Opening your passport” failure mode was traced to an unreachable configured Supabase hostname rather than a visual animation deadlock. Production authentication behavior was hardened without changing Supabase contracts:
+
+- session and profile initialization now have a 15-second response boundary;
+- the interface no longer waits indefinitely for an unreachable account service;
+- users receive specific recovery copy instead of only a raw `Failed to fetch` message;
+- “Try again” reruns account initialization;
+- “Return to sign in” removes only this project’s stale Supabase session and works while the remote service is unreachable;
+- loading, recovery, error, and not-found screens now share the ScholaPort visual system; and
+- existing session persistence, automatic refresh, profile loading, protected-route rules, and normal sign-out behavior remain intact.
+
+The remote project itself was not replaced or simulated in production. The configured hostname remained unresolved in the local environment and is still documented as an infrastructure limitation.
+
+### Complete product-wide visual system
+
+The application now uses a consistent journey language across:
+
+- Login
+- Onboarding
+- Home
+- Transcript upload, processing, review, and mapping
+- Graduation gaps
+- Academic roadmap
+- Counselor packet
+- Profile and Settings
+- Guide
+- Reference coverage
+- PathMatch
+- Twin Connect
+- AI Advisor
+- global loading, error, empty, unsupported, and not-found states
+
+The implementation added or standardized:
+
+- navy, teal, coral, cyan, mint, yellow, warm-paper, canvas, text, and separator tokens;
+- Sora display typography and Manrope working typography;
+- shared spacing, radius, shadow, focus, touch-target, and responsive rules;
+- route-specific environmental stages rather than repeated dashboard cards;
+- `ClayScene` safe-area modes for desktop, tablet, mobile, inline, corner, and hidden-small compositions;
+- responsive route, mapping, checkpoint, requirement, document, course-token, seal, skeleton, notice, and empty-state primitives;
+- one-shot motion tied to real progression;
+- `prefers-reduced-motion` completion behavior;
+- bounded liquid-glass navigation and compact controls with opaque fallback;
+- a floating desktop navigation capsule and safe-area-aware mobile dock;
+- counselor-packet print flattening; and
+- honest route-specific unavailable states for future features.
+
+Repeated generic clay float, orbit rotation, mapping-bead travel, decorative future ribbons, large glass panels, shader effects, rainbow shine, dark biometric styling, bento expansion, and other motion or surfaces without product meaning were removed or rejected.
+
+### Academic Passport identity system
+
+The fourth pass introduced a production Academic Passport as a student-owned planning object. It is explicitly not a government document, official transcript, school-issued credential, evaluation, or counselor approval.
+
+The versioned, Zod-validated appearance model includes:
+
+- six themes;
+- eight custom SVG emblems;
+- six responsive SVG patterns;
+- three layouts;
+- four accents; and
+- four finishes.
+
+The passport provides:
+
+- full and compact front/details previews;
+- a responsive source-to-destination route inside the real object;
+- semantic editor groups and pressed states;
+- the required non-credential disclaimer;
+- safe invalid and legacy preference normalization;
+- authenticated-user-scoped browser storage;
+- same-tab and cross-tab update synchronization;
+- reset to stable defaults; and
+- graceful behavior when local storage is unavailable.
+
+Because the verified `student_profiles` contract does not contain a reviewed presentation-preference field, passport appearance is intentionally browser-local and disclosed as not cross-device. Academic profile data remains in Supabase.
+
+The passport now appears contextually:
+
+- as the fourth onboarding stage with a “Use classic look” skip;
+- as the dominant Home hero;
+- as a compact preview and full editor in Profile;
+- as a small emblem beside, never instead of, the ScholaPort logo;
+- as a restrained identity marker in Transcript; and
+- as the student’s current-position marker in Roadmap.
+
+The full decorative passport is deliberately omitted from counselor-packet print output.
+
+### Asset and SVG decisions
+
+The existing ten transparent soft-clay raster compositions were inspected at source resolution and at final rendered sizes. All ten remain available, but their use is now selective:
+
+- the credit-mapping bridge was removed from Home and retained for relationship contexts;
+- the secure-profile folder no longer drives the Profile composition;
+- the tall transcript asset receives safe-area scale compensation;
+- generic orbits are opt-in rather than automatic;
+- the future-state ribbon was removed; and
+- no new raster image was generated merely to increase asset count.
+
+The code-native family expanded with eight passport emblems, six passport patterns, the internal passport route, responsive mapping geometry, requirement structures, document scan visuals, checkpoints, review markers, and state-aware paths. Decorative SVGs are hidden from assistive technology; meaningful state remains visible as text.
+
+### Taste Skill and GlassCN status
+
+The Taste Skill bundle was installed project-locally from `Leonxlnx/taste-skill` with `skills` CLI 1.5.19. The applied skills were `gpt-taste`, `redesign-existing-projects`, `full-output-enforcement`, and selected `high-end-visual-design` guidance. Landing-page rules, GSAP, randomized layouts, massive spacing, dark glass, and bento rules were not applied to dense product surfaces.
+
+GlassCN was inspected before installation. Only `glass-variants` was retained, then heavily adapted into typed ScholaPort navigation/control/overlay roles. The canvas/SVG-displacement liquid-glass component, shader effects, examples, branding, demo routes, and unnecessary dependencies were rejected. The retained implementation adds no runtime dependency and does not overwrite an existing shadcn primitive.
+
+### Legitimate protected-route visual QA
+
+Because the configured Supabase host could not resolve and no approved local project existed, protected routes were inspected through a development-only typed visual harness only after real-project recovery options were exhausted.
+
+The harness:
+
+- is not part of the production route tree;
+- is served only by the Vite development server;
+- uses typed fixtures labeled “Visual QA fixtures · not a student account”;
+- renders the exact production route components;
+- does not mutate Supabase, APIs, or production storage; and
+- is absent from client and SSR production bundles.
+
+### Visual evidence and verification
+
+The repository now contains 92 screenshots covering the earlier public comparison, third-pass route audit, and fourth-pass Academic Passport audit.
+
+The fourth-pass evidence includes 13 principal routes at:
+
+- 390×844;
+- 1024×900; and
+- 1440×1000.
+
+It also includes passport details, the full Profile editor, and 720px CSS reflow equivalents for Home, Transcript, and Profile at a 1440px/200%-zoom layout.
+
+Final browser results:
+
+- zero page-level horizontal overflow across all principal route/viewport combinations;
+- zero captured console warnings or errors across the 13 fourth-pass route states;
+- passport front/details switching, disclaimer visibility, selection, reload persistence, and reset verified;
+- bounded-glass fallback, reduced motion, touch targets, focus-source semantics, and print rules inspected; and
+- all final route scores at or above 8/10 in every critical category.
+
+Final engineering results:
+
+- scoped Prettier: passed;
+- ESLint: 0 errors, with the same 16 pre-existing Fast Refresh warnings;
+- TypeScript: passed;
+- tests: 119 passed, 0 failed;
+- production client build: passed;
+- SSR build: passed;
+- Git whitespace check: passed;
+- production visual-harness exclusion: passed; and
+- fourth-pass dependency/lockfile diff: empty.
+
+No Supabase migration, RLS rule, storage rule, OCR behavior, translation behavior, mapping algorithm, gap-analysis calculation, roadmap logic, counselor-packet data logic, API schema, or real academic-data behavior was changed by the visual overhaul.
 
 ## June 26, 2026 update: Transcript OCR/converter pipeline hardening
 
@@ -3003,3 +3169,23 @@ Origin status:
 - `origin/main` was pulled into this local checkout with a fast-forward after preserving local work in a stash.
 - The pulled history includes the Andhra Pradesh source-curriculum foundation and package-lock commit.
 - Local code now filters onboarding/profile against the pulled Tamil Nadu, Andhra Pradesh, Georgia, and Texas MVP reference rows.
+
+## Academic Passport V2 holographic UI overhaul — 2026-07-20
+
+The existing academic data contracts, mapping outcomes, gap analysis, counselor review language, and reference-foundation behavior remain unchanged. This pass is a presentation and browser-local preference upgrade.
+
+Delivered:
+
+- ten original full-bleed holographic material families;
+- twenty curated templates (two colorways per family);
+- five silhouettes, six optical films, ten decal packs, and ten personal marks;
+- safe title, motto, monogram, accent, and foil-intensity personalization;
+- deterministic `Create mine` curation based on the user’s route;
+- V1-to-V2 browser preference migration and reset cleanup;
+- layered generated material, CSS film/light, SVG decal, live HTML, and edge architecture;
+- a development-only Passport material lab;
+- responsive captures at 390, 768, 1024, 1440, and 200%-reflow equivalent;
+- a fourteen-route, five-profile whole-app QA sweep with no overflow or browser-log failures;
+- asset provenance, public implementation research, reference analysis, and icon audit documents.
+
+The Passport continues to state that it is a personal planning view and not an official academic record or school-issued credential.

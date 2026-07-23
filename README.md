@@ -58,7 +58,12 @@ MVP 1 onboarding exposes exactly India, China, Mexico, the Philippines, and Paki
 - Twin question submission and pending-moderation history
 - Advisor conversation sessions and messages
 
-OCR, automated credit mapping, automated gap/roadmap generation, full RAG, moderated mentor responses, and generated PDF files remain intentionally unimplemented.
+The repository now also contains the reviewed OCR/translation pipeline, probable credit mapping, graduation-gap analysis, roadmap generation, and counselor-packet workflow described in the living progress report. Full production RAG, moderated mentor responses, and generated counselor-packet PDF files remain intentionally limited or unavailable where the product reports them as such.
+
+## Current project reports
+
+- Product design, overhaul, assets, Academic Passport, visual audits, verification, and complete screenshot evidence: [`docs/scholaport-design-master.md`](./docs/scholaport-design-master.md)
+- Living technical and reference-foundation progress through July 19, 2026: [`SCHOLAPORT_REFERENCE_FOUNDATION_PROGRESS_REPORT.md`](./SCHOLAPORT_REFERENCE_FOUNDATION_PROGRESS_REPORT.md)
 
 ## Verification
 

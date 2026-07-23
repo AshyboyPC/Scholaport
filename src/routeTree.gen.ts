@@ -9,11 +9,14 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WelcomeRouteImport } from './routes/welcome'
 import { Route as TwinsRouteImport } from './routes/twins'
 import { Route as TranscriptRouteImport } from './routes/transcript'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as RoadmapRouteImport } from './routes/roadmap'
 import { Route as ReferenceCoverageRouteImport } from './routes/reference-coverage'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as PoriRouteImport } from './routes/pori'
 import { Route as PathmatchRouteImport } from './routes/pathmatch'
 import { Route as PacketRouteImport } from './routes/packet'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
@@ -31,6 +34,11 @@ import { Route as ApiV1ReferenceRouteImport } from './routes/api/v1/reference'
 import { Route as ApiV1PassportRouteImport } from './routes/api/v1/passport'
 import { Route as ApiV1PacketsRouteImport } from './routes/api/v1/packets'
 
+const WelcomeRoute = WelcomeRouteImport.update({
+  id: '/welcome',
+  path: '/welcome',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TwinsRoute = TwinsRouteImport.update({
   id: '/twins',
   path: '/twins',
@@ -39,6 +47,11 @@ const TwinsRoute = TwinsRouteImport.update({
 const TranscriptRoute = TranscriptRouteImport.update({
   id: '/transcript',
   path: '/transcript',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RoadmapRoute = RoadmapRouteImport.update({
@@ -54,6 +67,11 @@ const ReferenceCoverageRoute = ReferenceCoverageRouteImport.update({
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PoriRoute = PoriRouteImport.update({
+  id: '/pori',
+  path: '/pori',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PathmatchRoute = PathmatchRouteImport.update({
@@ -146,11 +164,14 @@ export interface FileRoutesByFullPath {
   '/onboarding': typeof OnboardingRoute
   '/packet': typeof PacketRoute
   '/pathmatch': typeof PathmatchRoute
+  '/pori': typeof PoriRoute
   '/profile': typeof ProfileRoute
   '/reference-coverage': typeof ReferenceCoverageRoute
   '/roadmap': typeof RoadmapRoute
+  '/settings': typeof SettingsRoute
   '/transcript': typeof TranscriptRoute
   '/twins': typeof TwinsRoute
+  '/welcome': typeof WelcomeRoute
   '/api/advisor': typeof ApiAdvisorRoute
   '/api/chat': typeof ApiChatRoute
   '/chat/$threadId': typeof ChatThreadIdRoute
@@ -169,11 +190,14 @@ export interface FileRoutesByTo {
   '/onboarding': typeof OnboardingRoute
   '/packet': typeof PacketRoute
   '/pathmatch': typeof PathmatchRoute
+  '/pori': typeof PoriRoute
   '/profile': typeof ProfileRoute
   '/reference-coverage': typeof ReferenceCoverageRoute
   '/roadmap': typeof RoadmapRoute
+  '/settings': typeof SettingsRoute
   '/transcript': typeof TranscriptRoute
   '/twins': typeof TwinsRoute
+  '/welcome': typeof WelcomeRoute
   '/api/advisor': typeof ApiAdvisorRoute
   '/api/chat': typeof ApiChatRoute
   '/chat/$threadId': typeof ChatThreadIdRoute
@@ -193,11 +217,14 @@ export interface FileRoutesById {
   '/onboarding': typeof OnboardingRoute
   '/packet': typeof PacketRoute
   '/pathmatch': typeof PathmatchRoute
+  '/pori': typeof PoriRoute
   '/profile': typeof ProfileRoute
   '/reference-coverage': typeof ReferenceCoverageRoute
   '/roadmap': typeof RoadmapRoute
+  '/settings': typeof SettingsRoute
   '/transcript': typeof TranscriptRoute
   '/twins': typeof TwinsRoute
+  '/welcome': typeof WelcomeRoute
   '/api/advisor': typeof ApiAdvisorRoute
   '/api/chat': typeof ApiChatRoute
   '/chat/$threadId': typeof ChatThreadIdRoute
@@ -218,11 +245,14 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/packet'
     | '/pathmatch'
+    | '/pori'
     | '/profile'
     | '/reference-coverage'
     | '/roadmap'
+    | '/settings'
     | '/transcript'
     | '/twins'
+    | '/welcome'
     | '/api/advisor'
     | '/api/chat'
     | '/chat/$threadId'
@@ -241,11 +271,14 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/packet'
     | '/pathmatch'
+    | '/pori'
     | '/profile'
     | '/reference-coverage'
     | '/roadmap'
+    | '/settings'
     | '/transcript'
     | '/twins'
+    | '/welcome'
     | '/api/advisor'
     | '/api/chat'
     | '/chat/$threadId'
@@ -264,11 +297,14 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/packet'
     | '/pathmatch'
+    | '/pori'
     | '/profile'
     | '/reference-coverage'
     | '/roadmap'
+    | '/settings'
     | '/transcript'
     | '/twins'
+    | '/welcome'
     | '/api/advisor'
     | '/api/chat'
     | '/chat/$threadId'
@@ -288,11 +324,14 @@ export interface RootRouteChildren {
   OnboardingRoute: typeof OnboardingRoute
   PacketRoute: typeof PacketRoute
   PathmatchRoute: typeof PathmatchRoute
+  PoriRoute: typeof PoriRoute
   ProfileRoute: typeof ProfileRoute
   ReferenceCoverageRoute: typeof ReferenceCoverageRoute
   RoadmapRoute: typeof RoadmapRoute
+  SettingsRoute: typeof SettingsRoute
   TranscriptRoute: typeof TranscriptRoute
   TwinsRoute: typeof TwinsRoute
+  WelcomeRoute: typeof WelcomeRoute
   ApiAdvisorRoute: typeof ApiAdvisorRoute
   ApiChatRoute: typeof ApiChatRoute
   ChatThreadIdRoute: typeof ChatThreadIdRoute
@@ -305,6 +344,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/welcome': {
+      id: '/welcome'
+      path: '/welcome'
+      fullPath: '/welcome'
+      preLoaderRoute: typeof WelcomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/twins': {
       id: '/twins'
       path: '/twins'
@@ -317,6 +363,13 @@ declare module '@tanstack/react-router' {
       path: '/transcript'
       fullPath: '/transcript'
       preLoaderRoute: typeof TranscriptRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/roadmap': {
@@ -338,6 +391,13 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pori': {
+      id: '/pori'
+      path: '/pori'
+      fullPath: '/pori'
+      preLoaderRoute: typeof PoriRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pathmatch': {
@@ -464,11 +524,14 @@ const rootRouteChildren: RootRouteChildren = {
   OnboardingRoute: OnboardingRoute,
   PacketRoute: PacketRoute,
   PathmatchRoute: PathmatchRoute,
+  PoriRoute: PoriRoute,
   ProfileRoute: ProfileRoute,
   ReferenceCoverageRoute: ReferenceCoverageRoute,
   RoadmapRoute: RoadmapRoute,
+  SettingsRoute: SettingsRoute,
   TranscriptRoute: TranscriptRoute,
   TwinsRoute: TwinsRoute,
+  WelcomeRoute: WelcomeRoute,
   ApiAdvisorRoute: ApiAdvisorRoute,
   ApiChatRoute: ApiChatRoute,
   ChatThreadIdRoute: ChatThreadIdRoute,
