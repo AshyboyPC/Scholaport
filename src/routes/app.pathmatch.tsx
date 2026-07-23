@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ComingSoonSurface } from "@/components/ComingSoonSurface";
 
-export const Route = createFileRoute("/pathmatch")({
+export const Route = createFileRoute("/app/pathmatch")({
   head: () => ({ meta: [{ title: "PathMatch coming soon · Scholaport" }] }),
   component: PathMatchPage,
 });

@@ -30,19 +30,19 @@ type NavItem = {
 };
 
 const journeyNav: NavItem[] = [
-  { to: "/", label: "Home", icon: PremiumHomeIcon },
-  { to: "/transcript", label: "Transcript", icon: PremiumTranscriptIcon },
-  { to: "/gaps", label: "Gaps", icon: PremiumGapIcon },
-  { to: "/roadmap", label: "Roadmap", icon: PremiumRoadmapIcon },
-  { to: "/packet", label: "Packet", icon: PremiumPacketIcon },
+  { to: "/app", label: "Home", icon: PremiumHomeIcon },
+  { to: "/app/transcript", label: "Transcript", icon: PremiumTranscriptIcon },
+  { to: "/app/gaps", label: "Gaps", icon: PremiumGapIcon },
+  { to: "/app/roadmap", label: "Roadmap", icon: PremiumRoadmapIcon },
+  { to: "/app/packet", label: "Packet", icon: PremiumPacketIcon },
 ];
 
 const moreNav: NavItem[] = [
-  { to: "/advisor", label: "Advisor", icon: PremiumAdvisorIcon, comingSoon: true },
-  { to: "/pathmatch", label: "PathMatch", icon: PremiumPathMatchIcon, comingSoon: true },
-  { to: "/twins", label: "Twin Connect", icon: PremiumTwinIcon, comingSoon: true },
-  { to: "/profile", label: "Profile", icon: PremiumProfileIcon },
-  { to: "/settings", label: "Settings", icon: PremiumSettingsIcon },
+  { to: "/app/advisor", label: "Advisor", icon: PremiumAdvisorIcon, comingSoon: true },
+  { to: "/app/pathmatch", label: "PathMatch", icon: PremiumPathMatchIcon, comingSoon: true },
+  { to: "/app/twins", label: "Twin Connect", icon: PremiumTwinIcon, comingSoon: true },
+  { to: "/app/profile", label: "Profile", icon: PremiumProfileIcon },
+  { to: "/app/settings", label: "Settings", icon: PremiumSettingsIcon },
 ];
 
 export function PassportShell({
@@ -88,7 +88,7 @@ export function PassportShell({
           <ScholaportLogo className="h-10" inverse />
         </Link>
         <Link
-          to="/profile"
+          to="/app/profile"
           aria-label="Open profile and Academic Passport"
           className="passport-nav-mark mt-3"
           title="Profile"
@@ -111,21 +111,21 @@ export function PassportShell({
         </nav>
         <div className="grid gap-1">
           <Link
-            to="/profile"
+            to="/app/profile"
             aria-label={t("Profile")}
             className={cn(
               "grid h-12 w-12 place-items-center rounded-2xl text-[#83909D] hover:bg-white hover:text-[#0A175A]",
-              location.pathname.startsWith("/profile") && "bg-[#0A175A] text-white",
+              location.pathname.startsWith("/app/profile") && "bg-[#0A175A] text-white",
             )}
           >
             <PremiumProfileIcon className="h-5 w-5" />
           </Link>
           <Link
-            to="/settings"
+            to="/app/settings"
             aria-label={t("Settings")}
             className={cn(
               "grid h-12 w-12 place-items-center rounded-2xl text-[#83909D] hover:bg-white hover:text-[#0A175A]",
-              location.pathname.startsWith("/settings") && "bg-[#0A175A] text-white",
+              location.pathname.startsWith("/app/settings") && "bg-[#0A175A] text-white",
             )}
           >
             <PremiumSettingsIcon className="h-5 w-5" />
@@ -272,7 +272,7 @@ export function PassportShell({
 }
 
 function isActive(pathname: string, to: string) {
-  return to === "/" ? pathname === "/" : pathname.startsWith(to);
+  return to === "/app" ? pathname === "/app" : pathname.startsWith(to);
 }
 
 function RailLink({ item, pathname }: { item: NavItem; pathname: string }) {

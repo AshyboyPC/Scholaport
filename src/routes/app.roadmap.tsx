@@ -27,7 +27,7 @@ import {
   type RoadmapItem,
 } from "@/lib/scholaport-api";
 
-export const Route = createFileRoute("/roadmap")({
+export const Route = createFileRoute("/app/roadmap")({
   head: () => ({
     meta: [
       { title: "Academic Roadmap · Scholaport" },
@@ -44,7 +44,7 @@ type BlockedState = {
   title: string;
   body: string;
   action: string;
-  to: "/transcript" | "/gaps" | "/settings" | "/onboarding";
+  to: "/app/transcript" | "/app/gaps" | "/app/settings" | "/app/onboarding";
 };
 
 function RoadmapPage() {
@@ -127,7 +127,7 @@ function getBlockedState(data: Awaited<ReturnType<typeof getRoadmap>>): BlockedS
       title: "Complete onboarding first.",
       body: "Scholaport needs your destination framework and timeline before it can build a roadmap.",
       action: "Start onboarding",
-      to: "/onboarding",
+      to: "/app/onboarding",
     };
   }
   if (!data.transcript) {
@@ -135,7 +135,7 @@ function getBlockedState(data: Awaited<ReturnType<typeof getRoadmap>>): BlockedS
       title: "Upload and confirm your transcript first.",
       body: "The roadmap starts after transcript courses have been reviewed and confirmed.",
       action: "Go to transcript",
-      to: "/transcript",
+      to: "/app/transcript",
     };
   }
   if (data.transcript.confirmation_status !== "confirmed" || !data.transcriptCourses.length) {
@@ -143,7 +143,7 @@ function getBlockedState(data: Awaited<ReturnType<typeof getRoadmap>>): BlockedS
       title: "Review and confirm your extracted courses first.",
       body: "OCR and translation rows are not used for planning until you confirm the course list.",
       action: "Review transcript",
-      to: "/transcript",
+      to: "/app/transcript",
     };
   }
   if (!data.creditMappings.length) {
@@ -151,7 +151,7 @@ function getBlockedState(data: Awaited<ReturnType<typeof getRoadmap>>): BlockedS
       title: "Generate probable credit mapping first.",
       body: "The roadmap depends on saved credit-mapping rows, not transcript text alone.",
       action: "Open mapping review",
-      to: "/transcript",
+      to: "/app/transcript",
     };
   }
   if (!data.profile.destination_framework_id) {
@@ -159,7 +159,7 @@ function getBlockedState(data: Awaited<ReturnType<typeof getRoadmap>>): BlockedS
       title: "Destination graduation framework is still being verified.",
       body: "Choose or verify a destination framework before generating a roadmap.",
       action: "Open profile",
-      to: "/settings",
+      to: "/app/settings",
     };
   }
   if (!data.gapAnalysis) {
@@ -167,7 +167,7 @@ function getBlockedState(data: Awaited<ReturnType<typeof getRoadmap>>): BlockedS
       title: "Run graduation gap analysis first.",
       body: "The roadmap is generated from saved gap analysis results and saved gap requirements.",
       action: "Open gap analysis",
-      to: "/gaps",
+      to: "/app/gaps",
     };
   }
   if (!data.gapRequirements.length) {
@@ -175,7 +175,7 @@ function getBlockedState(data: Awaited<ReturnType<typeof getRoadmap>>): BlockedS
       title: "Requirements for this state are not ready yet.",
       body: "Scholaport did not find saved gap requirement rows for this analysis.",
       action: "Open gap analysis",
-      to: "/gaps",
+      to: "/app/gaps",
     };
   }
   return null;

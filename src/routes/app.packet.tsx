@@ -37,7 +37,7 @@ type PacketSnapshot = {
   counselorQuestions?: string[];
 };
 
-export const Route = createFileRoute("/packet")({
+export const Route = createFileRoute("/app/packet")({
   head: () => ({ meta: [{ title: "Counselor Packet · Scholaport" }] }),
   component: PacketPage,
 });
@@ -114,7 +114,7 @@ function getBlockedState(data: CounselorPacketPayload) {
       title: "Complete onboarding first.",
       body: "The packet needs a saved student profile and destination framework.",
       action: "Start onboarding",
-      to: "/onboarding" as const,
+      to: "/app/onboarding" as const,
     };
   }
   if (!data.transcript) {
@@ -122,7 +122,7 @@ function getBlockedState(data: CounselorPacketPayload) {
       title: "Upload and confirm your transcript first.",
       body: "Counselor packets start with a confirmed transcript course list.",
       action: "Go to transcript",
-      to: "/transcript" as const,
+      to: "/app/transcript" as const,
     };
   }
   if (data.transcript.confirmation_status !== "confirmed" || !data.transcriptCourses.length) {
@@ -130,7 +130,7 @@ function getBlockedState(data: CounselorPacketPayload) {
       title: "Review and confirm your extracted courses first.",
       body: "Unconfirmed OCR or translation rows are not included as main packet courses.",
       action: "Review transcript",
-      to: "/transcript" as const,
+      to: "/app/transcript" as const,
     };
   }
   if (!data.creditMappings.length) {
@@ -138,7 +138,7 @@ function getBlockedState(data: CounselorPacketPayload) {
       title: "Generate probable credit mapping first.",
       body: "The packet needs saved probable mapping rows with confidence and review flags.",
       action: "Open mapping review",
-      to: "/transcript" as const,
+      to: "/app/transcript" as const,
     };
   }
   if (!data.gapAnalysis || !data.gapRequirements.length) {
@@ -146,7 +146,7 @@ function getBlockedState(data: CounselorPacketPayload) {
       title: "Run graduation gap analysis first.",
       body: "The packet needs saved gap summary and requirement checklist rows.",
       action: "Open gap analysis",
-      to: "/gaps" as const,
+      to: "/app/gaps" as const,
     };
   }
   if (!data.roadmap || !data.roadmapItems.length) {
@@ -154,7 +154,7 @@ function getBlockedState(data: CounselorPacketPayload) {
       title: "Generate academic roadmap first.",
       body: "The packet includes saved roadmap tasks and counselor meeting questions.",
       action: "Open roadmap",
-      to: "/roadmap" as const,
+      to: "/app/roadmap" as const,
     };
   }
   return null;
@@ -421,7 +421,7 @@ function PrerequisiteState({
     title: string;
     body: string;
     action: string;
-    to: "/onboarding" | "/transcript" | "/gaps" | "/roadmap";
+    to: "/app/onboarding" | "/app/transcript" | "/app/gaps" | "/app/roadmap";
   };
 }) {
   return (

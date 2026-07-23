@@ -6,7 +6,7 @@ import { useAcademicPassportPreferences } from "@/hooks/use-academic-passport";
 import { DEFAULT_PORI_PREFERENCES } from "@/lib/pori";
 import { notifyError, notifySuccess } from "@/lib/app-feedback";
 
-export const Route = createFileRoute("/pori")({
+export const Route = createFileRoute("/app/pori")({
   head: () => ({ meta: [{ title: "Customize Pori · Scholaport" }] }),
   component: PoriPage,
 });
@@ -42,7 +42,7 @@ function PoriPage() {
         }}
         onFinish={() => {
           notifySuccess("Your Pori is saved.", "complete");
-          void navigate({ to: "/profile", hash: "academic-passport-builder" });
+          void navigate({ to: "/app/profile", hash: "academic-passport-builder" });
         }}
       />
       {syncError && (

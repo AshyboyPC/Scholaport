@@ -48,21 +48,21 @@ import {
   visualQaSourceJurisdictions,
   visualQaUser,
 } from "@/dev/visual-qa-fixtures";
-import { Route as AdvisorRoute } from "@/routes/advisor";
-import { Route as GapsRoute } from "@/routes/gaps";
-import { Route as GuideRoute } from "@/routes/guide";
+import { Route as AdvisorRoute } from "@/routes/app.advisor";
+import { Route as GapsRoute } from "@/routes/app.gaps";
+import { Route as GuideRoute } from "@/routes/app.guide";
 import { Route as HomeRoute } from "@/routes/index";
-import { Route as LoginRoute } from "@/routes/login";
-import { Route as OnboardingRoute } from "@/routes/onboarding";
-import { Route as PacketRoute } from "@/routes/packet";
-import { Route as PoriRoute } from "@/routes/pori";
-import { Route as ProfileRoute } from "@/routes/profile";
-import { Route as PathMatchRoute } from "@/routes/pathmatch";
-import { Route as ReferenceCoverageRoute } from "@/routes/reference-coverage";
-import { Route as RoadmapRoute } from "@/routes/roadmap";
-import { Route as SettingsRoute } from "@/routes/settings";
-import { Route as TranscriptRoute } from "@/routes/transcript";
-import { Route as TwinsRoute } from "@/routes/twins";
+import { Route as LoginRoute } from "@/routes/app.login";
+import { Route as OnboardingRoute } from "@/routes/app.onboarding";
+import { Route as PacketRoute } from "@/routes/app.packet";
+import { Route as PoriRoute } from "@/routes/app.pori";
+import { Route as ProfileRoute } from "@/routes/app.profile";
+import { Route as PathMatchRoute } from "@/routes/app.pathmatch";
+import { Route as ReferenceCoverageRoute } from "@/routes/app.reference-coverage";
+import { Route as RoadmapRoute } from "@/routes/app.roadmap";
+import { Route as SettingsRoute } from "@/routes/app.settings";
+import { Route as TranscriptRoute } from "@/routes/app.transcript";
+import { Route as TwinsRoute } from "@/routes/app.twins";
 
 declare global {
   interface Window {

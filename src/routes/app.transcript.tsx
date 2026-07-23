@@ -48,7 +48,7 @@ import {
   type TranscriptCandidatePatch,
 } from "@/lib/scholaport-api";
 
-export const Route = createFileRoute("/transcript")({ component: TranscriptPage });
+export const Route = createFileRoute("/app/transcript")({ component: TranscriptPage });
 
 const processingMessages = [
   "Uploading transcript securely…",
@@ -369,7 +369,7 @@ function TranscriptPage() {
               Confirmed rows become available for future mapping only after review.
             </p>
             <Link
-              to="/gaps"
+              to="/app/gaps"
               className="mt-5 flex h-11 items-center justify-center gap-2 rounded-2xl bg-[#01C3AD] text-sm font-bold text-[#060F3D] shadow-[0_8px_20px_rgba(1,169,149,.18)]"
             >
               View gap analysis <ArrowRight className="h-4 w-4" />

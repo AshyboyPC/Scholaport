@@ -61,13 +61,13 @@ export function ComingSoonSurface({
           </div>
           <div className="mt-7 flex flex-wrap gap-3">
             <Link
-              to="/transcript"
+              to="/app/transcript"
               className="inline-flex h-12 items-center gap-2 rounded-2xl bg-[#0A175A] px-4 text-sm font-bold text-white shadow-[0_8px_20px_rgba(10,23,90,.16)]"
             >
               {t("Continue transcript workflow")} <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
-              to="/roadmap"
+              to="/app/roadmap"
               className="inline-flex h-12 items-center gap-2 rounded-2xl border border-white/80 bg-white/75 px-4 text-sm font-bold text-[#0A175A]"
             >
               {t("View roadmap")}

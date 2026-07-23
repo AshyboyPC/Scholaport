@@ -29,7 +29,7 @@ import { playSaveCue } from "@/lib/rank-sound";
 import { upsertCurrentProfile, type StudentProfileInput } from "@/lib/scholaport-api";
 import { useI18n } from "@/lib/i18n";
 
-export const Route = createFileRoute("/settings")({
+export const Route = createFileRoute("/app/settings")({
   head: () => ({ meta: [{ title: "Settings · Scholaport" }] }),
   component: SettingsPage,
 });
@@ -107,7 +107,7 @@ function SettingsPage() {
   const handleSignOut = async () => {
     try {
       await signOut();
-      await navigate({ to: "/login", replace: true });
+      await navigate({ to: "/app/login", replace: true });
     } catch (cause) {
       notifyError(cause instanceof Error ? cause.message : "Unable to sign out.");
     }
@@ -220,7 +220,7 @@ function SettingsPage() {
                 ))}
               </ul>
               <Link
-                to="/onboarding"
+                to="/app/onboarding"
                 className="mt-3 inline-flex h-9 items-center rounded-xl border border-[#CDD3DE] bg-white px-3 text-xs font-bold text-[#0A175A]"
               >
                 Reselect MVP route
@@ -263,7 +263,7 @@ function SettingsPage() {
             </p>
           </section>
           <Link
-            to="/profile"
+            to="/app/profile"
             className="flex min-h-12 items-center gap-3 rounded-[18px] border border-[#CDD3DE] bg-white px-4 text-xs font-black text-[#0A175A]"
           >
             <PremiumProfileIcon className="h-5 w-5 text-[#01A995]" />
@@ -381,7 +381,7 @@ function SettingsPage() {
       <div className="mt-5 flex justify-end">
         {import.meta.env.DEV && (
           <Link
-            to="/reference-coverage"
+            to="/app/reference-coverage"
             className="mr-auto inline-flex h-10 items-center rounded-xl border border-[#CDD3DE] bg-white px-4 text-xs font-bold"
           >
             {t("Reference coverage")}

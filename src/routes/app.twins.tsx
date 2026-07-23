@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ComingSoonSurface } from "@/components/ComingSoonSurface";
 
-export const Route = createFileRoute("/twins")({
+export const Route = createFileRoute("/app/twins")({
   head: () => ({ meta: [{ title: "Twin Connect coming soon · Scholaport" }] }),
   component: TwinConnect,
 });

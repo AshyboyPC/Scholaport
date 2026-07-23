@@ -7,7 +7,7 @@ import { ClayScene, JourneyStage } from "@/components/journey/JourneyVisuals";
 import { getReferenceCoverage } from "@/lib/reference-api";
 import { useI18n } from "@/lib/i18n";
 
-export const Route = createFileRoute("/reference-coverage")({
+export const Route = createFileRoute("/app/reference-coverage")({
   head: () => ({ meta: [{ title: "Reference Coverage · Scholaport" }] }),
   component: ReferenceCoveragePage,
 });

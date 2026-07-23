@@ -24,7 +24,7 @@ const icons = {
   Flag: PremiumRoadmapIcon,
 };
 
-export const Route = createFileRoute("/guide")({
+export const Route = createFileRoute("/app/guide")({
   head: () => ({ meta: [{ title: "School Survival Guide · Scholaport" }] }),
   component: GuidePage,
 });

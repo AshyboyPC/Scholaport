@@ -4,7 +4,7 @@ import { useAuth } from "@/components/AuthProvider";
 import { PoriAvatar } from "@/components/pori/PoriAvatar";
 import { useAcademicPassportPreferences } from "@/hooks/use-academic-passport";
 
-export const Route = createFileRoute("/advisor")({
+export const Route = createFileRoute("/app/advisor")({
   head: () => ({
     meta: [
       { title: "AI Advisor coming soon · Scholaport" },

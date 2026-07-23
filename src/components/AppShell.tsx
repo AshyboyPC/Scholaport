@@ -14,9 +14,9 @@ import { createThread, deleteThread, listThreads, type ThreadRecord } from "@/li
 import { cn } from "@/lib/utils";
 
 const TABS = [
-  { to: "/chat", label: "Chat", icon: PremiumAdvisorIcon, match: "/chat" },
-  { to: "/transcript", label: "Transcript", icon: PremiumTranscriptIcon, match: "/transcript" },
-  { to: "/gaps", label: "Gaps", icon: PremiumGapIcon, match: "/gaps" },
+  { to: "/app/chat", label: "Chat", icon: PremiumAdvisorIcon, match: "/app/chat" },
+  { to: "/app/transcript", label: "Transcript", icon: PremiumTranscriptIcon, match: "/app/transcript" },
+  { to: "/app/gaps", label: "Gaps", icon: PremiumGapIcon, match: "/app/gaps" },
 ];
 
 export function AppShell({
@@ -97,7 +97,7 @@ function ThreadsSheet({ activeThreadId }: { activeThreadId?: string }) {
   const onNew = () => {
     const t = createThread({ title: "New chat" });
     setOpen(false);
-    navigate({ to: "/chat/$threadId", params: { threadId: t.id } });
+    navigate({ to: "/app/chat/$threadId", params: { threadId: t.id } });
   };
 
   return (
@@ -139,7 +139,7 @@ function ThreadsSheet({ activeThreadId }: { activeThreadId?: string }) {
                   onClick={() => {
                     setOpen(false);
                     navigate({
-                      to: "/chat/$threadId",
+                      to: "/app/chat/$threadId",
                       params: { threadId: t.id },
                     });
                   }}
@@ -172,13 +172,13 @@ function ThreadsSheet({ activeThreadId }: { activeThreadId?: string }) {
                       const remaining = listThreads();
                       if (remaining.length > 0) {
                         navigate({
-                          to: "/chat/$threadId",
+                          to: "/app/chat/$threadId",
                           params: { threadId: remaining[0]!.id },
                         });
                       } else {
                         const fresh = createThread({ title: "New chat" });
                         navigate({
-                          to: "/chat/$threadId",
+                          to: "/app/chat/$threadId",
                           params: { threadId: fresh.id },
                         });
                       }

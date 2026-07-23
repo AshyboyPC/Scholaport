@@ -25,7 +25,7 @@ import {
   type GapRequirement,
 } from "@/lib/scholaport-api";
 
-export const Route = createFileRoute("/gaps")({ component: GapAnalysis });
+export const Route = createFileRoute("/app/gaps")({ component: GapAnalysis });
 
 function GapAnalysis() {
   const queryClient = useQueryClient();
@@ -114,7 +114,7 @@ function getBlockedState({
       title: "Upload and confirm your transcript first.",
       body: "Gap analysis starts after Scholaport has confirmed transcript courses to compare.",
       action: "Go to transcript",
-      to: "/transcript" as const,
+      to: "/app/transcript" as const,
     };
   }
   if (transcript.confirmation_status !== "confirmed" || !courses.length) {
@@ -122,7 +122,7 @@ function getBlockedState({
       title: "Review and confirm your extracted courses first.",
       body: "OCR and translation results are not used for gaps until you confirm the course list.",
       action: "Review transcript",
-      to: "/transcript" as const,
+      to: "/app/transcript" as const,
     };
   }
   if (!mappings.length) {
@@ -130,7 +130,7 @@ function getBlockedState({
       title: "Generate probable credit mapping first.",
       body: "Gap analysis compares destination requirements against probable credit mappings.",
       action: "Open mapping review",
-      to: "/transcript" as const,
+      to: "/app/transcript" as const,
     };
   }
   if (!profile?.destination_framework_id) {
@@ -138,7 +138,7 @@ function getBlockedState({
       title: "Destination graduation framework is still being verified.",
       body: "Choose a destination state/framework in onboarding before running gap analysis.",
       action: "Open profile",
-      to: "/settings" as const,
+      to: "/app/settings" as const,
     };
   }
   return null;
@@ -147,7 +147,7 @@ function getBlockedState({
 function PrerequisiteState({
   state,
 }: {
-  state: { title: string; body: string; action: string; to: "/transcript" | "/settings" };
+  state: { title: string; body: string; action: string; to: "/app/transcript" | "/app/settings" };
 }) {
   return (
     <EmptyJourneyState

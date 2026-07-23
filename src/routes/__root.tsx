@@ -168,10 +168,10 @@ function AuthGateContent() {
   const { configured, loading, user, profile, error, retryAuth, returnToSignIn } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
-  const isLogin = location.pathname === "/login";
-  const isWelcome = location.pathname === "/welcome";
-  const isOnboarding = location.pathname === "/onboarding";
-  const isProfile = location.pathname === "/profile" || location.pathname === "/settings";
+  const isLogin = location.pathname === "/app/login";
+  const isWelcome = location.pathname === "/";
+  const isOnboarding = location.pathname === "/app/onboarding";
+  const isProfile = location.pathname === "/app/profile" || location.pathname === "/app/settings";
   const profileUnsupportedForMvp = profile
     ? getMvpProfileUnsupportedReasons(profile).length > 0
     : false;
@@ -180,19 +180,19 @@ function AuthGateContent() {
     if (isWelcome) return;
     if (!configured || loading || error) return;
     if (!user && !isLogin) {
-      void navigate({ to: "/login", replace: true });
+      void navigate({ to: "/app/login", replace: true });
       return;
     }
     if (user && !profile && !isOnboarding) {
-      void navigate({ to: "/onboarding", replace: true });
+      void navigate({ to: "/app/onboarding", replace: true });
       return;
     }
     if (user && profile && profileUnsupportedForMvp && !isOnboarding && !isProfile) {
-      void navigate({ to: "/onboarding", replace: true });
+      void navigate({ to: "/app/onboarding", replace: true });
       return;
     }
     if (user && profile && !profileUnsupportedForMvp && (isLogin || isOnboarding)) {
-      void navigate({ to: "/", replace: true });
+      void navigate({ to: "/app", replace: true });
     }
   }, [
     configured,
@@ -246,7 +246,7 @@ function AuthGateContent() {
         <button
           type="button"
           onClick={() => {
-            void returnToSignIn().finally(() => window.location.assign("/login"));
+            void returnToSignIn().finally(() => window.location.assign("/app/login"));
           }}
           className="inline-flex min-h-12 items-center justify-center rounded-2xl border border-[#CDD3DE] bg-white px-5 text-sm font-bold text-[#0A175A]"
         >

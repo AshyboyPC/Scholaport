@@ -42,7 +42,7 @@ import {
   type DestinationFramework,
 } from "@/lib/reference-api";
 
-export const Route = createFileRoute("/onboarding")({
+export const Route = createFileRoute("/app/onboarding")({
   head: () => ({ meta: [{ title: "Create your passport · Scholaport" }] }),
   component: Onboarding,
 });
@@ -309,7 +309,7 @@ function Onboarding() {
   const leaveOnboarding = async () => {
     try {
       await signOut();
-      await navigate({ to: "/login", replace: true });
+      await navigate({ to: "/app/login", replace: true });
     } catch (cause) {
       notifyError(cause instanceof Error ? cause.message : "Unable to switch sessions.");
     }

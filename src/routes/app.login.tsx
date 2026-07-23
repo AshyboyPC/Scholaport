@@ -9,7 +9,7 @@ import { requireSupabase } from "@/lib/supabase";
 import { useInterfacePreferences } from "@/hooks/use-interface-preferences";
 import { useI18n } from "@/lib/i18n";
 
-export const Route = createFileRoute("/login")({
+export const Route = createFileRoute("/app/login")({
   head: () => ({ meta: [{ title: "Sign in · Scholaport" }] }),
   component: LoginPage,
 });
@@ -95,7 +95,7 @@ function LoginPage() {
         if (error) throw error;
         if (data.session) {
           notifySuccess("Your account is ready. Let’s create your passport.", "complete");
-          await navigate({ to: "/onboarding", replace: true });
+          await navigate({ to: "/app/onboarding", replace: true });
         } else {
           notifySuccess("Check your email to confirm your Scholaport account.");
           setMode("login");

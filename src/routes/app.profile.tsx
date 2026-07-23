@@ -25,7 +25,7 @@ import {
   getTranscriptCourses,
 } from "@/lib/scholaport-api";
 
-export const Route = createFileRoute("/profile")({
+export const Route = createFileRoute("/app/profile")({
   head: () => ({
     meta: [
       { title: "Profile & Ranks · Scholaport" },
@@ -128,7 +128,7 @@ function AcademicProfilePage() {
             <p className="journey-eyebrow">My Pori</p>
             <h2>Your companion for the route.</h2>
           </div>
-          <Link to="/pori">
+          <Link to="/app/pori">
             {preferences.pori.status === "complete" ? "Edit Pori" : "Customize Pori"}
           </Link>
         </div>
@@ -163,7 +163,7 @@ function AcademicProfilePage() {
               </div>
             </dl>
             <div>
-              <Link to="/pori" className="my-pori-settings__edit">
+              <Link to="/app/pori" className="my-pori-settings__edit">
                 {preferences.pori.status === "complete" ? "Edit Pori" : "Start customizing"}
               </Link>
               <button
