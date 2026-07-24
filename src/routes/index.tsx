@@ -1,14 +1,8 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
-import { ArrowRight, ArrowUpRight, Check, FileText, Map, Route as RouteIcon } from "lucide-react";
-
 import { ScholaportLogo } from "@/components/ScholaportLogo";
+import { useEffect, useRef } from "react";
+import { PremiumCheckCircleIcon, PremiumShieldIcon, PremiumSettingsIcon } from "@/components/icons/PremiumIcon";
 import { ClayAsset } from "@/components/journey/JourneyVisuals";
-import { useRef } from "react";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -24,312 +18,365 @@ export const Route = createFileRoute("/")({
   component: WelcomePage,
 });
 
-const journeySteps = [
-  {
-    number: "01",
-    title: "Bring your record together",
-    copy: "Upload a transcript or enter courses in the language and format you already have.",
-    icon: FileText,
-  },
-  {
-    number: "02",
-    title: "See the likely connections",
-    copy: "Review how courses may connect to your destination framework, with uncertainty kept visible.",
-    icon: Map,
-  },
-  {
-    number: "03",
-    title: "Move with a clear plan",
-    copy: "Understand what still needs attention and bring a counselor-ready packet to the conversation.",
-    icon: RouteIcon,
-  },
-] as const;
-
-const principles = [
-  "Your record stays yours.",
-  "Uncertain results stay clearly labeled.",
-  "Schools and counselors keep the final say.",
-] as const;
-
 function WelcomePage() {
-  const container = useRef<HTMLDivElement>(null);
+  const navRef = useRef<HTMLElement>(null);
 
-  useGSAP(() => {
+  useEffect(() => {
+    const nav = navRef.current;
+    if (!nav) return;
 
-    gsap.to(".marketing-hero__source-art, .marketing-hero__destination-art", {
-      y: -10,
-      duration: 3,
-      ease: "sine.inOut",
-      yoyo: true,
-      repeat: -1,
-      stagger: 0.5
-    });
-
-    gsap.fromTo(
-      "#principles-title, .marketing-intro__body p, .marketing-intro__body li",
-      { y: 30, opacity: 0 },
-      {
-        y: 0,
-        opacity: 1,
-        duration: 0.8,
-        stagger: 0.1,
-        scrollTrigger: {
-          trigger: ".marketing-intro",
-          start: "top 80%",
-        },
+    const updateNav = () => {
+      if (window.scrollY > 24) {
+        nav.classList.add(
+          "fixed", "top-3", "inset-x-3", "max-w-none", "rounded-full", "border", "border-white/20", "bg-[#07113f]/65", "px-5", "py-3", "shadow-lg", "backdrop-blur-xl", "z-50"
+        );
+        nav.classList.remove("absolute", "top-0", "px-5", "py-5", "md:px-8", "z-30");
+      } else {
+        nav.classList.remove(
+          "fixed", "top-3", "inset-x-3", "max-w-none", "rounded-full", "border", "border-white/20", "bg-[#07113f]/65", "px-5", "py-3", "shadow-lg", "backdrop-blur-xl", "z-50"
+        );
+        nav.classList.add("absolute", "top-0", "px-5", "py-5", "md:px-8", "z-30");
       }
-    );
+    };
 
-    gsap.fromTo(
-      ".marketing-product__frame",
-      { y: 50, opacity: 0 },
-      {
-        y: 0,
-        opacity: 1,
-        duration: 1,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: ".marketing-product",
-          start: "top 75%",
-        },
-      }
-    );
-
-    gsap.fromTo(
-      ".marketing-step",
-      { y: 40, opacity: 0 },
-      {
-        y: 0,
-        opacity: 1,
-        duration: 0.8,
-        stagger: 0.15,
-        scrollTrigger: {
-          trigger: ".marketing-steps__list",
-          start: "top 80%",
-        },
-      }
-    );
-    
-    gsap.fromTo(
-      ".marketing-beta__layout > *",
-      { y: 30, opacity: 0 },
-      {
-        y: 0,
-        opacity: 1,
-        duration: 0.8,
-        stagger: 0.2,
-        scrollTrigger: {
-          trigger: ".marketing-beta",
-          start: "top 80%",
-        },
-      }
-    );
-  }, { scope: container });
+    updateNav();
+    window.addEventListener("scroll", updateNav, { passive: true });
+    return () => window.removeEventListener("scroll", updateNav);
+  }, []);
 
   return (
-    <main className="marketing-page" ref={container}>
-      <header className="marketing-nav-wrap">
-        <nav className="marketing-nav marketing-shell" aria-label="Main navigation">
-          <Link to="/" className="marketing-nav__brand" aria-label="Scholaport home">
-            <ScholaportLogo className="h-9 sm:h-10" showWordmark />
+    <main className="bg-[#f5f6f4] text-[#0a175a] px-3 md:px-5 pb-0 marketing-page">
+      
+      {/* HEADER / HERO */}
+      <header className="relative min-h-[760px] overflow-hidden rounded-b-[34px] bg-[#0a175a] text-white md:min-h-[820px]" id="home">
+        {/* Background Gradients */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_76%,rgba(1,195,173,.15),transparent_25%),radial-gradient(circle_at_15%_22%,rgba(1,169,149,.2),transparent_38%),radial-gradient(circle_at_84%_18%,rgba(10,23,90,.75),transparent_42%),linear-gradient(180deg,#07113f_0%,#0a175a_62%,#0a175a_100%)]"></div>
+        <div className="absolute inset-x-0 bottom-0 h-[35%] bg-[radial-gradient(ellipse_at_20%_90%,rgba(1,195,173,.2),transparent_30%),radial-gradient(ellipse_at_80%_80%,rgba(1,169,149,.14),transparent_26%)]"></div>
+        <div className="absolute inset-x-0 bottom-0 h-48 opacity-50" style={{ backgroundImage: "radial-gradient(circle at 12% 55%,#01c3ad 0 1px,transparent 2px),radial-gradient(circle at 26% 75%,#01a995 0 1px,transparent 2px),radial-gradient(circle at 72% 46%,#01c3ad 0 1px,transparent 2px),radial-gradient(circle at 90% 77%,#01a995 0 1px,transparent 2px)", backgroundSize: "94px 66px,128px 92px,108px 78px,140px 106px" }}></div>
+        
+        <nav ref={navRef} className="absolute inset-x-0 top-0 z-30 mx-auto flex max-w-7xl items-center justify-between px-5 py-5 text-[11px] font-[750] transition-all duration-300 md:px-8">
+          <Link to="/" className="text-sm tracking-tight" aria-label="Scholaport home">
+            <ScholaportLogo className="h-7 sm:h-8" showWordmark inverse />
           </Link>
-          <div className="marketing-nav__links" aria-label="Page sections">
-            <a href="#how-it-works">How it works</a>
-            <a href="#beta">Beta</a>
-            <a href="#principles">Principles</a>
+          <div className="hidden items-center gap-7 text-white/80 lg:flex text-[0.78rem]">
+            <a href="#philosophy" className="transition-colors hover:text-white hover:opacity-62">Benefits</a>
+            <a href="#infrastructure" className="transition-colors hover:text-white hover:opacity-62">Infrastructure</a>
+            <a href="#how-it-works" className="transition-colors hover:text-white hover:opacity-62">Process</a>
+            <a href="#beta" className="transition-colors hover:text-white hover:opacity-62">Evidence</a>
           </div>
-          <Link to="/app/login" className="marketing-nav__action">
-            Open Scholaport <ArrowUpRight aria-hidden="true" />
+          <Link to="/app/login" className="marketing-button marketing-button--light h-[44px]">
+            Open Scholaport
           </Link>
         </nav>
-      </header>
 
-      <section className="marketing-hero" aria-labelledby="welcome-title">
-        <div className="marketing-shell marketing-hero__layout">
-          <div className="marketing-hero__copy">
-            <p className="marketing-kicker">
-              <span aria-hidden="true" /> Private beta for international high-school transfers
-            </p>
-            <h1 id="welcome-title">Your academic record deserves a clear next chapter.</h1>
-            <p className="marketing-lede">
-              Scholaport turns a stack of coursework into a student-owned path for the next school
-              system, without pretending the hard questions are simple.
-            </p>
-            <div className="marketing-hero__actions">
-              <Link to="/app/login" className="marketing-button marketing-button--light">
-                Start your workspace <ArrowRight aria-hidden="true" />
-              </Link>
-              <a href="#how-it-works" className="marketing-text-link">
-                See the passage <span aria-hidden="true">↓</span>
-              </a>
-            </div>
-            <p className="marketing-hero__note">
-              Planning support for students and counselors. Not an official transcript evaluation.
-            </p>
-          </div>
-
-          <div className="marketing-hero__art" aria-label="A Scholaport academic journey preview">
-            <div className="marketing-hero__route" aria-hidden="true">
-              <span />
-              <span />
-              <span />
-            </div>
-            <div className="marketing-stage-card marketing-stage-card--source">
-              <span className="marketing-stage-card__label">Starting point</span>
-              <strong>Your coursework</strong>
-              <small>Transcript and curriculum</small>
-            </div>
-            <div className="marketing-stage-card marketing-stage-card--destination">
-              <span className="marketing-stage-card__label">Next system</span>
-              <strong>Your requirements</strong>
-              <small>Framework and graduation path</small>
-            </div>
-            <ClayAsset asset="source-curriculum" eager className="marketing-hero__source-art" />
-            <ClayAsset
-              asset="destination-framework"
-              eager
-              className="marketing-hero__destination-art"
-            />
-            <div className="marketing-stage-card marketing-stage-card--center">
-              <div className="marketing-stage-card__brand">
-                <ScholaportLogo className="h-7" />
-                <span>Academic passage</span>
-              </div>
-              <div className="marketing-stage-card__line" />
-              <div className="marketing-stage-card__summary">
-                <span>Transcript</span>
-                <b>→</b>
-                <span>Plan</span>
-              </div>
-              <p>Clear enough to act on. Honest enough to trust.</p>
-            </div>
+        <div className="relative z-10 mx-auto flex min-h-[760px] max-w-6xl flex-col items-center px-5 pt-32 text-center md:min-h-[820px] md:px-8 md:pt-36">
+          <h1 className="max-w-5xl text-[16vw] font-[800] leading-[0.98] tracking-[-0.06em] text-white md:text-[5.4rem]" style={{ fontFamily: "var(--font-display)" }}>
+            <span className="block">Your academic record</span>
+            <span className="block text-[0.8em] text-[#9ff2e6] mt-2">
+              deserves a clear next chapter.
+            </span>
+          </h1>
+          <p className="mt-9 max-w-xl text-[1rem] leading-[1.65] text-white/75 font-[560]">
+            Scholaport turns a stack of coursework into a student-owned path for the next school
+            system, without pretending the hard questions are simple.
+          </p>
+          <div className="relative mt-auto h-[250px] w-full max-w-[420px] md:h-[305px]">
+             <div className="absolute bottom-1 left-1/2 h-24 w-72 -translate-x-1/2 rounded-[100%] bg-[#01c3ad]/30 blur-3xl"></div>
+             
+             <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 w-[320px] h-[320px] md:w-[420px] md:h-[420px]">
+                <ClayAsset asset="counselor-packet" eager className="w-full h-full object-contain drop-shadow-2xl" />
+             </div>
           </div>
         </div>
-      </section>
+      </header>
 
-      <section className="marketing-intro" id="principles" aria-labelledby="principles-title">
-        <div className="marketing-shell marketing-intro__grid">
-          <div>
-            <p className="marketing-section-label">Made for a real transition</p>
-            <h2 id="principles-title">A better view of what you already learned.</h2>
+      {/* PHILOSOPHY / BENEFITS */}
+      <section id="philosophy" className="mx-auto max-w-7xl px-5 py-20 md:px-8 md:py-28">
+        <div className="grid gap-10 md:grid-cols-[.7fr_1.5fr]">
+          <div className="text-[0.67rem] font-[900] uppercase tracking-[0.1em] text-[#01a995]">
+            <span className="mr-2 text-[#f86746] drop-shadow-[0_0_8px_rgba(248,103,70,0.4)]">●</span>
+            The benefits
+            <br />
+            <span className="pl-5">of Scholaport</span>
           </div>
-          <div className="marketing-intro__body">
-            <p>
+          <div>
+            <h2 className="max-w-4xl text-[clamp(2.25rem,4vw,4rem)] font-[800] leading-[1.02] tracking-[-0.055em] text-[#0a175a]">
+              A better view of what you already learned.
+            </h2>
+            <p className="mt-5 max-w-3xl text-[1.04rem] leading-[1.75] text-[#526079] font-[570]">
               Moving schools should not mean starting from zero. Scholaport gives your prior work a
               place to land, while keeping the boundaries of what the product can and cannot know in
               plain sight.
             </p>
-            <ul>
-              {principles.map((principle) => (
-                <li key={principle}>
-                  <Check aria-hidden="true" />
-                  {principle}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      <section className="marketing-product" aria-labelledby="product-title">
-        <div className="marketing-shell">
-          <div className="marketing-product__frame">
-            <div className="marketing-product__eyebrow">
-              <span>Scholaport workspace</span>
-              <span className="marketing-product__status">Private beta</span>
-            </div>
-            <div className="marketing-product__body">
-              <div className="marketing-product__copy">
-                <p className="marketing-section-label">A student-owned workspace</p>
-                <h2 id="product-title">From a document pile to a route you can use.</h2>
-                <p>
-                  The workspace keeps the student’s transcript, possible credit connections,
-                  graduation questions, and counselor handoff in one calm place.
-                </p>
-                <Link to="/app/login" className="marketing-button marketing-button--ink">
-                  Explore the workspace <ArrowRight aria-hidden="true" />
-                </Link>
-              </div>
-              <div className="marketing-product__preview" aria-label="Product workflow preview">
-                <div className="marketing-preview__topline">
-                  <ScholaportLogo className="h-7" showWordmark />
-                  <span>My academic passage</span>
-                </div>
-                <div className="marketing-preview__map">
-                  <div className="marketing-preview__marker marketing-preview__marker--start">
-                    01
-                  </div>
-                  <div className="marketing-preview__marker marketing-preview__marker--middle">
-                    02
-                  </div>
-                  <div className="marketing-preview__marker marketing-preview__marker--end">03</div>
-                </div>
-                <div className="marketing-preview__labels">
-                  <span>Transcript</span>
-                  <span>Mapping review</span>
-                  <span>Next actions</span>
-                </div>
-                <div className="marketing-preview__footer">
-                  <span>Questions stay visible until they are resolved.</span>
-                  <span className="marketing-preview__ready">Ready for review</span>
-                </div>
-              </div>
-            </div>
-            <ClayAsset asset="credit-mapping" className="marketing-product__asset" />
-          </div>
-        </div>
-      </section>
-
-      <section className="marketing-steps" id="how-it-works" aria-labelledby="steps-title">
-        <div className="marketing-shell">
-          <div className="marketing-steps__heading">
-            <p className="marketing-section-label">The passage, in three moves</p>
-            <h2 id="steps-title">A process you can actually follow.</h2>
-          </div>
-          <div className="marketing-steps__list">
-            {journeySteps.map((step) => {
-              const Icon = step.icon;
-              return (
-                <article className="marketing-step" key={step.number}>
-                  <div className="marketing-step__number">{step.number}</div>
-                  <div className="marketing-step__icon">
-                    <Icon aria-hidden="true" />
-                  </div>
-                  <h3>{step.title}</h3>
-                  <p>{step.copy}</p>
-                </article>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      <section className="marketing-beta" id="beta" aria-labelledby="beta-title">
-        <div className="marketing-shell marketing-beta__layout">
-          <div className="marketing-beta__copy">
-            <p className="marketing-kicker marketing-kicker--ink">
-              <span aria-hidden="true" /> Built carefully, in the open
-            </p>
-            <h2 id="beta-title">The beta is deliberately narrow.</h2>
-            <p>
-              Scholaport is being shaped with real transfer decisions in mind. Coverage is shown
-              honestly, and the product leaves final credit and graduation decisions with schools.
-            </p>
-            <Link to="/app/login" className="marketing-button marketing-button--light">
-              Create a beta workspace <ArrowRight aria-hidden="true" />
+            <Link to="/app/login" className="mt-7 inline-flex items-center gap-4 rounded-full bg-[#0a175a] px-5 py-2.5 text-[0.78rem] font-[800] text-white hover:-translate-y-0.5 transition-transform" style={{ boxShadow: "inset 0 1px 0 rgb(255 255 255 / 20%)" }}>
+              Start your workspace
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white text-[#0a175a]">
+                →
+              </span>
             </Link>
           </div>
-          <div className="marketing-beta__art">
-            <div className="marketing-beta__stamp">BETA</div>
-            <ClayAsset asset="counselor-packet" className="marketing-beta__packet" />
-            <div className="marketing-beta__note">
-              <span>Designed to support</span>
-              <strong>students, families, and counselors</strong>
+        </div>
+
+        <div className="mt-16 grid gap-4 md:grid-cols-[.7fr_1fr_1fr]">
+          <article className="flex min-h-[190px] overflow-hidden rounded-[24px] bg-[#fffdf8] border border-[#dde4e5] shadow-[0_2px_8px_rgba(10,23,90,0.08)]">
+            <div className="relative w-2/5 overflow-hidden bg-[#0a175a]">
+              <div className="absolute -left-8 top-8 h-28 w-28 rotate-[28deg] rounded-[28px] bg-[#01c3ad] shadow-[18px_20px_0_#01a995]"></div>
+              <div className="absolute bottom-[-18px] right-[-20px] h-28 w-28 rounded-full border-[18px] border-white/35"></div>
+            </div>
+            <div className="flex flex-1 flex-col justify-between p-5">
+              <div>
+                <span className="text-3xl font-[800] tracking-tight text-[#0a175a]">100%</span>
+                <div className="text-xs font-[800] uppercase text-[#01a995]">Student-owned</div>
+              </div>
+              <p className="text-[10px] leading-[1.65] text-[#69758d] font-[620]">
+                Your record stays yours, under your complete control.
+              </p>
+            </div>
+          </article>
+          <article className="relative min-h-[190px] overflow-hidden rounded-[24px] bg-[#0a175a] text-white shadow-[0_2px_8px_rgba(10,23,90,0.08)]">
+            <div className="absolute inset-0 overflow-hidden bg-[#0a175a]">
+              <div className="absolute -right-6 -top-8 h-48 w-48 rounded-full bg-[#01c3ad]/60 blur-sm"></div>
+              <div className="absolute bottom-[-30px] right-[18%] h-40 w-40 rotate-[30deg] rounded-[34px] border border-white/40 bg-white/15 shadow-[20px_-16px_0_rgba(1,169,149,.28)]"></div>
+            </div>
+            <div className="absolute inset-0 bg-gradient-to-r from-[#07113f]/90 to-transparent"></div>
+            <div className="relative flex h-full flex-col justify-between p-6">
+              <div>
+                <span className="text-3xl font-[800] tracking-tight">Clear</span>
+                <div className="text-[0.67rem] font-[900] uppercase text-[#9ff2e6] tracking-[0.1em]">
+                  Uncertainty labeled
+                </div>
+              </div>
+              <p className="max-w-[190px] text-[10px] leading-relaxed text-white/70">
+                Uncertain credit mapping results stay clearly labeled so you know what needs review.
+              </p>
+            </div>
+          </article>
+          <article className="flex min-h-[190px] flex-col justify-between rounded-[24px] bg-[#fffdf8] border border-[#dde4e5] p-6 shadow-[0_2px_8px_rgba(10,23,90,0.08)]">
+            <div>
+              <span className="text-3xl font-[800] tracking-tight text-[#0a175a]">Final</span>
+              <div className="text-[0.67rem] font-[900] uppercase text-[#f86746] tracking-[0.1em]">School authority</div>
+            </div>
+            <p className="max-w-xs text-[10px] leading-[1.65] text-[#69758d] font-[620]">
+              Schools and counselors always keep the final say on credit and graduation decisions.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      {/* INFRASTRUCTURE */}
+      <section id="infrastructure" className="mx-auto max-w-7xl px-5 py-16 md:px-8 md:py-24">
+        <div className="mb-12 grid gap-8 md:grid-cols-[.7fr_1.5fr]">
+          <div className="text-[0.67rem] font-[900] uppercase tracking-[0.1em] text-[#01a995]">
+            <span className="mr-2 text-[#f86746] drop-shadow-[0_0_8px_rgba(248,103,70,0.4)]">●</span>
+            Engineered for clarity
+          </div>
+          <h2 className="max-w-4xl text-[clamp(2.25rem,4vw,4rem)] font-[800] leading-[1.02] tracking-[-0.055em] text-[#0a175a]">
+            From a document pile to a route you can use.
+          </h2>
+        </div>
+
+        <div className="grid items-end gap-5 md:grid-cols-[.45fr_.45fr_1.6fr]">
+          <article className="flex min-h-[210px] flex-col justify-between rounded-[24px] bg-[#fffdf8] border border-[#dde4e5] p-6 shadow-[0_2px_8px_rgba(10,23,90,0.08)]">
+            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#bfebdd] text-[#0a175a]">
+              <PremiumShieldIcon />
+            </span>
+            <div>
+              <h3 className="text-[0.67rem] font-[900] uppercase tracking-[0.1em] text-[#0a175a]">Private by design</h3>
+              <p className="mt-3 text-[10px] leading-[1.65] text-[#69758d] font-[620]">
+                Clear controls and responsible data practices keep your transcript and plans safe.
+              </p>
+            </div>
+          </article>
+          <article className="flex min-h-[210px] flex-col justify-between rounded-[24px] bg-[#fffdf8] border border-[#dde4e5] p-6 shadow-[0_2px_8px_rgba(10,23,90,0.08)]">
+            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#ffe1d8] text-[#0a175a]">
+              <PremiumSettingsIcon />
+            </span>
+            <div>
+              <h3 className="text-[0.67rem] font-[900] uppercase tracking-[0.1em] text-[#0a175a]">Reliable support</h3>
+              <p className="mt-3 text-[10px] leading-[1.65] text-[#69758d] font-[620]">
+                Guidance remains available between meetings, deadlines, and moments of uncertainty.
+              </p>
+            </div>
+          </article>
+          <article className="relative min-h-[390px] overflow-hidden rounded-[26px] bg-[#07113f]">
+            <div className="absolute inset-0 overflow-hidden bg-[#0a175a]">
+              <div className="absolute -left-12 top-10 h-64 w-64 rotate-[24deg] rounded-[48px] bg-[#01c3ad]/60 shadow-[32px_34px_0_rgba(1,169,149,.26)]"></div>
+              <div className="absolute right-[12%] top-[16%] h-44 w-44 rounded-full border-[22px] border-white/20"></div>
+              <div className="absolute bottom-[-42px] right-[-24px] h-48 w-48 rounded-[42px] bg-white/10"></div>
+              <div className="absolute -right-4 -top-4">
+                <ClayAsset asset="secure-profile" className="w-56 h-64 object-contain opacity-90 drop-shadow-xl" />
+              </div>
+            </div>
+            <div className="absolute inset-x-0 bottom-0 bg-[#07113f]/85 p-6 text-white backdrop-blur-md">
+              <div className="mb-2 text-[0.67rem] font-[900] uppercase text-[#9ff2e6] tracking-[0.1em]">
+                Counselor Handoff
+              </div>
+              <p className="max-w-xl text-[11px] leading-relaxed text-white/65">
+                The workspace keeps the student’s transcript, possible credit connections,
+                graduation questions, and counselor handoff in one calm place.
+              </p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      {/* HOW IT WORKS / THE PASSAGE */}
+      <section id="how-it-works" className="mx-auto max-w-7xl px-5 py-10 md:px-8 md:py-16">
+        <div className="overflow-hidden rounded-[34px] bg-[#fffdf8] border border-[#dde4e5] shadow-[0_2px_8px_rgba(10,23,90,0.08)] px-6 py-12 md:px-12 md:py-16">
+          <div className="grid items-center gap-10 md:grid-cols-[.9fr_1.1fr] md:gap-14">
+            <div className="max-w-xl text-left">
+              <p className="mb-4 text-[0.67rem] font-[900] uppercase tracking-[0.1em] text-[#01a995]">
+                <span className="mr-2 text-[#f86746] drop-shadow-[0_0_8px_rgba(248,103,70,0.4)]">●</span>
+                The passage, in three moves
+              </p>
+              <h2 className="text-[clamp(2.25rem,4vw,4rem)] font-[800] leading-[1.02] tracking-[-0.055em] text-[#0a175a]">
+                A process you can
+                <span className="relative inline-flex h-[.88em] w-[.88em] translate-y-[.08em] items-center justify-center rounded-full bg-[#01c3ad] text-[.48em] text-[#0a175a] mx-2 shadow-inner shadow-white/30">
+                  ✦
+                </span>
+                actually <span className="text-[#01a995]">follow.</span>
+              </h2>
+              
+              <div className="mt-10 space-y-8">
+                <div className="flex gap-5">
+                  <div className="font-[900] text-[#9da6b4] text-[0.64rem] tracking-[0.1em] mt-1.5">01</div>
+                  <div>
+                    <h3 className="font-[800] text-[#0a175a] text-[1.3rem] leading-[1.08] tracking-[-0.04em]">Bring your record together</h3>
+                    <p className="text-[#69758d] text-[0.76rem] mt-2 font-[620] leading-[1.65]">Upload a transcript or enter courses in the language and format you already have.</p>
+                  </div>
+                </div>
+                <div className="flex gap-5">
+                  <div className="font-[900] text-[#9da6b4] text-[0.64rem] tracking-[0.1em] mt-1.5">02</div>
+                  <div>
+                    <h3 className="font-[800] text-[#0a175a] text-[1.3rem] leading-[1.08] tracking-[-0.04em]">See the likely connections</h3>
+                    <p className="text-[#69758d] text-[0.76rem] mt-2 font-[620] leading-[1.65]">Review how courses may connect to your destination framework, with uncertainty kept visible.</p>
+                  </div>
+                </div>
+                <div className="flex gap-5">
+                  <div className="font-[900] text-[#9da6b4] text-[0.64rem] tracking-[0.1em] mt-1.5">03</div>
+                  <div>
+                    <h3 className="font-[800] text-[#0a175a] text-[1.3rem] leading-[1.08] tracking-[-0.04em]">Move with a clear plan</h3>
+                    <p className="text-[#69758d] text-[0.76rem] mt-2 font-[620] leading-[1.65]">Understand what still needs attention and bring a counselor-ready packet to the conversation.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="relative mx-auto flex h-[340px] w-full max-w-[520px] items-center justify-center md:h-[420px]">
+              <div className="absolute h-48 w-48 rounded-full border border-[#0a175a]/10 md:h-64 md:w-64"></div>
+              <div className="absolute h-36 w-36 rounded-full border border-[#01c3ad]/40 md:h-52 md:w-52"></div>
+              <ClayAsset asset="academic-roadmap" className="w-[120%] h-[120%] object-contain scale-110 drop-shadow-2xl z-10" />
             </div>
           </div>
         </div>
       </section>
 
+      {/* IMPACT / TRUST */}
+      <section className="mx-auto max-w-7xl px-5 py-10 md:px-8 md:py-16" aria-label="Scholaport impact">
+        <div className="grid gap-3 md:grid-cols-3 md:grid-rows-[170px_170px]">
+          <article className="row-span-2 flex min-h-[330px] flex-col justify-between overflow-hidden rounded-[24px] bg-[#fffdf8] border border-[#dde4e5] p-5 shadow-sm">
+            <div className="relative flex h-40 items-center justify-center overflow-hidden rounded-[18px] bg-[#f5f6f4]">
+              <div className="absolute h-24 w-24 rotate-[-18deg] rounded-[24px] bg-[#01c3ad] shadow-[14px_16px_0_#9ff2e6,0_20px_26px_rgba(10,23,90,.16)]"></div>
+              <div className="absolute h-20 w-20 rotate-[18deg] rounded-[20px] border border-white/80 bg-[#0a175a] shadow-[-13px_15px_0_#cdd3de]"></div>
+              <div className="relative flex h-16 w-16 items-center justify-center rounded-full bg-white text-2xl text-[#0a175a] shadow-xl">
+                ✦
+              </div>
+            </div>
+            <div>
+              <h3 className="max-w-[210px] text-[1.15rem] font-[800] leading-tight tracking-tight text-[#0a175a]">
+                Built for the people behind every learning experience.
+              </h3>
+              <Link to="/app/login" className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#0a175a] px-4 py-2 text-[0.78rem] font-[800] text-white hover:-translate-y-0.5 transition-transform" style={{ boxShadow: "inset 0 1px 0 rgb(255 255 255 / 20%)" }}>
+                Explore Scholaport
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white text-sm text-[#0a175a]">
+                  →
+                </span>
+              </Link>
+            </div>
+          </article>
+          <article className="relative overflow-hidden rounded-[24px] bg-[#e8efed] p-5 shadow-[0_1px_3px_rgba(10,23,90,0.08)]">
+            <div className="absolute -right-2 -top-5 h-36 w-36 rounded-full bg-[#01c3ad] opacity-40 blur-2xl"></div>
+            <div className="absolute right-7 top-4 h-24 w-24 rotate-[20deg] rounded-[22px] border border-white/80 bg-gradient-to-br from-white to-[#9ff2e6] shadow-[10px_14px_0_#0a175a]" style={{ transformStyle: "preserve-3d" }}></div>
+            <div className="relative z-10 flex h-full flex-col justify-end">
+              <h3 className="max-w-[190px] text-[1.15rem] font-[800] leading-tight tracking-tight text-[#0a175a]">
+                Trusted by academic teams.
+              </h3>
+              <p className="mt-1 text-xs leading-[1.65] text-[#59647a] font-[600]">
+                Designed around real learner needs.
+              </p>
+            </div>
+          </article>
+          <article className="relative overflow-hidden rounded-[24px] bg-[#fffdf8] border border-[#dde4e5] p-5 shadow-[0_1px_3px_rgba(10,23,90,0.08)]">
+            <div className="absolute right-7 top-4">
+              <div className="relative flex h-24 w-16 items-center justify-center rounded-b-[28px] rounded-t-[14px] bg-gradient-to-r from-[#0a175a] via-[#01c3ad] to-[#9ff2e6] shadow-[10px_14px_0_#cdd3de]">
+                <div className="absolute -top-4 h-7 w-7 rotate-45 rounded-[5px] bg-[#f4c85a] shadow-md"></div>
+                <div className="h-11 w-11 rounded-full border-4 border-white/50"></div>
+              </div>
+            </div>
+            <div className="relative z-10 flex h-full flex-col justify-end">
+              <div className="text-3xl font-[800] tracking-tight text-[#0a175a]">24/7</div>
+              <p className="mt-1 max-w-[150px] text-[10px] leading-[1.65] text-[#69758d] font-[620]">
+                Guidance ready when learners need it.
+              </p>
+            </div>
+          </article>
+          <article className="relative col-span-1 overflow-hidden rounded-[24px] bg-[#e8efed] p-5 md:col-span-2 shadow-[0_1px_3px_rgba(10,23,90,0.08)]">
+            <div className="absolute -right-3 -bottom-6 h-44 w-44 rounded-full bg-[#0a175a] shadow-[-16px_-12px_0_#01c3ad]"></div>
+            <div className="absolute bottom-7 right-11 h-28 w-28 rotate-[-12deg] rounded-[28px] border border-white/40 bg-[#9ff2e6] shadow-[14px_15px_0_#0a175a]" style={{ transformStyle: "preserve-3d" }}>
+              <div className="absolute inset-5 rounded-full border-4 border-[#01c3ad] bg-white/60"></div>
+            </div>
+            <div className="relative z-10 flex h-full max-w-[290px] flex-col justify-end">
+              <h3 className="text-[1.15rem] font-[800] leading-tight tracking-tight text-[#0a175a]">
+                Bring every academic signal into focus and make the next step
+                clearer.
+              </h3>
+              <p className="mt-1 text-[0.76rem] leading-[1.65] text-[#59647a] font-[600]">
+                Support that adapts to each learner journey.
+              </p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      {/* BETA / EVIDENCE */}
+      <section id="beta" className="mx-auto max-w-7xl px-5 py-20 md:px-8">
+        <div className="mb-12 flex flex-col justify-between gap-6 md:flex-row md:items-end">
+          <h2 className="max-w-2xl text-[clamp(2.25rem,4vw,4rem)] font-[800] leading-[1.02] tracking-[-0.055em] text-[#0a175a]">
+            The beta is deliberately narrow.
+          </h2>
+          <p className="max-w-xs text-[1.04rem] leading-[1.75] text-[#526079] font-[570]">
+            Scholaport is being shaped with real transfer decisions in mind.
+          </p>
+        </div>
+        <div className="grid gap-5 md:grid-cols-3">
+          <article className="rounded-[26px] bg-[#0a175a] p-7 text-white shadow-md">
+            <div className="text-3xl font-[800]">4+</div>
+            <h3 className="mt-16 text-[1.15rem] font-[800]">Research studies</h3>
+            <p className="mt-3 text-[0.76rem] leading-[1.65] text-white/72 font-[620]">
+              Evidence supports the design and efficacy of the academic
+              experience.
+            </p>
+          </article>
+          <article className="rounded-[26px] bg-[#fffdf8] border border-[#dde4e5] p-7 shadow-[0_1px_3px_rgba(10,23,90,0.08)]">
+            <div className="text-3xl font-[800] text-[#0a175a]">24/7</div>
+            <h3 className="mt-16 text-[1.15rem] font-[800] text-[#0a175a]">Continuous availability</h3>
+            <p className="mt-3 text-[0.76rem] leading-[1.65] text-[#69758d] font-[620]">
+              Reliable support without waitlists or unnecessary operational
+              overhead.
+            </p>
+          </article>
+          <article className="rounded-[26px] bg-[#01c3ad] p-7 text-[#0a175a] shadow-md">
+            <div className="text-3xl font-[800]">1M+</div>
+            <h3 className="mt-16 text-[1.15rem] font-[800]">Satisfied users</h3>
+            <p className="mt-3 text-[0.76rem] leading-[1.65] text-[#0a175a]/75 font-[620]">
+              A proven foundation that grows with institutions and their
+              learners.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      {/* EXISTING FOOTER (Preserved via BEM classes from styles.css) */}
       <footer className="marketing-footer">
         <div className="marketing-shell marketing-footer__grid">
           <div className="marketing-footer__brand">
