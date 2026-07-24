@@ -1,5 +1,5 @@
 import type { Session, User } from "@supabase/supabase-js";
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, useRef } from "react";
 import { getCurrentProfile, type StudentProfile } from "@/lib/scholaport-api";
 import { clearStoredSupabaseSession, isSupabaseConfigured, supabase } from "@/lib/supabase";
 
@@ -35,6 +35,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [retryCount, setRetryCount] = useState(0);
+
+  const profileRef = useRef<StudentProfile | null>(null);
+  useEffect(() => {
+    profileRef.current = profile;
+  }, [profile]);
 
   const refreshProfile = useCallback(async () => {
     if (!supabase) return null;
@@ -91,6 +96,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setLoading(false);
         return;
       }
+      
+      // If we already have the profile for this user, do not show a disruptive 
+      // loading screen (e.g., when the token refreshes or the tab regains focus).
+      if (profileRef.current?.user_id === nextSession.user.id) {
+        return;
+      }
+
       setLoading(true);
       window.setTimeout(() => {
         void refreshProfile()
