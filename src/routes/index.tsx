@@ -5,6 +5,7 @@ import { PremiumCheckCircleIcon, PremiumShieldIcon, PremiumSettingsIcon } from "
 import { ClayAsset } from "@/components/journey/JourneyVisuals";
 import heroBgImage from "@/assets/images/hero-bg.png";
 import footerBgImage from "@/assets/images/footer-bg.png";
+import featureShowcaseImg from "@/assets/images/feature-showcase.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -150,21 +151,15 @@ function WelcomePage() {
           </div>
         </div>
 
-        {/* Center Image Area with X Cutout */}
-        <div className="relative w-full overflow-hidden rounded-[32px] bg-[#f5f6f4] h-[300px] md:h-[550px] mb-20 flex items-center justify-center">
-          {/* The background image (placeholder) */}
+        {/* Center Image Area */}
+        <div className="relative w-full overflow-hidden rounded-[32px] bg-[#f5f6f4] h-[300px] md:h-[550px] mb-20 flex items-center justify-center shadow-sm">
+          {/* The exact image provided by the user */}
           <div className="absolute inset-0" style={{
-            backgroundImage: `url(${heroBgImage})`,
-            backgroundSize: 'cover',
+            backgroundImage: `url(${featureShowcaseImg})`,
+            backgroundSize: 'contain',
             backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
           }}></div>
-          
-          {/* The X Cutout Mask */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            {/* Two intersecting white bars to form the massive X */}
-            <div className="absolute w-[200%] h-[120px] md:h-[200px] bg-[#f5f6f4] rotate-[35deg] transform origin-center"></div>
-            <div className="absolute w-[200%] h-[120px] md:h-[200px] bg-[#f5f6f4] -rotate-[35deg] transform origin-center"></div>
-          </div>
         </div>
 
         {/* Bottom Features Grid */}
