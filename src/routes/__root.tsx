@@ -9,7 +9,7 @@ import {
   useLocation,
   useNavigate,
 } from "@tanstack/react-router";
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useSyncExternalStore, type ReactNode } from "react";
 import { AlertCircle } from "lucide-react";
 
 import "@fontsource/manrope/400.css";
@@ -142,23 +142,27 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+function subscribeToNetwork(callback: () => void) {
+  window.addEventListener("online", callback);
+  window.addEventListener("offline", callback);
+  return () => {
+    window.removeEventListener("online", callback);
+    window.removeEventListener("offline", callback);
+  };
+}
+
+function getNetworkSnapshot() {
+  return navigator.onLine;
+}
+
+function getServerNetworkSnapshot() {
+  return true;
+}
+
 function NetworkBanner() {
-  const [isOffline, setIsOffline] = useState(!navigator.onLine);
+  const isOnline = useSyncExternalStore(subscribeToNetwork, getNetworkSnapshot, getServerNetworkSnapshot);
 
-  useEffect(() => {
-    const handleOffline = () => setIsOffline(true);
-    const handleOnline = () => setIsOffline(false);
-
-    window.addEventListener("offline", handleOffline);
-    window.addEventListener("online", handleOnline);
-
-    return () => {
-      window.removeEventListener("offline", handleOffline);
-      window.removeEventListener("online", handleOnline);
-    };
-  }, []);
-
-  if (!isOffline) return null;
+  if (isOnline) return null;
 
   return (
     <div className="fixed top-0 left-0 right-0 z-[100] flex items-center justify-center gap-2 bg-[#E65234] px-4 py-2 text-sm font-bold text-white shadow-[0_4px_12px_rgba(230,82,52,0.3)] animate-in slide-in-from-top-full duration-300">
