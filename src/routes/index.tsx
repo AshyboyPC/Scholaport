@@ -413,7 +413,7 @@ function WelcomePage() {
       </section>
 
       {/* NEW FOOTER / WAITLIST SECTION */}
-      <section className="relative w-full overflow-hidden bg-[#02263d] pt-40 pb-0 text-white mt-10 rounded-t-[40px] md:rounded-t-[60px]">
+      <section className="relative w-full overflow-hidden bg-[#02263d] pt-40 pb-0 text-white mt-10 rounded-t-[40px] md:rounded-t-[60px] shadow-[0_-20px_50px_rgba(10,23,90,0.08)] border-t border-white">
         
         {/* Background Landscape Image */}
         <div className="absolute inset-x-0 top-0 h-[800px] w-full" style={{
@@ -432,8 +432,8 @@ function WelcomePage() {
             Private Beta
           </div>
           
-          <h2 className="mb-6 text-[clamp(2.5rem,6vw,5.5rem)] font-[800] leading-[1.0] tracking-[-0.04em] text-white" style={{ fontFamily: "var(--font-display)" }}>
-            JOIN THE WAITLIST.
+          <h2 className="mb-6 text-[clamp(2.5rem,6vw,5.5rem)] font-[800] leading-[1.0] tracking-[-0.04em] text-[#0a175a]" style={{ fontFamily: "var(--font-display)" }}>
+            JOIN THE BETA.
           </h2>
           
           <p className="mb-10 max-w-md text-[1.04rem] leading-[1.65] text-white/80 font-[570]">
@@ -458,7 +458,7 @@ function WelcomePage() {
         </div>
 
         {/* EXISTING FOOTER CONTENT (Sits over the extended solid #02263d background) */}
-        <div className="relative z-10 mt-32 w-full border-t border-white/10 pt-10">
+        <div className="relative z-10 mt-32 w-full pt-10">
           <footer className="marketing-footer !bg-transparent !pt-0">
             <div className="marketing-shell marketing-footer__grid">
               <div className="marketing-footer__brand">
