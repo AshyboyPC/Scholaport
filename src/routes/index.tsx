@@ -34,7 +34,7 @@ function WelcomePage() {
   }, []);
 
   return (
-    <main className="bg-[#f5f6f4] text-[#0a175a] px-3 md:px-5 pb-0 marketing-page">
+    <main className="bg-[#fffdf8] text-[#0a175a] px-3 md:px-5 pb-0 marketing-page">
       
       {/* HEADER / HERO */}
       <header className="relative min-h-[760px] overflow-hidden rounded-b-[34px] bg-[#0a175a] text-white md:min-h-[820px]" id="home">
@@ -152,7 +152,7 @@ function WelcomePage() {
         </div>
 
         {/* Center Image Area */}
-        <div className="relative w-full overflow-hidden rounded-[32px] bg-[#f5f6f4] h-[300px] md:h-[550px] mb-20 flex items-center justify-center shadow-sm">
+        <div className="relative w-full overflow-hidden rounded-[32px] bg-[#fffdf8] h-[300px] md:h-[550px] mb-20 flex items-center justify-center shadow-sm">
           {/* The exact image provided by the user */}
           <div className="absolute inset-0" style={{
             backgroundImage: `url(${featureShowcaseImg})`,
@@ -384,7 +384,7 @@ function WelcomePage() {
       <section className="mx-auto max-w-7xl px-5 py-10 md:px-8 md:py-16" aria-label="Scholaport impact">
         <div className="grid gap-3 md:grid-cols-3 md:grid-rows-[170px_170px]">
           <article className="row-span-2 flex min-h-[330px] flex-col justify-between overflow-hidden rounded-[24px] bg-[#fffdf8] border border-[#dde4e5] p-5 shadow-sm">
-            <div className="relative flex h-40 items-center justify-center overflow-hidden rounded-[18px] bg-[#f5f6f4]">
+            <div className="relative flex h-40 items-center justify-center overflow-hidden rounded-[18px] bg-[#fffdf8]">
               <div className="absolute h-24 w-24 rotate-[-18deg] rounded-[24px] bg-[#01c3ad] shadow-[14px_16px_0_#9ff2e6,0_20px_26px_rgba(10,23,90,.16)]"></div>
               <div className="absolute h-20 w-20 rotate-[18deg] rounded-[20px] border border-white/80 bg-[#0a175a] shadow-[-13px_15px_0_#cdd3de]"></div>
               <div className="relative flex h-16 w-16 items-center justify-center rounded-full bg-white text-2xl text-[#0a175a] shadow-xl">

@@ -27,7 +27,7 @@ body {
 /* Public marketing page: the glass shell stays intentionally bounded to navigation and actions. */
 .marketing-page {
   overflow: clip;
-  background: #f5f6f4;
+  background: #fffdf8;
   color: #101a3f;
 }
 
