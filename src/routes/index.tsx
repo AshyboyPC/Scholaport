@@ -83,11 +83,11 @@ function WelcomePage() {
           <div className={`absolute top-1/2 -translate-y-1/2 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
             isScrolled ? "right-2" : "right-5 md:right-8"
           }`}>
-            <Link to="/app/login" className={`marketing-button transition-colors duration-500 h-[46px] ${
+            <a href="#home" className={`marketing-button transition-colors duration-500 h-[46px] ${
               isScrolled ? "marketing-button--ink" : "marketing-button--light"
             }`}>
-              Open Scholaport
-            </Link>
+              Join waitlist
+            </a>
           </div>
 
         </nav>
@@ -103,12 +103,26 @@ function WelcomePage() {
             Scholaport turns a stack of coursework into a student-owned path for the next school
             system, without pretending the hard questions are simple.
           </p>
-          <div className="relative mt-auto h-[250px] w-full max-w-[420px] md:h-[305px]">
-             <div className="absolute bottom-1 left-1/2 h-24 w-72 -translate-x-1/2 rounded-[100%] bg-[#01c3ad]/30 blur-3xl"></div>
-             
-             <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 w-[320px] h-[320px] md:w-[420px] md:h-[420px]">
-                <ClayAsset asset="counselor-packet" eager className="w-full h-full object-contain drop-shadow-2xl" />
-             </div>
+          {/* WAITLIST SIGNUP */}
+          <div className="relative mt-auto w-full max-w-[460px] pb-16">
+            <form className="flex items-center rounded-full bg-white/10 border border-white/20 p-2 pl-6 backdrop-blur-lg shadow-[0_20px_40px_rgba(0,0,0,0.2)]">
+              <input 
+                type="email" 
+                placeholder="Enter your email address" 
+                className="flex-1 bg-transparent text-[1rem] font-[560] text-white placeholder-white/50 outline-none w-full"
+                required
+              />
+              <button type="submit" className="marketing-button marketing-button--light h-[52px] rounded-full px-8 shrink-0">
+                Join Beta
+              </button>
+            </form>
+            <div className="mt-5 flex items-center justify-center gap-2 text-[0.76rem] font-[650] text-white/50">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#01c3ad] opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#01c3ad]"></span>
+              </span>
+              Accepting early access requests
+            </div>
           </div>
         </div>
       </header>
@@ -131,12 +145,12 @@ function WelcomePage() {
               place to land, while keeping the boundaries of what the product can and cannot know in
               plain sight.
             </p>
-            <Link to="/app/login" className="mt-7 inline-flex items-center gap-4 rounded-full bg-[#0a175a] px-5 py-2.5 text-[0.78rem] font-[800] text-white hover:-translate-y-0.5 transition-transform" style={{ boxShadow: "inset 0 1px 0 rgb(255 255 255 / 20%)" }}>
-              Start your workspace
+            <a href="#home" className="mt-7 inline-flex items-center gap-4 rounded-full bg-[#0a175a] px-5 py-2.5 text-[0.78rem] font-[800] text-white hover:-translate-y-0.5 transition-transform" style={{ boxShadow: "inset 0 1px 0 rgb(255 255 255 / 20%)" }}>
+              Request beta access
               <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white text-[#0a175a]">
                 →
               </span>
-            </Link>
+            </a>
           </div>
         </div>
 
@@ -309,12 +323,12 @@ function WelcomePage() {
               <h3 className="max-w-[210px] text-[1.15rem] font-[800] leading-tight tracking-tight text-[#0a175a]">
                 Built for the people behind every learning experience.
               </h3>
-              <Link to="/app/login" className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#0a175a] px-4 py-2 text-[0.78rem] font-[800] text-white hover:-translate-y-0.5 transition-transform" style={{ boxShadow: "inset 0 1px 0 rgb(255 255 255 / 20%)" }}>
-                Explore Scholaport
+              <a href="#home" className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#0a175a] px-4 py-2 text-[0.78rem] font-[800] text-white hover:-translate-y-0.5 transition-transform" style={{ boxShadow: "inset 0 1px 0 rgb(255 255 255 / 20%)" }}>
+                Join waitlist
                 <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white text-sm text-[#0a175a]">
                   →
                 </span>
-              </Link>
+              </a>
             </div>
           </article>
           <article className="relative overflow-hidden rounded-[24px] bg-[#e8efed] p-5 shadow-[0_1px_3px_rgba(10,23,90,0.08)]">
@@ -411,8 +425,7 @@ function WelcomePage() {
           <div className="marketing-footer__links">
             <a href="#how-it-works">How it works</a>
             <a href="#beta">Private beta</a>
-            <Link to="/app/login">Sign in</Link>
-            <Link to="/app/login">Create an account</Link>
+            <a href="#home">Join waitlist</a>
           </div>
           <div className="marketing-footer__note">
             <span>Scholaport is a planning workspace.</span>
