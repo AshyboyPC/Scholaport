@@ -9,7 +9,8 @@ import {
   useLocation,
   useNavigate,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
+import { AlertCircle } from "lucide-react";
 
 import "@fontsource/manrope/400.css";
 import "@fontsource/manrope/500.css";
@@ -141,6 +142,32 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+function NetworkBanner() {
+  const [isOffline, setIsOffline] = useState(!navigator.onLine);
+
+  useEffect(() => {
+    const handleOffline = () => setIsOffline(true);
+    const handleOnline = () => setIsOffline(false);
+
+    window.addEventListener("offline", handleOffline);
+    window.addEventListener("online", handleOnline);
+
+    return () => {
+      window.removeEventListener("offline", handleOffline);
+      window.removeEventListener("online", handleOnline);
+    };
+  }, []);
+
+  if (!isOffline) return null;
+
+  return (
+    <div className="fixed top-0 left-0 right-0 z-[100] flex items-center justify-center gap-2 bg-[#E65234] px-4 py-2 text-sm font-bold text-white shadow-[0_4px_12px_rgba(230,82,52,0.3)] animate-in slide-in-from-top-full duration-300">
+      <AlertCircle className="h-4 w-4" />
+      <span>No internet connection. Please check your network.</span>
+    </div>
+  );
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
@@ -149,6 +176,7 @@ function RootComponent() {
       <AuthProvider>
         <AuthGate />
       </AuthProvider>
+      <NetworkBanner />
       <Toaster position="top-center" richColors />
     </QueryClientProvider>
   );
