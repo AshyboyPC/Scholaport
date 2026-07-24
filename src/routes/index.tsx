@@ -55,23 +55,6 @@ function WelcomePage() {
   const container = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
-    const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-    
-    tl.fromTo(".marketing-nav", { y: -20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8 });
-    
-    tl.fromTo(
-      [".marketing-kicker", "#welcome-title", ".marketing-lede", ".marketing-hero__actions", ".marketing-hero__note"],
-      { y: 40, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.8, stagger: 0.1 },
-      "-=0.4"
-    );
-
-    tl.fromTo(
-      ".marketing-hero__art > *",
-      { scale: 0.95, opacity: 0, y: 20 },
-      { scale: 1, opacity: 1, y: 0, duration: 0.8, stagger: 0.1 },
-      "-=0.6"
-    );
 
     gsap.to(".marketing-hero__source-art, .marketing-hero__destination-art", {
       y: -10,
