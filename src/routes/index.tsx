@@ -5,7 +5,7 @@ import { PremiumCheckCircleIcon, PremiumShieldIcon, PremiumSettingsIcon } from "
 import { ClayAsset } from "@/components/journey/JourneyVisuals";
 import heroBgImage from "@/assets/images/hero-bg.png";
 import footerBgImage from "@/assets/images/footer-bg.png";
-import featureShowcaseImg from "@/assets/images/feature-showcase.png";
+import featureShowcaseImg from "@/assets/images/feature-showcase-nobg.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -152,7 +152,7 @@ function WelcomePage() {
         </div>
 
         {/* Center Image Area */}
-        <div className="relative w-full overflow-hidden rounded-[32px] bg-[#fffdf8] h-[300px] md:h-[550px] mb-20 flex items-center justify-center shadow-sm">
+        <div className="relative w-full h-[300px] md:h-[550px] mb-20 flex items-center justify-center">
           {/* The exact image provided by the user */}
           <div className="absolute inset-0" style={{
             backgroundImage: `url(${featureShowcaseImg})`,
@@ -486,7 +486,7 @@ function WelcomePage() {
       </section>
 
       {/* NEW FOOTER / WAITLIST SECTION */}
-      <section className="relative w-full overflow-hidden bg-[#02263d] pt-40 pb-0 text-white mt-10 rounded-t-[40px] md:rounded-t-[60px] shadow-[0_-20px_50px_rgba(10,23,90,0.08)] border-t border-white">
+      <section className="relative w-full overflow-hidden bg-[#02263d] pt-40 pb-0 text-white">
         
         {/* Background Landscape Image */}
         <div className="absolute inset-x-0 top-0 h-[800px] w-full" style={{
