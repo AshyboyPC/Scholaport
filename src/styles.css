@@ -3,7 +3,7 @@
 @import "tw-animate-css";
 
 @font-face {
-  font-family: 'Gumriot-Smooth';
+  font-family: 'Gumriot';
   src: url('./assets/fonts/Gumriot-Smooth.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
@@ -873,10 +873,8 @@ body {
 }
 
 .marketing-footer__wordmark {
-  position: relative;
-  z-index: 10;
-  display: block;
-  font-family: 'Gumriot-Smooth', var(--font-display);
+  margin-bottom: -0.28em;
+  font-family: 'Gumriot', var(--font-display);
   font-size: clamp(3.75rem, 14vw, 12.5rem);
   font-weight: normal;
   letter-spacing: 0.02em;

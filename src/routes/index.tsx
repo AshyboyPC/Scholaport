@@ -92,7 +92,7 @@ function WelcomePage() {
         </nav>
 
         <div className="relative z-10 mx-auto flex min-h-[760px] max-w-6xl flex-col items-center px-5 pt-32 text-center md:min-h-[820px] md:px-8 md:pt-36">
-          <h1 className="max-w-5xl text-[16vw] font-[800] leading-[0.98] tracking-[-0.06em] text-white md:text-[5.4rem]" style={{ fontFamily: "'Gumriot-Regular', var(--font-display)" }}>
+          <h1 className="max-w-5xl text-[16vw] font-[800] leading-[0.98] tracking-[-0.06em] text-white md:text-[5.4rem]" style={{ fontFamily: "Gumriot-Regular" }}>
             <span className="block">Your academic record</span>
             <span className="block text-[0.8em] text-[#9ff2e6] mt-2">
               deserves a clear next chapter.
@@ -136,7 +136,7 @@ function WelcomePage() {
             <span className="pl-5">of Scholaport</span>
           </div>
           <div>
-            <h2 className="max-w-4xl text-[clamp(2.25rem,4vw,4rem)] font-[800] leading-[1.02] tracking-[-0.055em] text-[#0a175a]">
+            <h2 className="max-w-4xl text-[clamp(2.25rem,4vw,4rem)] font-[800] leading-[1.02] tracking-[-0.055em] text-[#0a175a]" style={{ fontFamily: "Gumriot-Regular" }}>
               A better view of what you already learned.
             </h2>
             <p className="mt-5 max-w-3xl text-[1.04rem] leading-[1.75] text-[#526079] font-[570]">
@@ -206,7 +206,7 @@ function WelcomePage() {
             <span className="mr-2 text-[#f86746] drop-shadow-[0_0_8px_rgba(248,103,70,0.4)]">●</span>
             Engineered for clarity
           </div>
-          <h2 className="max-w-4xl text-[clamp(2.25rem,4vw,4rem)] font-[800] leading-[1.02] tracking-[-0.055em] text-[#0a175a]">
+          <h2 className="max-w-4xl text-[clamp(2.25rem,4vw,4rem)] font-[800] leading-[1.02] tracking-[-0.055em] text-[#0a175a]" style={{ fontFamily: "Gumriot-Regular" }}>
             From a document pile to a route you can use.
           </h2>
         </div>
@@ -265,7 +265,7 @@ function WelcomePage() {
                 <span className="mr-2 text-[#f86746] drop-shadow-[0_0_8px_rgba(248,103,70,0.4)]">●</span>
                 The passage, in three moves
               </p>
-              <h2 className="text-[clamp(2.25rem,4vw,4rem)] font-[800] leading-[1.02] tracking-[-0.055em] text-[#0a175a]">
+              <h2 className="text-[clamp(2.25rem,4vw,4rem)] font-[800] leading-[1.02] tracking-[-0.055em] text-[#0a175a]" style={{ fontFamily: "Gumriot-Regular" }}>
                 A process you can
                 <span className="relative inline-flex h-[.88em] w-[.88em] translate-y-[.08em] items-center justify-center rounded-full bg-[#01c3ad] text-[.48em] text-[#0a175a] mx-2 shadow-inner shadow-white/30">
                   ✦
@@ -377,7 +377,7 @@ function WelcomePage() {
       {/* BETA / EVIDENCE */}
       <section id="beta" className="mx-auto max-w-7xl px-5 py-20 md:px-8">
         <div className="mb-12 flex flex-col justify-between gap-6 md:flex-row md:items-end">
-          <h2 className="max-w-2xl text-[clamp(2.25rem,4vw,4rem)] font-[800] leading-[1.02] tracking-[-0.055em] text-[#0a175a]">
+          <h2 className="max-w-2xl text-[clamp(2.25rem,4vw,4rem)] font-[800] leading-[1.02] tracking-[-0.055em] text-[#0a175a]" style={{ fontFamily: "Gumriot-Regular" }}>
             The beta is deliberately narrow.
           </h2>
           <p className="max-w-xs text-[1.04rem] leading-[1.75] text-[#526079] font-[570]">
@@ -432,11 +432,11 @@ function WelcomePage() {
             Private Beta
           </div>
           
-          <h2 className="mb-6 text-[clamp(2.5rem,6vw,5.5rem)] font-[800] leading-[1.0] tracking-[-0.04em] text-[#0a175a]" style={{ fontFamily: "'Gumriot-Smooth', var(--font-display)" }}>
+          <h2 className="mb-6 text-[clamp(2.5rem,6vw,5.5rem)] font-[800] leading-[1.0] tracking-[-0.04em] text-[#0a175a]" style={{ fontFamily: "Gumriot" }}>
             JOIN THE BETA.
           </h2>
           
-          <p className="mb-10 max-w-md text-[1.04rem] leading-[1.65] text-white/80 font-[570]">
+          <p className="mb-10 max-w-md text-[1.04rem] leading-[1.65] text-[#273a6a] font-[600]">
             Scholaport is rolling out in cohorts. Add your email to secure a spot in our upcoming beta release.
           </p>
 
@@ -452,7 +452,7 @@ function WelcomePage() {
             </button>
           </form>
 
-          <p className="mt-5 text-[0.76rem] text-white/50 font-[600]">
+          <p className="mt-5 text-[0.76rem] text-[#1b2b5c] font-[650]">
             By clicking Sign up you're confirming that you agree with our Terms and Conditions.
           </p>
         </div>
@@ -463,21 +463,21 @@ function WelcomePage() {
             <div className="marketing-shell marketing-footer__grid">
               <div className="marketing-footer__brand">
                 <ScholaportLogo className="h-11" showWordmark inverse />
-                <p className="text-[#01c3ad] mt-3">
+                <p className="text-white/70">
                   A clear academic passage for students carrying their learning across school systems.
                 </p>
               </div>
-              <div className="flex flex-col gap-3 font-[750] text-[0.76rem]">
-                <a href="#how-it-works" className="text-[#9ff2e6] hover:text-white transition-colors">How it works</a>
-                <a href="#beta" className="text-[#9ff2e6] hover:text-white transition-colors">Private beta</a>
-                <a href="#home" className="text-[#9ff2e6] hover:text-white transition-colors">Join waitlist</a>
+              <div className="marketing-footer__links">
+                <a href="#how-it-works">How it works</a>
+                <a href="#beta">Private beta</a>
+                <a href="#home">Join waitlist</a>
               </div>
-              <div className="marketing-footer__note text-[#01a995]">
+              <div className="marketing-footer__note text-white/50">
                 <span>Scholaport is a planning workspace.</span>
                 <span>Schools retain final academic decision-making.</span>
               </div>
             </div>
-            <div className="marketing-footer__wordmark text-[#01a995]/20" aria-hidden="true">
+            <div className="marketing-footer__wordmark text-white/10" aria-hidden="true">
               SCHOLAPORT
             </div>
           </footer>
