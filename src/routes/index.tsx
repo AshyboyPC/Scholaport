@@ -126,6 +126,84 @@ function WelcomePage() {
         </div>
       </header>
 
+      {/* FEATURE SHOWCASE (DESIGN REFERENCE) */}
+      <section className="mx-auto w-full max-w-7xl px-5 py-24 md:px-8">
+        {/* Top Header Area */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
+          <div className="max-w-3xl">
+            <div className="inline-flex items-center rounded-full bg-[#01c3ad]/15 px-3 py-1 mb-5">
+              <span className="text-[0.65rem] font-[800] uppercase tracking-wider text-[#01a995]">
+                ✦ Engineered for Academic Clarity
+              </span>
+            </div>
+            <h2 className="text-[clamp(2.5rem,5vw,4.5rem)] font-[800] leading-[1.05] tracking-[-0.04em] text-[#0a175a]" style={{ fontFamily: "Gumriot-Regular" }}>
+              A Workspace Built for <br className="hidden md:block" /><span className="text-[#01c3ad]">Students & Counselors.</span>
+            </h2>
+            <p className="mt-6 text-[1.1rem] leading-[1.65] text-[#526079] font-[560] max-w-2xl">
+              Built for ultimate clarity, Scholaport gives students the perfect foundation to track their progress, showcase their record, and plan their future.
+            </p>
+          </div>
+          <div className="shrink-0 mb-2">
+            <a href="#home" className="inline-flex h-12 items-center justify-center rounded-full bg-[#0a175a] px-8 text-[0.9rem] font-[700] text-white hover:bg-[#0a175a]/90 transition-colors shadow-lg">
+              Get Started
+            </a>
+          </div>
+        </div>
+
+        {/* Center Image Area with X Cutout */}
+        <div className="relative w-full overflow-hidden rounded-[32px] bg-[#f5f6f4] h-[300px] md:h-[550px] mb-20 flex items-center justify-center">
+          {/* The background image (placeholder) */}
+          <div className="absolute inset-0" style={{
+            backgroundImage: `url(${heroBgImage})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}></div>
+          
+          {/* The X Cutout Mask */}
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            {/* Two intersecting white bars to form the massive X */}
+            <div className="absolute w-[200%] h-[120px] md:h-[200px] bg-[#f5f6f4] rotate-[35deg] transform origin-center"></div>
+            <div className="absolute w-[200%] h-[120px] md:h-[200px] bg-[#f5f6f4] -rotate-[35deg] transform origin-center"></div>
+          </div>
+        </div>
+
+        {/* Bottom Features Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12">
+          {/* Feature 1 */}
+          <div>
+            <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-[#01c3ad]/10 text-[#01c3ad]">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+            </div>
+            <h3 className="text-[1.05rem] font-[800] text-[#0a175a] mb-2">Instant Import</h3>
+            <p className="text-[0.9rem] leading-[1.6] text-[#526079] font-[550]">Bring your transcripts in minutes, no manual entry required.</p>
+          </div>
+          {/* Feature 2 */}
+          <div>
+            <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-[#01c3ad]/10 text-[#01c3ad]">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+            </div>
+            <h3 className="text-[1.05rem] font-[800] text-[#0a175a] mb-2">Universal Format</h3>
+            <p className="text-[0.9rem] leading-[1.6] text-[#526079] font-[550]">A standardized record that builds trust with institutions.</p>
+          </div>
+          {/* Feature 3 */}
+          <div>
+            <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-[#01c3ad]/10 text-[#01c3ad]">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+            </div>
+            <h3 className="text-[1.05rem] font-[800] text-[#0a175a] mb-2">Seamless Portability</h3>
+            <p className="text-[0.9rem] leading-[1.6] text-[#526079] font-[550]">Carry your record seamlessly across school systems.</p>
+          </div>
+          {/* Feature 4 */}
+          <div>
+            <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-[#01c3ad]/10 text-[#01c3ad]">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+            </div>
+            <h3 className="text-[1.05rem] font-[800] text-[#0a175a] mb-2">Always Accessible</h3>
+            <p className="text-[0.9rem] leading-[1.6] text-[#526079] font-[550]">Optimized for desktop, tablet, and mobile viewing.</p>
+          </div>
+        </div>
+      </section>
+
       {/* PHILOSOPHY / BENEFITS */}
       <section id="philosophy" className="mx-auto max-w-7xl px-5 py-20 md:px-8 md:py-28">
         <div className="grid gap-10 md:grid-cols-[.7fr_1.5fr]">
