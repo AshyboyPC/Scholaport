@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { PremiumCheckCircleIcon, PremiumShieldIcon, PremiumSettingsIcon } from "@/components/icons/PremiumIcon";
 import { ClayAsset } from "@/components/journey/JourneyVisuals";
 import heroBgImage from "@/assets/images/hero-bg.png";
+import footerBgImage from "@/assets/images/footer-bg.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -411,29 +412,77 @@ function WelcomePage() {
         </div>
       </section>
 
-      {/* EXISTING FOOTER (Preserved via BEM classes from styles.css) */}
-      <footer className="marketing-footer">
-        <div className="marketing-shell marketing-footer__grid">
-          <div className="marketing-footer__brand">
-            <ScholaportLogo className="h-11" showWordmark inverse />
-            <p>
-              A clear academic passage for students carrying their learning across school systems.
-            </p>
-          </div>
-          <div className="marketing-footer__links">
-            <a href="#how-it-works">How it works</a>
-            <a href="#beta">Private beta</a>
-            <a href="#home">Join waitlist</a>
-          </div>
-          <div className="marketing-footer__note">
-            <span>Scholaport is a planning workspace.</span>
-            <span>Schools retain final academic decision-making.</span>
-          </div>
+      {/* NEW FOOTER / WAITLIST SECTION */}
+      <section className="relative w-full overflow-hidden bg-[#02263d] pt-40 pb-0 text-white mt-10 rounded-t-[40px] md:rounded-t-[60px]">
+        
+        {/* Background Landscape Image */}
+        <div className="absolute inset-x-0 top-0 h-[800px] w-full" style={{
+          backgroundImage: `url(${footerBgImage})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'top center',
+          backgroundRepeat: 'no-repeat',
+        }}>
+          {/* Subtle gradient to ensure smooth blend into #02263d */}
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#02263d]"></div>
         </div>
-        <div className="marketing-footer__wordmark" aria-hidden="true">
-          SCHOLAPORT
+
+        {/* Foreground Content */}
+        <div className="relative z-10 mx-auto flex max-w-5xl flex-col items-center px-5 text-center">
+          <div className="text-[0.67rem] font-[900] uppercase tracking-[0.1em] text-white/70 mb-4">
+            Private Beta
+          </div>
+          
+          <h2 className="mb-6 text-[clamp(2.5rem,6vw,5.5rem)] font-[800] leading-[1.0] tracking-[-0.04em] text-white" style={{ fontFamily: "var(--font-display)" }}>
+            JOIN THE WAITLIST.
+          </h2>
+          
+          <p className="mb-10 max-w-md text-[1.04rem] leading-[1.65] text-white/80 font-[570]">
+            Scholaport is rolling out in cohorts. Add your email to secure a spot in our upcoming beta release.
+          </p>
+
+          <form className="flex w-full max-w-[520px] items-center rounded-full bg-[#02263d]/40 p-2 pl-6 shadow-2xl backdrop-blur-lg border border-white/20 hover:border-white/40 transition-colors duration-300">
+            <input 
+              type="email" 
+              placeholder="Enter your email address..." 
+              className="flex-1 bg-transparent text-[1.05rem] font-[560] text-white placeholder-white/50 outline-none w-full"
+              required
+            />
+            <button type="submit" className="marketing-button marketing-button--light h-[54px] rounded-full px-10 shrink-0 text-[0.85rem]">
+              Sign up
+            </button>
+          </form>
+
+          <p className="mt-5 text-[0.76rem] text-white/50 font-[600]">
+            By clicking Sign up you're confirming that you agree with our Terms and Conditions.
+          </p>
         </div>
-      </footer>
+
+        {/* EXISTING FOOTER CONTENT (Sits over the extended solid #02263d background) */}
+        <div className="relative z-10 mt-32 w-full border-t border-white/10 pt-10">
+          <footer className="marketing-footer !bg-transparent !pt-0">
+            <div className="marketing-shell marketing-footer__grid">
+              <div className="marketing-footer__brand">
+                <ScholaportLogo className="h-11" showWordmark inverse />
+                <p className="text-white/70">
+                  A clear academic passage for students carrying their learning across school systems.
+                </p>
+              </div>
+              <div className="marketing-footer__links">
+                <a href="#how-it-works">How it works</a>
+                <a href="#beta">Private beta</a>
+                <a href="#home">Join waitlist</a>
+              </div>
+              <div className="marketing-footer__note text-white/50">
+                <span>Scholaport is a planning workspace.</span>
+                <span>Schools retain final academic decision-making.</span>
+              </div>
+            </div>
+            <div className="marketing-footer__wordmark text-white/10" aria-hidden="true">
+              SCHOLAPORT
+            </div>
+          </footer>
+        </div>
+      </section>
     </main>
   );
 }

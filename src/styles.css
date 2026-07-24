@@ -827,7 +827,7 @@ body {
   overflow: hidden;
   padding: 78px 0 0;
   color: #fff;
-  background-color: #07113f;
+  background-color: transparent;
 }
 
 .marketing-footer__grid {
