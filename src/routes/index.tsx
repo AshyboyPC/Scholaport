@@ -3,6 +3,7 @@ import { ScholaportLogo } from "@/components/ScholaportLogo";
 import { useEffect, useRef } from "react";
 import { PremiumCheckCircleIcon, PremiumShieldIcon, PremiumSettingsIcon } from "@/components/icons/PremiumIcon";
 import { ClayAsset } from "@/components/journey/JourneyVisuals";
+import heroBgImage from "@/assets/images/hero-bg.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -49,10 +50,11 @@ function WelcomePage() {
       
       {/* HEADER / HERO */}
       <header className="relative min-h-[760px] overflow-hidden rounded-b-[34px] bg-[#0a175a] text-white md:min-h-[820px]" id="home">
-        {/* Background Gradients */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_76%,rgba(1,195,173,.15),transparent_25%),radial-gradient(circle_at_15%_22%,rgba(1,169,149,.2),transparent_38%),radial-gradient(circle_at_84%_18%,rgba(10,23,90,.75),transparent_42%),linear-gradient(180deg,#07113f_0%,#0a175a_62%,#0a175a_100%)]"></div>
-        <div className="absolute inset-x-0 bottom-0 h-[35%] bg-[radial-gradient(ellipse_at_20%_90%,rgba(1,195,173,.2),transparent_30%),radial-gradient(ellipse_at_80%_80%,rgba(1,169,149,.14),transparent_26%)]"></div>
-        <div className="absolute inset-x-0 bottom-0 h-48 opacity-50" style={{ backgroundImage: "radial-gradient(circle at 12% 55%,#01c3ad 0 1px,transparent 2px),radial-gradient(circle at 26% 75%,#01a995 0 1px,transparent 2px),radial-gradient(circle at 72% 46%,#01c3ad 0 1px,transparent 2px),radial-gradient(circle at 90% 77%,#01a995 0 1px,transparent 2px)", backgroundSize: "94px 66px,128px 92px,108px 78px,140px 106px" }}></div>
+        {/* Background Image */}
+        <div className="absolute inset-0">
+          <img src={heroBgImage} alt="" className="w-full h-full object-cover opacity-80" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0a175a]/40 via-transparent to-[#0a175a]/90"></div>
+        </div>
         
         <nav ref={navRef} className="absolute inset-x-0 top-0 z-30 mx-auto flex max-w-7xl items-center justify-between px-5 py-5 text-[11px] font-[750] transition-all duration-300 md:px-8">
           <Link to="/" className="text-sm tracking-tight" aria-label="Scholaport home">
