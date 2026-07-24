@@ -92,7 +92,7 @@ function WelcomePage() {
         </nav>
 
         <div className="relative z-10 mx-auto flex min-h-[760px] max-w-6xl flex-col items-center px-5 pt-32 text-center md:min-h-[820px] md:px-8 md:pt-36">
-          <h1 className="max-w-5xl text-[16vw] font-[800] leading-[0.98] tracking-[-0.06em] text-white md:text-[5.4rem]" style={{ fontFamily: "Gumriot-Regular" }}>
+          <h1 className="max-w-5xl text-[16vw] font-[800] leading-[0.98] tracking-[-0.06em] text-white md:text-[5.4rem]" style={{ fontFamily: "var(--font-display)" }}>
             <span className="block">Your academic record</span>
             <span className="block text-[0.8em] text-[#9ff2e6] mt-2">
               deserves a clear next chapter.
@@ -136,7 +136,7 @@ function WelcomePage() {
             <span className="pl-5">of Scholaport</span>
           </div>
           <div>
-            <h2 className="max-w-4xl text-[clamp(2.25rem,4vw,4rem)] font-[800] leading-[1.02] tracking-[-0.055em] text-[#0a175a]" style={{ fontFamily: "Gumriot-Regular" }}>
+            <h2 className="max-w-4xl text-[clamp(2.25rem,4vw,4rem)] font-[800] leading-[1.02] tracking-[-0.055em] text-[#0a175a]">
               A better view of what you already learned.
             </h2>
             <p className="mt-5 max-w-3xl text-[1.04rem] leading-[1.75] text-[#526079] font-[570]">
@@ -206,7 +206,7 @@ function WelcomePage() {
             <span className="mr-2 text-[#f86746] drop-shadow-[0_0_8px_rgba(248,103,70,0.4)]">●</span>
             Engineered for clarity
           </div>
-          <h2 className="max-w-4xl text-[clamp(2.25rem,4vw,4rem)] font-[800] leading-[1.02] tracking-[-0.055em] text-[#0a175a]" style={{ fontFamily: "Gumriot-Regular" }}>
+          <h2 className="max-w-4xl text-[clamp(2.25rem,4vw,4rem)] font-[800] leading-[1.02] tracking-[-0.055em] text-[#0a175a]">
             From a document pile to a route you can use.
           </h2>
         </div>
@@ -265,7 +265,7 @@ function WelcomePage() {
                 <span className="mr-2 text-[#f86746] drop-shadow-[0_0_8px_rgba(248,103,70,0.4)]">●</span>
                 The passage, in three moves
               </p>
-              <h2 className="text-[clamp(2.25rem,4vw,4rem)] font-[800] leading-[1.02] tracking-[-0.055em] text-[#0a175a]" style={{ fontFamily: "Gumriot-Regular" }}>
+              <h2 className="text-[clamp(2.25rem,4vw,4rem)] font-[800] leading-[1.02] tracking-[-0.055em] text-[#0a175a]">
                 A process you can
                 <span className="relative inline-flex h-[.88em] w-[.88em] translate-y-[.08em] items-center justify-center rounded-full bg-[#01c3ad] text-[.48em] text-[#0a175a] mx-2 shadow-inner shadow-white/30">
                   ✦
@@ -377,7 +377,7 @@ function WelcomePage() {
       {/* BETA / EVIDENCE */}
       <section id="beta" className="mx-auto max-w-7xl px-5 py-20 md:px-8">
         <div className="mb-12 flex flex-col justify-between gap-6 md:flex-row md:items-end">
-          <h2 className="max-w-2xl text-[clamp(2.25rem,4vw,4rem)] font-[800] leading-[1.02] tracking-[-0.055em] text-[#0a175a]" style={{ fontFamily: "Gumriot-Regular" }}>
+          <h2 className="max-w-2xl text-[clamp(2.25rem,4vw,4rem)] font-[800] leading-[1.02] tracking-[-0.055em] text-[#0a175a]">
             The beta is deliberately narrow.
           </h2>
           <p className="max-w-xs text-[1.04rem] leading-[1.75] text-[#526079] font-[570]">
