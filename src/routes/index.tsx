@@ -5,7 +5,7 @@ import { PremiumCheckCircleIcon, PremiumShieldIcon, PremiumSettingsIcon } from "
 import { ClayAsset } from "@/components/journey/JourneyVisuals";
 import heroBgImage from "@/assets/images/hero-bg.png";
 import footerBgImage from "@/assets/images/footer-bg.png";
-import featureShowcaseImg from "@/assets/images/feature-showcase-nobg.png";
+import featureShowcaseImg from "@/assets/images/feature-showcase.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -153,8 +153,8 @@ function WelcomePage() {
 
         {/* Center Image Area */}
         <div className="relative w-full h-[300px] md:h-[550px] mb-20 flex items-center justify-center">
-          {/* The exact image provided by the user */}
-          <div className="absolute inset-0" style={{
+          {/* The exact image provided by the user with CSS multiply to cleanly drop the white background */}
+          <div className="absolute inset-0 mix-blend-multiply" style={{
             backgroundImage: `url(${featureShowcaseImg})`,
             backgroundSize: 'contain',
             backgroundPosition: 'center',
