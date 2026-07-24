@@ -2,6 +2,14 @@
 @source "../src";
 @import "tw-animate-css";
 
+@font-face {
+  font-family: 'Gumriot';
+  src: url('./assets/fonts/Gumriot-Smooth.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* Public marketing page: the glass shell stays intentionally bounded to navigation and actions. */
 .marketing-page {
   overflow: clip;
@@ -813,7 +821,7 @@
   overflow: hidden;
   padding: 78px 0 0;
   color: #fff;
-  background: #07113f;
+  background-color: #07113f;
 }
 
 .marketing-footer__grid {
@@ -852,15 +860,20 @@
 
 .marketing-footer__wordmark {
   margin-bottom: -0.18em;
-  color: #01a995;
-  font-family: var(--font-display);
+  font-family: 'Gumriot', var(--font-display);
   font-size: clamp(4rem, 15vw, 13.5rem);
-  font-weight: 900;
-  letter-spacing: -0.085em;
+  font-weight: normal;
+  letter-spacing: 0.02em;
   line-height: 0.76;
   text-align: center;
   white-space: nowrap;
   opacity: 0.95;
+  background-image: url('./assets/images/footer-texture.png');
+  background-size: cover;
+  background-position: center;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 @media (max-width: 940px) {
