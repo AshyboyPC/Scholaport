@@ -277,13 +277,10 @@ function FullPageStatus({
   children?: ReactNode;
 }) {
   return (
-    <div className="grid min-h-dvh place-items-center bg-[#01C3AD] px-5">
-      <div className="journey-paper relative max-w-lg overflow-hidden p-8 text-center">
-        <ScholaportLogo className="mx-auto h-14" />
-        <div className="mx-auto mt-6 w-fit">
-          <DocumentStack />
-        </div>
-        <h1 className="mt-5 font-display text-2xl font-bold tracking-[-0.04em] text-[#0A175A]">
+    <div className="grid min-h-dvh place-items-center bg-background px-5">
+      <div className="flex max-w-lg flex-col items-center text-center">
+        <ScholaportLogo className="h-16" animatedLoader={true} />
+        <h1 className="mt-8 font-display text-2xl font-bold tracking-[-0.04em] text-[#0A175A]">
           {title}
         </h1>
         <p className="mt-3 text-sm leading-6 text-[#5A6380]">{description}</p>
