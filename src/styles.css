@@ -859,7 +859,7 @@
 }
 
 .marketing-footer__wordmark {
-  margin-bottom: -0.18em;
+  margin-bottom: -0.28em;
   font-family: 'Gumriot', var(--font-display);
   font-size: clamp(4rem, 15vw, 13.5rem);
   font-weight: normal;
