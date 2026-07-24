@@ -1,6 +1,6 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { ScholaportLogo } from "@/components/ScholaportLogo";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { PremiumCheckCircleIcon, PremiumShieldIcon, PremiumSettingsIcon } from "@/components/icons/PremiumIcon";
 import { ClayAsset } from "@/components/journey/JourneyVisuals";
 import heroBgImage from "@/assets/images/hero-bg.png";
@@ -20,26 +20,12 @@ export const Route = createFileRoute("/")({
 });
 
 function WelcomePage() {
-  const navRef = useRef<HTMLElement>(null);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
-    const nav = navRef.current;
-    if (!nav) return;
-
     const updateNav = () => {
-      if (window.scrollY > 24) {
-        nav.classList.add(
-          "fixed", "top-3", "inset-x-3", "max-w-none", "rounded-full", "border", "border-white/20", "bg-[#07113f]/65", "px-5", "py-3", "shadow-lg", "backdrop-blur-xl", "z-50"
-        );
-        nav.classList.remove("absolute", "top-0", "px-5", "py-5", "md:px-8", "z-30");
-      } else {
-        nav.classList.remove(
-          "fixed", "top-3", "inset-x-3", "max-w-none", "rounded-full", "border", "border-white/20", "bg-[#07113f]/65", "px-5", "py-3", "shadow-lg", "backdrop-blur-xl", "z-50"
-        );
-        nav.classList.add("absolute", "top-0", "px-5", "py-5", "md:px-8", "z-30");
-      }
+      setIsScrolled(window.scrollY > 24);
     };
-
     updateNav();
     window.addEventListener("scroll", updateNav, { passive: true });
     return () => window.removeEventListener("scroll", updateNav);
@@ -56,19 +42,54 @@ function WelcomePage() {
           <div className="absolute inset-0 bg-gradient-to-b from-[#0a175a]/40 via-transparent to-[#0a175a]/90"></div>
         </div>
         
-        <nav ref={navRef} className="absolute inset-x-0 top-0 z-30 mx-auto flex max-w-7xl items-center justify-between px-5 py-5 text-[11px] font-[750] transition-all duration-300 md:px-8">
-          <Link to="/" className="text-sm tracking-tight" aria-label="Scholaport home">
-            <ScholaportLogo className="h-7 sm:h-8" showWordmark inverse />
+        {/* MORPHING NAVIGATION */}
+        <nav className={`fixed z-50 top-0 left-1/2 -translate-x-1/2 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] flex items-center ${
+          isScrolled 
+            ? "top-4 w-max h-[64px] pl-[180px] pr-[174px] rounded-[32px] bg-white/76 border border-white/42 shadow-[0_10px_32px_rgba(7,17,63,0.1),inset_0_1px_0_rgba(255,255,255,0.72)] backdrop-blur-[18px] saturate-[1.1] text-[#344061]" 
+            : "top-0 w-full max-w-7xl h-[90px] px-5 md:px-8 text-white"
+        }`}>
+
+          {/* LOGO (Always absolute) */}
+          <Link to="/" aria-label="Scholaport home" className={`absolute top-1/2 -translate-y-1/2 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+            isScrolled ? "left-6" : "left-1/2 -translate-x-1/2"
+          }`}>
+            <ScholaportLogo className="h-7 sm:h-8 transition-colors duration-500" showWordmark inverse={!isScrolled} />
           </Link>
-          <div className="hidden items-center gap-7 text-white/80 lg:flex text-[0.78rem]">
-            <a href="#philosophy" className="transition-colors hover:text-white hover:opacity-62">Benefits</a>
-            <a href="#infrastructure" className="transition-colors hover:text-white hover:opacity-62">Infrastructure</a>
-            <a href="#how-it-works" className="transition-colors hover:text-white hover:opacity-62">Process</a>
-            <a href="#beta" className="transition-colors hover:text-white hover:opacity-62">Evidence</a>
+
+          {/* LINKS CONTAINER */}
+          <div className={`hidden lg:flex items-center transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+            isScrolled ? "w-max gap-1 mx-auto" : "w-full justify-between"
+          }`}>
+            
+            {/* LEFT LINKS */}
+            <div className={`flex items-center transition-all duration-700 ${isScrolled ? "gap-1" : "gap-7"}`}>
+               <a href="#philosophy" className={`transition-all duration-300 text-[0.78rem] whitespace-nowrap ${isScrolled ? "px-5 py-2.5 hover:bg-black/5 rounded-full font-[800]" : "hover:text-white/70 font-[750]"}`}>Benefits</a>
+               <a href="#infrastructure" className={`transition-all duration-300 text-[0.78rem] whitespace-nowrap ${isScrolled ? "px-5 py-2.5 hover:bg-black/5 rounded-full font-[800]" : "hover:text-white/70 font-[750]"}`}>Infrastructure</a>
+            </div>
+
+            {/* SPACER FOR LOGO (only active when not scrolled) */}
+            <div className={`transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+              isScrolled ? "w-0 opacity-0" : "w-[240px]" // Leaves space for the absolute logo
+            }`}></div>
+
+            {/* RIGHT LINKS */}
+            <div className={`flex items-center transition-all duration-700 ${isScrolled ? "gap-1" : "gap-7"}`}>
+               <a href="#how-it-works" className={`transition-all duration-300 text-[0.78rem] whitespace-nowrap ${isScrolled ? "px-5 py-2.5 hover:bg-black/5 rounded-full font-[800]" : "hover:text-white/70 font-[750]"}`}>Process</a>
+               <a href="#beta" className={`transition-all duration-300 text-[0.78rem] whitespace-nowrap ${isScrolled ? "px-5 py-2.5 hover:bg-black/5 rounded-full font-[800]" : "hover:text-white/70 font-[750]"}`}>Evidence</a>
+            </div>
           </div>
-          <Link to="/app/login" className="marketing-button marketing-button--light h-[44px]">
-            Open Scholaport
-          </Link>
+
+          {/* BUTTON (Always absolute) */}
+          <div className={`absolute top-1/2 -translate-y-1/2 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+            isScrolled ? "right-2" : "right-5 md:right-8"
+          }`}>
+            <Link to="/app/login" className={`marketing-button transition-colors duration-500 h-[46px] ${
+              isScrolled ? "marketing-button--ink" : "marketing-button--light"
+            }`}>
+              Open Scholaport
+            </Link>
+          </div>
+
         </nav>
 
         <div className="relative z-10 mx-auto flex min-h-[760px] max-w-6xl flex-col items-center px-5 pt-32 text-center md:min-h-[820px] md:px-8 md:pt-36">
