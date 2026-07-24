@@ -486,7 +486,7 @@ function WelcomePage() {
       </section>
 
       {/* NEW FOOTER / WAITLIST SECTION */}
-      <section className="relative w-full overflow-hidden bg-[#02263d] pt-40 pb-0 text-white">
+      <section className="relative w-full overflow-hidden bg-[#02263d] pt-40 pb-0 text-white rounded-t-[40px] md:rounded-t-[60px]">
         
         {/* Background Landscape Image */}
         <div className="absolute inset-x-0 top-0 h-[800px] w-full" style={{
