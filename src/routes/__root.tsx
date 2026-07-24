@@ -133,6 +133,7 @@ function RootShell({ children }: { children: ReactNode }) {
     <html lang="en">
       <head>
         <HeadContent />
+        <style dangerouslySetInnerHTML={{ __html: `body { opacity: 0; visibility: hidden; }` }} />
       </head>
       <body>
         {children}

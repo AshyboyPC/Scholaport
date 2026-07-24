@@ -10,6 +10,12 @@
   font-display: swap;
 }
 
+body {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transition: opacity 0.3s ease-out;
+}
+
 /* Public marketing page: the glass shell stays intentionally bounded to navigation and actions. */
 .marketing-page {
   overflow: clip;
@@ -859,9 +865,9 @@
 }
 
 .marketing-footer__wordmark {
-  margin-bottom: -0.31em;
+  margin-bottom: -0.28em;
   font-family: 'Gumriot', var(--font-display);
-  font-size: clamp(4rem, 15vw, 13.5rem);
+  font-size: clamp(3.5rem, 13vw, 11.5rem);
   font-weight: normal;
   letter-spacing: 0.02em;
   line-height: 1;
