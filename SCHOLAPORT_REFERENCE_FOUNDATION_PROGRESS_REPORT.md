@@ -1,9 +1,22 @@
 # Scholaport Reference-Data Foundation Progress Report
 
-**Report date:** July 19, 2026
+**Report date:** July 24, 2026
 **Project:** Scholaport MVP  
 **Starting point:** The global reference-data foundation follow-up prompt supplied by the user  
 **Current scope:** Database structure, reference-data research workflow, CSV seed package, validation, onboarding integration, coverage visibility, country-by-country verification, transcript-to-packet product workflows, authentication recovery, and the completed Rhyme-inspired visual overhaul
+
+## July 24, 2026 update: Marketing Site Redesign & Private Beta Transition
+
+Scholaport's public-facing architecture has been fully decoupled from the core product application. The application now lives securely behind `/app`, allowing the root path (`/`) to host a completely redesigned, premium landing page.
+
+The visual direction of the landing page has been aggressively refined to convey a hand-crafted, high-contrast aesthetic:
+- **Design System Consolidation**: Replaced scattered design references with a single, heavily detailed `combined design.md` and `scholaport design.md`, meticulously documenting design tokens, glassmorphism logic, and structural typography.
+- **Morphing Scroll-Aware Navigation**: Implemented a highly dynamic navigation bar that rests transparently over the hero section and smoothly morphs into a floating, liquid-glass pill upon scroll.
+- **Private Beta Pivot**: Transitioned the public launch strategy to a private beta model. Open signup CTAs have been replaced globally with waitlist anchors, and the hero section now features a high-contrast email capture form.
+- **Landscape Waitlist Footer**: Completely rebuilt the footer area. It now features a seamless integration of a sweeping landscape background image that extends its bottom edge pixel color (`#02263d`) downward into a solid block, housing the marketing links and the massive `SCHOLAPORT` wordmark.
+- **Typographic System**: Adopted the `Gumriot` custom display font for key waitlist marketing headers (like "JOIN THE BETA"), establishing a clear, authoritative visual contrast against the clean Manrope UI typography used in the core app. 
+- **Offline Resilience**: Introduced a global offline network banner using `useSyncExternalStore` for robust, flicker-free offline state management across the application.
+- **FOUC and Loading Enhancements**: Eliminated visual lag and FOUC glitches during routing and initialization, streamlining the loading screen into a clean logo-fill animation.
 
 ## July 19, 2026 update: Rhyme-inspired product overhaul and Academic Passport completion
 
