@@ -92,7 +92,7 @@ function WelcomePage() {
         </nav>
 
         <div className="relative z-10 mx-auto flex min-h-[760px] max-w-6xl flex-col items-center px-5 pt-32 text-center md:min-h-[820px] md:px-8 md:pt-36">
-          <h1 className="max-w-5xl text-[16vw] font-[800] leading-[0.98] tracking-[-0.06em] text-white md:text-[5.4rem]" style={{ fontFamily: "var(--font-display)" }}>
+          <h1 className="max-w-5xl text-[16vw] font-[800] leading-[0.98] tracking-[-0.06em] text-white md:text-[5.4rem]" style={{ fontFamily: "'Gumriot-Regular', var(--font-display)" }}>
             <span className="block">Your academic record</span>
             <span className="block text-[0.8em] text-[#9ff2e6] mt-2">
               deserves a clear next chapter.
@@ -432,7 +432,7 @@ function WelcomePage() {
             Private Beta
           </div>
           
-          <h2 className="mb-6 text-[clamp(2.5rem,6vw,5.5rem)] font-[800] leading-[1.0] tracking-[-0.04em] text-[#0a175a]" style={{ fontFamily: "var(--font-display)" }}>
+          <h2 className="mb-6 text-[clamp(2.5rem,6vw,5.5rem)] font-[800] leading-[1.0] tracking-[-0.04em] text-[#0a175a]" style={{ fontFamily: "'Gumriot-Smooth', var(--font-display)" }}>
             JOIN THE BETA.
           </h2>
           
@@ -463,21 +463,21 @@ function WelcomePage() {
             <div className="marketing-shell marketing-footer__grid">
               <div className="marketing-footer__brand">
                 <ScholaportLogo className="h-11" showWordmark inverse />
-                <p className="text-white/70">
+                <p className="text-[#01c3ad] mt-3">
                   A clear academic passage for students carrying their learning across school systems.
                 </p>
               </div>
-              <div className="marketing-footer__links">
-                <a href="#how-it-works">How it works</a>
-                <a href="#beta">Private beta</a>
-                <a href="#home">Join waitlist</a>
+              <div className="flex flex-col gap-3 font-[750] text-[0.76rem]">
+                <a href="#how-it-works" className="text-[#9ff2e6] hover:text-white transition-colors">How it works</a>
+                <a href="#beta" className="text-[#9ff2e6] hover:text-white transition-colors">Private beta</a>
+                <a href="#home" className="text-[#9ff2e6] hover:text-white transition-colors">Join waitlist</a>
               </div>
-              <div className="marketing-footer__note text-white/50">
+              <div className="marketing-footer__note text-[#01a995]">
                 <span>Scholaport is a planning workspace.</span>
                 <span>Schools retain final academic decision-making.</span>
               </div>
             </div>
-            <div className="marketing-footer__wordmark text-white/10" aria-hidden="true">
+            <div className="marketing-footer__wordmark text-[#01a995]/20" aria-hidden="true">
               SCHOLAPORT
             </div>
           </footer>
