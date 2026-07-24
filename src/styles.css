@@ -864,7 +864,8 @@
   font-size: clamp(4rem, 15vw, 13.5rem);
   font-weight: normal;
   letter-spacing: 0.02em;
-  line-height: 0.76;
+  line-height: 1;
+  padding-top: 0.05em;
   text-align: center;
   white-space: nowrap;
   opacity: 0.95;
