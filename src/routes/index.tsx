@@ -43,10 +43,10 @@ function WelcomePage() {
         </div>
         
         {/* MORPHING NAVIGATION */}
-        <nav className={`fixed z-50 top-0 left-1/2 -translate-x-1/2 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] flex items-center ${
+        <nav className={`fixed z-50 left-1/2 -translate-x-1/2 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] flex items-center ${
           isScrolled 
             ? "top-4 w-max h-[64px] pl-[180px] pr-[174px] rounded-[32px] bg-white/76 border border-white/42 shadow-[0_10px_32px_rgba(7,17,63,0.1),inset_0_1px_0_rgba(255,255,255,0.72)] backdrop-blur-[18px] saturate-[1.1] text-[#344061]" 
-            : "top-0 w-full max-w-7xl h-[90px] px-5 md:px-8 text-white"
+            : "top-4 w-[200px] h-[64px] rounded-[32px] bg-transparent border border-transparent shadow-none backdrop-blur-none text-white"
         }`}>
 
           {/* LOGO (Always absolute) */}
@@ -58,30 +58,28 @@ function WelcomePage() {
 
           {/* LINKS CONTAINER */}
           <div className={`hidden lg:flex items-center transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-            isScrolled ? "w-max gap-1 mx-auto" : "w-full justify-between"
+            isScrolled ? "w-max gap-1 mx-auto opacity-100" : "w-0 opacity-0 overflow-hidden pointer-events-none"
           }`}>
             
             {/* LEFT LINKS */}
-            <div className={`flex items-center transition-all duration-700 ${isScrolled ? "gap-1" : "gap-7"}`}>
-               <a href="#philosophy" className={`transition-all duration-300 text-[0.78rem] whitespace-nowrap ${isScrolled ? "px-5 py-2.5 hover:bg-black/5 rounded-full font-[800]" : "hover:text-white/70 font-[750]"}`}>Benefits</a>
-               <a href="#infrastructure" className={`transition-all duration-300 text-[0.78rem] whitespace-nowrap ${isScrolled ? "px-5 py-2.5 hover:bg-black/5 rounded-full font-[800]" : "hover:text-white/70 font-[750]"}`}>Infrastructure</a>
+            <div className={`flex items-center transition-all duration-700 gap-1`}>
+               <a href="#philosophy" className={`transition-all duration-300 text-[0.78rem] whitespace-nowrap px-5 py-2.5 hover:bg-black/5 rounded-full font-[800]`}>Benefits</a>
+               <a href="#infrastructure" className={`transition-all duration-300 text-[0.78rem] whitespace-nowrap px-5 py-2.5 hover:bg-black/5 rounded-full font-[800]`}>Infrastructure</a>
             </div>
 
             {/* SPACER FOR LOGO (only active when not scrolled) */}
-            <div className={`transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-              isScrolled ? "w-0 opacity-0" : "w-[240px]" // Leaves space for the absolute logo
-            }`}></div>
+            <div className={`transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] w-0 opacity-0`}></div>
 
             {/* RIGHT LINKS */}
-            <div className={`flex items-center transition-all duration-700 ${isScrolled ? "gap-1" : "gap-7"}`}>
-               <a href="#how-it-works" className={`transition-all duration-300 text-[0.78rem] whitespace-nowrap ${isScrolled ? "px-5 py-2.5 hover:bg-black/5 rounded-full font-[800]" : "hover:text-white/70 font-[750]"}`}>Process</a>
-               <a href="#beta" className={`transition-all duration-300 text-[0.78rem] whitespace-nowrap ${isScrolled ? "px-5 py-2.5 hover:bg-black/5 rounded-full font-[800]" : "hover:text-white/70 font-[750]"}`}>Evidence</a>
+            <div className={`flex items-center transition-all duration-700 gap-1`}>
+               <a href="#how-it-works" className={`transition-all duration-300 text-[0.78rem] whitespace-nowrap px-5 py-2.5 hover:bg-black/5 rounded-full font-[800]`}>Process</a>
+               <a href="#beta" className={`transition-all duration-300 text-[0.78rem] whitespace-nowrap px-5 py-2.5 hover:bg-black/5 rounded-full font-[800]`}>Evidence</a>
             </div>
           </div>
 
           {/* BUTTON (Always absolute) */}
           <div className={`absolute top-1/2 -translate-y-1/2 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-            isScrolled ? "right-2" : "right-5 md:right-8"
+            isScrolled ? "right-2 opacity-100 pointer-events-auto" : "right-2 opacity-0 pointer-events-none"
           }`}>
             <a href="#home" className={`marketing-button transition-colors duration-500 h-[46px] ${
               isScrolled ? "marketing-button--ink" : "marketing-button--light"
@@ -104,7 +102,7 @@ function WelcomePage() {
             system, without pretending the hard questions are simple.
           </p>
           {/* WAITLIST SIGNUP */}
-          <div className="relative mt-auto w-full max-w-[460px] pb-16">
+          <div className="relative mt-12 w-full max-w-[460px] z-20">
             <form className="flex items-center rounded-full bg-white/10 border border-white/20 p-2 pl-6 backdrop-blur-lg shadow-[0_20px_40px_rgba(0,0,0,0.2)]">
               <input 
                 type="email" 
