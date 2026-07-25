@@ -8,6 +8,7 @@ import footerBgImage from "@/assets/images/footer-bg.png";
 import featureShowcaseImg from "@/assets/images/feature-showcase.png";
 import introBgTransparentImage from "@/assets/images/intro-bg-transparent.png";
 import { ScrollRevealText } from "@/components/ui/ScrollRevealText";
+import { MapPin, Compass, ChevronRight } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -365,54 +366,108 @@ function WelcomePage() {
         </div>
       </section>
 
-      {/* HOW IT WORKS / THE PASSAGE */}
-      <section id="how-it-works" className="mx-auto max-w-7xl px-5 py-10 md:px-8 md:py-16">
-        <div className="overflow-hidden rounded-[34px] bg-[#fffdf8] border border-[#dde4e5] shadow-[0_2px_8px_rgba(10,23,90,0.08)] px-6 py-12 md:px-12 md:py-16">
-          <div className="grid items-center gap-10 md:grid-cols-[.9fr_1.1fr] md:gap-14">
-            <div className="max-w-xl text-left">
-              <p className="mb-4 text-[0.67rem] font-[900] uppercase tracking-[0.1em] text-[#01a995]">
-                <span className="mr-2 text-[#f86746] drop-shadow-[0_0_8px_rgba(248,103,70,0.4)]">●</span>
-                The passage, in three moves
-              </p>
-              <h2 className="text-[clamp(2.25rem,4vw,4rem)] font-[800] leading-[1.02] tracking-[-0.055em] text-[#0a175a]">
-                A process you can
-                <span className="relative inline-flex h-[.88em] w-[.88em] translate-y-[.08em] items-center justify-center rounded-full bg-[#01c3ad] text-[.48em] text-[#0a175a] mx-2 shadow-inner shadow-white/30">
-                  ✦
-                </span>
-                actually <span className="text-[#01a995]">follow.</span>
-              </h2>
-              
-              <div className="mt-10 space-y-8">
-                <div className="flex gap-5">
-                  <div className="font-[900] text-[#9da6b4] text-[0.64rem] tracking-[0.1em] mt-1.5">01</div>
-                  <div>
-                    <h3 className="font-[800] text-[#0a175a] text-[1.3rem] leading-[1.08] tracking-[-0.04em]">Bring your record together</h3>
-                    <p className="text-[#69758d] text-[0.76rem] mt-2 font-[620] leading-[1.65]">Upload a transcript or enter courses in the language and format you already have.</p>
-                  </div>
-                </div>
-                <div className="flex gap-5">
-                  <div className="font-[900] text-[#9da6b4] text-[0.64rem] tracking-[0.1em] mt-1.5">02</div>
-                  <div>
-                    <h3 className="font-[800] text-[#0a175a] text-[1.3rem] leading-[1.08] tracking-[-0.04em]">See the likely connections</h3>
-                    <p className="text-[#69758d] text-[0.76rem] mt-2 font-[620] leading-[1.65]">Review how courses may connect to your destination framework, with uncertainty kept visible.</p>
-                  </div>
-                </div>
-                <div className="flex gap-5">
-                  <div className="font-[900] text-[#9da6b4] text-[0.64rem] tracking-[0.1em] mt-1.5">03</div>
-                  <div>
-                    <h3 className="font-[800] text-[#0a175a] text-[1.3rem] leading-[1.08] tracking-[-0.04em]">Move with a clear plan</h3>
-                    <p className="text-[#69758d] text-[0.76rem] mt-2 font-[620] leading-[1.65]">Understand what still needs attention and bring a counselor-ready packet to the conversation.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <div className="relative mx-auto flex h-[340px] w-full max-w-[520px] items-center justify-center md:h-[420px]">
-              <div className="absolute h-48 w-48 rounded-full border border-[#0a175a]/10 md:h-64 md:w-64"></div>
-              <div className="absolute h-36 w-36 rounded-full border border-[#01c3ad]/40 md:h-52 md:w-52"></div>
-              <ClayAsset asset="academic-roadmap" className="w-[120%] h-[120%] object-contain scale-110 drop-shadow-2xl z-10" />
-            </div>
+      {/* NEW PROCESS SECTION */}
+      <section id="how-it-works" className="mx-auto w-full max-w-[1400px] px-5 py-24 md:px-8">
+        
+        {/* HEADER */}
+        <div className="mb-20 text-center flex flex-col items-center">
+          <div className="inline-flex items-center gap-2 text-[0.67rem] font-[900] uppercase tracking-[0.1em] text-[#01a995] mb-6">
+            <span className="w-[6px] h-[6px] rounded-full bg-[#01a995]"></span>
+            PROCESS
           </div>
+          <h2 className="mx-auto max-w-[50rem] text-[clamp(1.8rem,3.2vw,3rem)] font-[800] leading-[1.1] tracking-[-0.04em] text-[#0a175a]">
+            A student-first planning process built to turn transcripts into clearer routes
+            <span className="inline-flex items-center justify-center bg-[#01a995] w-[1.15em] h-[1.15em] rounded-[10px] align-text-bottom mx-3 shadow-[0_6px_16px_rgba(1,169,149,0.3)] transform -translate-y-1">
+              <MapPin className="text-white w-[55%] h-[55%]" strokeWidth={2.5} />
+            </span>
+            <span className="text-[#8e98a8] font-[600]">and</span>
+            <span className="inline-flex items-center justify-center bg-gradient-to-br from-[#01a995] to-[#01c3ad] w-[1.15em] h-[1.15em] rounded-full align-text-bottom mx-3 shadow-[0_6px_16px_rgba(1,169,149,0.3)] p-[3px] transform -translate-y-1">
+              <div className="w-full h-full bg-white rounded-full flex items-center justify-center">
+                <Compass className="text-[#01a995] w-[60%] h-[60%]" strokeWidth={2.5} />
+              </div>
+            </span>
+            <span className="text-[#8e98a8] font-[600]">more confident next steps</span>
+          </h2>
+        </div>
+
+        {/* CARDS GRID */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 relative z-10">
+          
+          {/* Card 1 */}
+          <article className="flex flex-col bg-[#f0fbf7] rounded-[24px] border border-[#d9f2e9] p-6 lg:p-8 pt-8 lg:pt-10 overflow-hidden relative min-h-[380px] lg:min-h-[420px]">
+            <div className="font-[800] text-[#01a995] text-lg mb-2">01</div>
+            <h3 className="font-[800] text-[#0a175a] text-xl mb-3 leading-tight tracking-tight">Upload transcript</h3>
+            <p className="text-[#59647a] text-[0.8rem] leading-[1.6] font-[600] max-w-[95%]">
+              Add your academic record securely so Scholaport can prepare it for review.
+            </p>
+            <div className="absolute -bottom-10 -right-4 w-[110%] max-w-[280px]">
+              <ClayAsset asset="transcript-upload" className="w-full h-auto drop-shadow-2xl hover:-translate-y-2 transition-transform duration-500 origin-bottom-right scale-110" />
+            </div>
+          </article>
+
+          {/* Card 2 */}
+          <article className="flex flex-col bg-[#f0f6ff] rounded-[24px] border border-[#e1edff] p-6 lg:p-8 pt-8 lg:pt-10 overflow-hidden relative min-h-[380px] lg:min-h-[420px]">
+            <div className="font-[800] text-[#01a995] text-lg mb-2">02</div>
+            <h3 className="font-[800] text-[#0a175a] text-xl mb-3 leading-tight tracking-tight">Review probable credits</h3>
+            <p className="text-[#59647a] text-[0.8rem] leading-[1.6] font-[600] max-w-[95%]">
+              See what may map clearly, what looks strong, and what still needs review.
+            </p>
+            <div className="absolute -bottom-6 -right-2 w-[110%] max-w-[280px]">
+              <ClayAsset asset="credit-mapping" className="w-full h-auto drop-shadow-2xl hover:-translate-y-2 transition-transform duration-500 scale-125 origin-bottom-right" />
+            </div>
+          </article>
+
+          {/* Card 3 */}
+          <article className="flex flex-col bg-[#fff8ec] rounded-[24px] border border-[#ffeed4] p-6 lg:p-8 pt-8 lg:pt-10 overflow-hidden relative min-h-[380px] lg:min-h-[420px]">
+            <div className="font-[800] text-[#01a995] text-lg mb-2">03</div>
+            <h3 className="font-[800] text-[#0a175a] text-xl mb-3 leading-tight tracking-tight">Find graduation gaps</h3>
+            <p className="text-[#59647a] text-[0.8rem] leading-[1.6] font-[600] max-w-[95%]">
+              Spot what is satisfied, missing, or still unclear against destination requirements.
+            </p>
+            <div className="absolute -bottom-8 -right-4 w-[110%] max-w-[280px]">
+              <ClayAsset asset="requirement-gap" className="w-full h-auto drop-shadow-2xl hover:-translate-y-2 transition-transform duration-500 scale-110 origin-bottom-right" />
+            </div>
+          </article>
+
+          {/* Card 4 */}
+          <article className="flex flex-col bg-[#f0fbf7] rounded-[24px] border border-[#d9f2e9] p-6 lg:p-8 pt-8 lg:pt-10 overflow-hidden relative min-h-[380px] lg:min-h-[420px]">
+            <div className="font-[800] text-[#01a995] text-lg mb-2">04</div>
+            <h3 className="font-[800] text-[#0a175a] text-xl mb-3 leading-tight tracking-tight">Build your next route</h3>
+            <p className="text-[#59647a] text-[0.8rem] leading-[1.6] font-[600] max-w-[95%]">
+              Turn results into a roadmap and a counselor-ready packet you can act on.
+            </p>
+            <div className="absolute -bottom-10 -right-6 w-[110%] max-w-[280px]">
+              <ClayAsset asset="academic-roadmap" className="w-full h-auto drop-shadow-2xl hover:-translate-y-2 transition-transform duration-500 scale-[1.25] origin-bottom-right" />
+            </div>
+          </article>
+
+        </div>
+
+        {/* TIMELINE */}
+        <div className="hidden lg:grid grid-cols-4 gap-6 mt-10 relative max-w-full">
+          {[1, 2, 3, 4].map((step) => (
+            <div key={step} className="relative flex items-center justify-center h-8">
+              {/* The connecting line */}
+              <div 
+                className={`absolute top-1/2 -translate-y-1/2 h-[1.5px] bg-[#01a995] ${
+                  step === 1 ? "left-1/2 right-0" : 
+                  step === 4 ? "left-0 right-1/2" : 
+                  "left-0 right-0"
+                } ${step !== 4 ? "w-[calc(100%+1.5rem)]" : ""}`}
+                style={{ zIndex: 0 }}
+              />
+              
+              {/* The Dot */}
+              <div className="relative z-10 w-2.5 h-2.5 rounded-full bg-[#01a995] ring-[5px] ring-[#fffdf8]" />
+              
+              {/* The Arrow */}
+              {step !== 4 && (
+                <div className="absolute right-[-14px] top-1/2 -translate-y-1/2 z-10 text-[#01a995] bg-[#fffdf8] px-1">
+                  <ChevronRight size={18} strokeWidth={3} />
+                </div>
+              )}
+            </div>
+          ))}
         </div>
       </section>
 
