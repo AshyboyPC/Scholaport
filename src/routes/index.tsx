@@ -7,6 +7,7 @@ import heroBgImage from "@/assets/images/hero-bg.png";
 import footerBgImage from "@/assets/images/footer-bg.png";
 import featureShowcaseImg from "@/assets/images/feature-showcase.png";
 import introBgTransparentImage from "@/assets/images/intro-bg-transparent.png";
+import { ScrollRevealText } from "@/components/ui/ScrollRevealText";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -35,7 +36,7 @@ function WelcomePage() {
   }, []);
 
   return (
-    <main className="bg-[#fffdf8] text-[#0a175a] px-3 md:px-5 pb-0 marketing-page">
+    <main className="bg-[#fffdf8] text-[#0a175a] pb-0 marketing-page">
       
       {/* HEADER / HERO */}
       <header className="relative min-h-[760px] overflow-hidden rounded-b-[34px] bg-[#0a175a] text-white md:min-h-[820px]" id="home">
@@ -129,7 +130,7 @@ function WelcomePage() {
       </header>
 
       {/* INTRODUCTION SECTION (HYPERLIQUID REFERENCE) */}
-      <section className="relative w-full flex flex-col items-center justify-center min-h-[1000px] md:min-h-[1300px] overflow-hidden">
+      <section className="relative w-full flex flex-col items-center justify-center min-h-[700px] md:min-h-[950px] overflow-hidden">
         {/* Background Image Layer */}
         <div className="absolute inset-0 pointer-events-none flex items-center justify-center w-full">
           <div 
@@ -145,12 +146,20 @@ function WelcomePage() {
 
         {/* Foreground Content (Centered in the empty space) */}
         <div className="relative z-10 w-full max-w-2xl mx-auto px-5 text-center">
-          <p className="mb-8 text-[1.05rem] md:text-[1.15rem] leading-[1.65] text-[#101a3f]/90 font-[500]">
-            Scholaport was formed to untangle the complexities of student mobility and enable seamless transcript deployment across international borders. It lowers the barrier to entry for global education by standardizing records in one of the most rigorous compliance environments.
-          </p>
-          <p className="text-[1.05rem] md:text-[1.15rem] leading-[1.65] text-[#101a3f]/90 font-[500]">
-            As a centralized warehouse for academic history, Scholaport drives institutional trust, expands counseling utility, and captures comprehensive learning outcomes through verified data. <span className="font-[650] text-[#01a995]">It offers students and counselors a distinct way to gain exposure to universal standards, unified progress tracking, and long-term academic mobility.</span>
-          </p>
+          <ScrollRevealText 
+            paragraphs={[
+              {
+                className: "mb-8 text-[1.05rem] md:text-[1.15rem] leading-[1.65] text-[#101a3f] font-[500]",
+                text: "Scholaport was formed to untangle the complexities of student mobility and enable seamless transcript deployment across international borders. It lowers the barrier to entry for global education by standardizing records in one of the most rigorous compliance environments."
+              },
+              {
+                className: "text-[1.05rem] md:text-[1.15rem] leading-[1.65] text-[#101a3f] font-[500]",
+                text: "As a centralized warehouse for academic history, Scholaport drives institutional trust, expands counseling utility, and captures comprehensive learning outcomes through verified data.",
+                highlightText: "It offers students and counselors a distinct way to gain exposure to universal standards, unified progress tracking, and long-term academic mobility.",
+                highlightClassName: "font-[650] text-[#01a995]"
+              }
+            ]}
+          />
         </div>
       </section>
 
@@ -513,7 +522,7 @@ function WelcomePage() {
       </section>
 
       {/* NEW FOOTER / WAITLIST SECTION */}
-      <section className="relative w-full overflow-hidden bg-[#02263d] pt-40 pb-0 text-white rounded-t-[40px] md:rounded-t-[60px] transform-gpu ring-1 ring-[#02263d]">
+      <section className="relative w-full overflow-hidden bg-[#02263d] pt-40 pb-0 text-white rounded-t-[40px] md:rounded-t-[60px] transform-gpu">
         
         {/* Background Landscape Image */}
         <div className="absolute inset-x-0 top-0 h-[800px] w-full" style={{
