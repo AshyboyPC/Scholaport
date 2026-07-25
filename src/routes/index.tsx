@@ -13,6 +13,8 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { ChevronRight } from "lucide-react";
 
+import customAsset1 from "@/assets/images/custom_asset_1.png";
+import customAsset2 from "@/assets/images/custom_asset_2.png";
 import customAsset3 from "@/assets/images/custom_asset_3.png";
 import customAsset4 from "@/assets/images/custom_asset_4.png";
 import customAsset5 from "@/assets/images/custom_asset_5.png";
