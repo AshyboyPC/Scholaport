@@ -13,12 +13,12 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { ChevronRight } from "lucide-react";
 
-import customAsset1 from "@/assets/images/custom_asset_1.png";
-import customAsset2 from "@/assets/images/custom_asset_2.png";
 import customAsset3 from "@/assets/images/custom_asset_3.png";
 import customAsset4 from "@/assets/images/custom_asset_4.png";
 import customAsset5 from "@/assets/images/custom_asset_5.png";
 import customAsset6 from "@/assets/images/custom_asset_6.png";
+import customAsset7 from "@/assets/images/custom_asset_7.png";
+import customAsset8 from "@/assets/images/custom_asset_8.png";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -38,37 +38,6 @@ export const Route = createFileRoute("/")({
 
 function WelcomePage() {
   const [isScrolled, setIsScrolled] = useState(false);
-  const timelineRef = useRef<HTMLDivElement>(null);
-
-  useGSAP(() => {
-    if (!timelineRef.current) return;
-    const vLines = gsap.utils.toArray(".gs-v-line", timelineRef.current);
-    const dots = gsap.utils.toArray(".gs-dot", timelineRef.current);
-    const hLines = gsap.utils.toArray(".gs-h-line", timelineRef.current);
-    const arrows = gsap.utils.toArray(".gs-arrow", timelineRef.current);
-
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: timelineRef.current,
-        start: "top 85%",
-        toggleActions: "play none none reverse",
-      }
-    });
-
-    gsap.set(vLines, { scaleY: 0, transformOrigin: "top" });
-    gsap.set(dots, { scale: 0, opacity: 0, transformOrigin: "center" });
-    gsap.set(hLines, { scaleX: 0, transformOrigin: "left" });
-    gsap.set(arrows, { opacity: 0, x: -10 });
-
-    vLines.forEach((_, i) => {
-      tl.to(vLines[i], { scaleY: 1, duration: 0.2, ease: "power2.out" })
-        .to(dots[i], { scale: 1, opacity: 1, duration: 0.4, ease: "back.out(1.7)" }, "-=0.05");
-      if (hLines[i]) {
-        tl.to(hLines[i], { scaleX: 1, duration: 0.3, ease: "power1.inOut" }, "-=0.1")
-          .to(arrows[i], { opacity: 1, x: 0, duration: 0.2, ease: "power2.out" }, "-=0.1");
-      }
-    });
-  }, { scope: timelineRef });
 
   useEffect(() => {
     const updateNav = () => {
@@ -424,13 +393,13 @@ function WelcomePage() {
             A student-first planning process<br />
             built to turn transcripts into clearer routes{" "}
             <span className="inline-flex items-center justify-center w-[1em] h-[1em] align-middle translate-y-[-0.05em]">
-              <img src={customAsset1} alt="" className="w-full h-full object-contain" />
+              <img src={customAsset7} alt="" className="w-full h-full object-contain" />
             </span>
           </h2>
           <p className="mt-2 text-[clamp(1.9rem,3.4vw,3.1rem)] font-[600] leading-[1.15] tracking-[-0.04em] text-[#8e98a8]">
             and{" "}
             <span className="inline-flex items-center justify-center w-[0.9em] h-[0.9em] align-middle translate-y-[-0.05em]">
-              <img src={customAsset2} alt="" className="w-full h-full object-contain" />
+              <img src={customAsset8} alt="" className="w-full h-full object-contain" />
             </span>{" "}
             more confident next steps
           </p>
@@ -463,7 +432,7 @@ function WelcomePage() {
               </p>
             </div>
             <div className="flex-1 flex items-end justify-center px-4 pb-2 pt-4 min-h-[200px]">
-              <img src={customAsset4} alt="Review probable credits 3D" className="w-auto max-h-[200px] object-contain drop-shadow-xl" />
+              <img src={customAsset1} alt="Review probable credits 3D" className="w-auto max-h-[200px] object-contain drop-shadow-xl" />
             </div>
           </article>
 
@@ -477,7 +446,7 @@ function WelcomePage() {
               </p>
             </div>
             <div className="flex-1 flex items-end justify-center px-4 pb-2 pt-4 min-h-[200px]">
-              <img src={customAsset5} alt="Find graduation gaps 3D" className="w-auto max-h-[200px] object-contain drop-shadow-xl" />
+              <img src={customAsset2} alt="Find graduation gaps 3D" className="w-auto max-h-[200px] object-contain drop-shadow-xl" />
             </div>
           </article>
 
@@ -498,7 +467,7 @@ function WelcomePage() {
         </div>
 
         {/* TIMELINE */}
-        <div ref={timelineRef} className="hidden lg:flex items-center justify-between mt-6 px-[calc(100%/8-11px)]">
+        <div className="hidden lg:flex items-center justify-between mt-6 px-[calc(100%/8-11px)]">
           {[1, 2, 3, 4].map((step) => (
             <div key={step} className="relative flex items-center" style={{ flex: step < 4 ? 1 : 'none' }}>
               {/* Vertical tick above dot */}
