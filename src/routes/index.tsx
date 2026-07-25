@@ -21,6 +21,8 @@ import customAsset5 from "@/assets/images/custom_asset_5.png";
 import customAsset6 from "@/assets/images/custom_asset_6.png";
 import customAsset7 from "@/assets/images/custom_asset_7.png";
 import customAsset8 from "@/assets/images/custom_asset_8.png";
+import customAssetPassport from "@/assets/images/custom_asset_passport.png";
+import customAssetLevels from "@/assets/images/custom_asset_levels.png";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -40,38 +42,7 @@ export const Route = createFileRoute("/")({
 
 function WelcomePage() {
   const [isScrolled, setIsScrolled] = useState(false);
-  const timelineRef = useRef<HTMLDivElement>(null);
-
-  useGSAP(() => {
-    if (!timelineRef.current) return;
-    const vLines = gsap.utils.toArray(".gs-v-line", timelineRef.current);
-    const dots = gsap.utils.toArray(".gs-dot", timelineRef.current);
-    const hLines = gsap.utils.toArray(".gs-h-line", timelineRef.current);
-    const arrows = gsap.utils.toArray(".gs-arrow", timelineRef.current);
-
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: timelineRef.current,
-        start: "top 85%",
-        toggleActions: "play none none reverse",
-      }
-    });
-
-    gsap.set(vLines, { scaleY: 0, transformOrigin: "top" });
-    gsap.set(dots, { scale: 0, opacity: 0, transformOrigin: "center" });
-    gsap.set(hLines, { scaleX: 0, transformOrigin: "left" });
-    gsap.set(arrows, { scale: 0, opacity: 0, transformOrigin: "center" });
-
-    vLines.forEach((_, i) => {
-      tl.to(vLines[i], { scaleY: 1, duration: 0.3, ease: "power2.out" })
-        .to(dots[i], { scale: 1, opacity: 1, duration: 0.4, ease: "back.out(1.7)" }, "-=0.1");
-      
-      if (hLines[i]) {
-        tl.to(hLines[i], { scaleX: 1, duration: 0.4, ease: "power2.inOut" }, "-=0.1")
-          .to(arrows[i], { scale: 1, opacity: 1, duration: 0.3, ease: "back.out(2)" }, "-=0.2");
-      }
-    });
-  }, { scope: timelineRef });
+  // timelineRef is removed as it's no longer needed
 
   useEffect(() => {
     const updateNav = () => {
@@ -426,103 +397,223 @@ function WelcomePage() {
           <h2 className="text-[clamp(1.9rem,3.4vw,3.1rem)] font-[800] leading-[1.15] tracking-[-0.04em] text-[#0a175a]">
             A student-first planning process<br />
             built to turn transcripts into clearer routes{" "}
-            <span className="inline-flex items-center justify-center w-[1em] h-[1em] align-middle translate-y-[-0.05em]">
-              <img src={customAsset7} alt="" className="w-full h-full object-contain" />
-            </span>
+            <img src={customAsset7} alt="" className="inline-block w-[1.4em] h-[1.4em] align-middle translate-y-[-0.1em]" />
           </h2>
           <p className="mt-2 text-[clamp(1.9rem,3.4vw,3.1rem)] font-[600] leading-[1.15] tracking-[-0.04em] text-[#8e98a8]">
             and{" "}
-            <span className="inline-flex items-center justify-center w-[0.9em] h-[0.9em] align-middle translate-y-[-0.05em]">
-              <img src={customAsset8} alt="" className="w-full h-full object-contain" />
-            </span>{" "}
-            more confident next steps
+      {/* FEATURES SECTION (Bento Grid) */}
+      <section id="features" className="mx-auto w-full max-w-[1400px] px-6 py-24 md:px-10">
+        
+        {/* Header */}
+        <div className="mb-10 max-w-2xl">
+          <div className="mb-4 flex items-center gap-2">
+            <span className="text-[0.65rem] font-[900] uppercase tracking-[0.14em] text-[#01c3ad]">FEATURES</span>
+          </div>
+          <h2 className="text-[clamp(2.25rem,4vw,3.5rem)] font-[800] leading-[1.1] tracking-[-0.04em] text-[#0a175a]">
+            From records to a clear route.<br />
+            All in ScholaPort.
+          </h2>
+          <p className="mt-4 text-[1.1rem] leading-[1.6] text-[#59647a] font-[500]">
+            Every tool counselors need to review, plan, and guide with confidence.
           </p>
         </div>
 
-        {/* CARDS GRID */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Bento Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-min">
+          
+          {/* Card 1: Transcript Review (col-span-2 row-span-2) */}
+          <article className="col-span-1 md:col-span-2 lg:row-span-2 rounded-[24px] bg-[#0a175a] p-8 md:p-10 text-white relative overflow-hidden flex flex-col min-h-[480px]">
+            <span className="text-[0.65rem] font-[800] uppercase tracking-[0.14em] text-[#01c3ad] mb-4">TRANSCRIPT REVIEW</span>
+            <h3 className="text-3xl md:text-4xl font-[800] leading-tight max-w-[280px] mb-4">Review the record before it moves forward.</h3>
+            <p className="text-[0.95rem] text-white/80 font-[400] max-w-[240px] leading-[1.5] mb-8">
+              Upload, map, and confirm every course so nothing gets missed.
+            </p>
+            
+            <ul className="space-y-4 mb-10 text-sm font-[500] text-white/90 z-10">
+              <li className="flex items-center gap-3">
+                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/10 border border-white/20 text-[#01c3ad]"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></span>
+                Map courses to requirements
+              </li>
+              <li className="flex items-center gap-3">
+                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/10 border border-white/20 text-[#01c3ad]"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><circle cx="10" cy="13" r="2"></circle><path d="m14 17-2.5-2.5"></path></svg></span>
+                Detect gaps and mismatches
+              </li>
+              <li className="flex items-center gap-3">
+                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/10 border border-white/20 text-[#01c3ad]"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></span>
+                Lock in an accurate record
+              </li>
+            </ul>
 
-          {/* Card 1 */}
-          <article className="flex flex-col bg-[#f3faf7] rounded-[20px] border border-[#daeee7] overflow-hidden" style={{ minHeight: 360 }}>
-            <div className="p-6 pb-0">
-              <div className="font-[800] text-[#01a995] text-base mb-2 tracking-tight">01</div>
-              <h3 className="font-[800] text-[#0a175a] text-[1.1rem] leading-snug tracking-[-0.02em] mb-2">Upload transcript</h3>
-              <p className="text-[#59647a] text-[0.78rem] leading-[1.6] font-[500]">
-                Add your academic record securely so Scholaport can prepare it for review.
-              </p>
-            </div>
-            <div className="flex-1 flex items-end justify-center px-4 pb-2 pt-4 min-h-[200px]">
-              <img src={customAsset3} alt="Upload transcript 3D" className="w-auto max-h-[200px] object-contain drop-shadow-xl" />
-            </div>
-          </article>
-
-          {/* Card 2 */}
-          <article className="flex flex-col bg-[#f3faf7] rounded-[20px] border border-[#daeee7] overflow-hidden" style={{ minHeight: 360 }}>
-            <div className="p-6 pb-0">
-              <div className="font-[800] text-[#01a995] text-base mb-2 tracking-tight">02</div>
-              <h3 className="font-[800] text-[#0a175a] text-[1.1rem] leading-snug tracking-[-0.02em] mb-2">Review probable credits</h3>
-              <p className="text-[#59647a] text-[0.78rem] leading-[1.6] font-[500]">
-                See what may map clearly, what looks strong, and what still needs review.
-              </p>
-            </div>
-            <div className="flex-1 flex items-end justify-center px-4 pb-2 pt-4 min-h-[200px]">
-              <img src={customAsset1} alt="Review probable credits 3D" className="w-auto max-h-[200px] object-contain drop-shadow-xl" />
-            </div>
-          </article>
-
-          {/* Card 3 */}
-          <article className="flex flex-col bg-[#f3faf7] rounded-[20px] border border-[#daeee7] overflow-hidden" style={{ minHeight: 360 }}>
-            <div className="p-6 pb-0">
-              <div className="font-[800] text-[#01a995] text-base mb-2 tracking-tight">03</div>
-              <h3 className="font-[800] text-[#0a175a] text-[1.1rem] leading-snug tracking-[-0.02em] mb-2">Find graduation gaps</h3>
-              <p className="text-[#59647a] text-[0.78rem] leading-[1.6] font-[500]">
-                Spot what is satisfied, missing, or still unclear against destination requirements.
-              </p>
-            </div>
-            <div className="flex-1 flex items-end justify-center px-4 pb-2 pt-4 min-h-[200px]">
-              <img src={customAsset2} alt="Find graduation gaps 3D" className="w-auto max-h-[200px] object-contain drop-shadow-xl" />
-            </div>
-          </article>
-
-          {/* Card 4 */}
-          <article className="flex flex-col bg-[#f3faf7] rounded-[20px] border border-[#daeee7] overflow-hidden" style={{ minHeight: 360 }}>
-            <div className="p-6 pb-0">
-              <div className="font-[800] text-[#01a995] text-base mb-2 tracking-tight">04</div>
-              <h3 className="font-[800] text-[#0a175a] text-[1.1rem] leading-snug tracking-[-0.02em] mb-2">Build your next route</h3>
-              <p className="text-[#59647a] text-[0.78rem] leading-[1.6] font-[500]">
-                Turn results into a roadmap and a counselor-ready packet you can act on.
-              </p>
-            </div>
-            <div className="flex-1 flex items-end justify-center px-4 pb-2 pt-4 min-h-[200px]">
-              <img src={customAsset6} alt="Build your next route 3D" className="w-auto max-h-[200px] object-contain drop-shadow-xl" />
-            </div>
-          </article>
-
-        </div>
-
-        {/* TIMELINE */}
-        <div ref={timelineRef} className="hidden lg:flex items-center justify-between mt-6 px-[calc(100%/8-11px)]">
-          {[1, 2, 3, 4].map((step) => (
-            <div key={step} className="relative flex items-center" style={{ flex: step < 4 ? 1 : 'none' }}>
-              {/* Vertical tick above dot */}
-              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 gs-v-line" style={{ width: '1.5px', height: '12px', background: '#01a995', transformOrigin: 'top' }} />
-              {/* Dot */}
-              <svg className="w-[22px] h-[22px] flex-shrink-0 gs-dot relative z-10" viewBox="0 0 24 24" fill="none" style={{ overflow: 'visible' }}>
-                <circle cx="12" cy="12" r="10" fill="#fffdf8" stroke="#01a995" strokeWidth="1.5" />
-                <circle cx="12" cy="12" r="4" fill="#01a995" />
-              </svg>
-              {/* Horizontal line + arrow to next */}
-              {step < 4 && (
-                <div className="gs-h-line flex-1 relative" style={{ height: '1.5px', background: '#01a995', transformOrigin: 'left', marginLeft: 0, marginRight: 0 }}>
-                  <div className="gs-arrow absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 bg-[#f3faf7] px-[4px]">
-                    <ChevronRight size={17} strokeWidth={3} color="#01a995" />
-                  </div>
+            {/* REVIEW STATUS Card inside Transcript Review */}
+            <div className="mt-auto relative z-10 rounded-2xl bg-white/5 border border-white/10 p-5 w-full max-w-[340px] backdrop-blur-md">
+              <div className="text-[0.55rem] font-[800] uppercase tracking-[0.14em] text-white/60 mb-3">REVIEW STATUS</div>
+              <div className="grid grid-cols-3 gap-2 mb-4">
+                <div className="flex flex-col items-center justify-center rounded-xl bg-white/5 py-3 border border-white/10">
+                  <span className="text-xl font-[800]">5</span>
+                  <span className="text-[0.6rem] font-[600] text-white/70">Mapped</span>
                 </div>
-              )}
+                <div className="flex flex-col items-center justify-center rounded-xl bg-white/5 py-3 border border-white/10">
+                  <span className="text-xl font-[800]">5</span>
+                  <span className="text-[0.6rem] font-[600] text-white/70">Matched</span>
+                </div>
+                <div className="flex flex-col items-center justify-center rounded-xl bg-[#1e2a6b] py-3 border border-[#303e85] shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]">
+                  <span className="text-xl font-[800]">5</span>
+                  <span className="text-[0.6rem] font-[600] text-[#8ca8ff]">Confirmed</span>
+                </div>
+              </div>
+              <button className="w-full flex items-center justify-center gap-2 rounded-full bg-[#01c3ad] py-2.5 text-[0.8rem] font-[700] text-[#0a175a] hover:bg-[#02d8c0] transition-colors">
+                View gap analysis <ChevronRight size={14} strokeWidth={3} />
+              </button>
             </div>
-          ))}
-        </div>
 
+            {/* Absolute 3D Asset */}
+            <img src={customAsset3} alt="" className="absolute right-[-20px] top-[40px] w-[340px] object-contain drop-shadow-[0_20px_30px_rgba(0,0,0,0.3)] z-0 hidden sm:block" />
+          </article>
+
+          {/* Card 2: Gap Analysis (col-span-1 row-span-2) */}
+          <article className="col-span-1 lg:row-span-2 rounded-[24px] bg-[#fff8ef] p-6 text-[#0a175a] flex flex-col border border-[#f5e6d3] relative overflow-hidden min-h-[480px]">
+            <span className="text-[0.65rem] font-[800] uppercase tracking-[0.14em] text-[#f27a4b] mb-4">GAP ANALYSIS</span>
+            <h3 className="text-[1.35rem] font-[800] leading-tight mb-6 pr-4">See what looks satisfied, missing, or unclear.</h3>
+            
+            <div className="flex flex-col gap-4 mb-auto z-10">
+              <div className="flex items-center gap-3 bg-white rounded-xl p-3 shadow-sm border border-black/5 w-max pr-6">
+                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#01c3ad] text-white text-sm">✓</div>
+                <div>
+                  <div className="font-[800] text-[0.95rem] leading-none">16.5</div>
+                  <div className="text-[0.55rem] font-[600] text-[#8e95a3] uppercase tracking-wider mt-1">Likely earned</div>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 bg-white rounded-xl p-3 shadow-sm border border-black/5 w-max pr-6">
+                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#ffb732] text-white font-bold text-sm">!</div>
+                <div>
+                  <div className="font-[800] text-[0.95rem] leading-none">5</div>
+                  <div className="text-[0.55rem] font-[600] text-[#8e95a3] uppercase tracking-wider mt-1">Missing credits</div>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 bg-white rounded-xl p-3 shadow-sm border border-black/5 w-max pr-6">
+                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#f25c54] text-white font-bold text-sm">?</div>
+                <div>
+                  <div className="font-[800] text-[0.95rem] leading-none">1</div>
+                  <div className="text-[0.55rem] font-[600] text-[#8e95a3] uppercase tracking-wider mt-1">Review items</div>
+                </div>
+              </div>
+            </div>
+
+            <button className="mt-6 flex items-center justify-between w-max gap-2 rounded-full bg-white px-5 py-2.5 text-[0.8rem] font-[700] text-[#0a175a] shadow-sm border border-black/5 hover:bg-gray-50 transition-colors z-10">
+              Open gap analysis <ChevronRight size={14} strokeWidth={3} className="text-[#a0a5b1]" />
+            </button>
+
+            <img src={customAsset2} alt="" className="absolute right-[-40px] bottom-10 w-[240px] object-contain drop-shadow-xl z-0 pointer-events-none" />
+          </article>
+
+          {/* Card 3: Pori Companion */}
+          <article className="col-span-1 rounded-[24px] bg-[#f0fbf7] p-6 text-[#0a175a] flex flex-col border border-[#d9f2e9] relative overflow-hidden h-full min-h-[232px]">
+            <span className="text-[0.65rem] font-[800] uppercase tracking-[0.14em] text-[#01a995] mb-2 block">Your companion</span>
+            <h3 className="text-xl font-[800] leading-tight mb-4">Make Pori<br/>your own</h3>
+            
+            <ul className="space-y-[6px] text-[0.7rem] font-[600] text-[#59647a] z-10">
+              {["Base", "Expression", "Head", "Accessory", "Detail"].map((item) => (
+                <li key={item} className="flex items-center gap-2">
+                  <div className="flex h-[14px] w-[14px] items-center justify-center rounded-full bg-[#01c3ad] text-white text-[8px]">✓</div>
+                  {item}
+                </li>
+              ))}
+            </ul>
+            
+            <img src={customAsset5} alt="" className="absolute right-[-10px] top-[40px] w-[140px] object-contain drop-shadow-lg z-0 pointer-events-none" />
+          </article>
+
+          {/* Card 4: Academic Roadmap */}
+          <article className="col-span-1 rounded-[24px] bg-[#f0fbf7] p-6 text-[#0a175a] flex flex-col border border-[#d9f2e9] relative overflow-hidden h-full min-h-[232px] justify-between">
+            <div>
+              <span className="text-[0.65rem] font-[800] uppercase tracking-[0.14em] text-[#01a995] mb-2 block">ACADEMIC ROADMAP</span>
+              <h3 className="text-[1.2rem] font-[800] leading-tight mb-2">Move one clear<br/>step at a time.</h3>
+              <p className="text-[0.7rem] text-[#59647a] font-[500] leading-snug max-w-[160px]">
+                Resolve the local elective, then unlock the remaining schedule.
+              </p>
+            </div>
+            
+            <div className="mt-3 z-10">
+              <span className="inline-block rounded-full bg-[#dcf6ef] px-3 py-1 text-[0.6rem] font-[700] text-[#01a995]">Next: Local Elective</span>
+            </div>
+
+            <button className="mt-4 flex items-center justify-between w-max gap-2 rounded-full bg-white px-4 py-2 text-[0.75rem] font-[700] text-[#0a175a] shadow-sm border border-black/5 hover:bg-gray-50 transition-colors z-10 relative">
+              View roadmap <ChevronRight size={12} strokeWidth={3} className="text-[#a0a5b1]" />
+            </button>
+            
+            <img src={customAsset6} alt="" className="absolute right-[-60px] bottom-10 w-[260px] object-contain drop-shadow-xl z-0 pointer-events-none" />
+          </article>
+
+          {/* Row 3 - Card 5: Counselor Packet */}
+          <article className="col-span-1 rounded-[24px] bg-[#f2f6ff] p-6 text-[#0a175a] flex flex-col border border-[#e5edff] relative overflow-hidden min-h-[240px]">
+            <span className="text-[0.65rem] font-[800] uppercase tracking-[0.14em] text-[#4863d4] mb-3 block">COUNSELOR PACKET</span>
+            <h3 className="text-[1.25rem] font-[800] leading-tight max-w-[180px] mb-2">A printable packet that's ready when you are.</h3>
+            <p className="text-[0.75rem] text-[#59647a] font-[500] max-w-[140px] leading-snug">
+              Summarize the plan, mapping, gaps, and next steps.
+            </p>
+            
+            <button className="mt-auto flex items-center justify-center gap-2 rounded-full bg-white px-4 py-2 text-[0.75rem] font-[700] text-[#0a175a] shadow-sm border border-black/5 hover:bg-gray-50 transition-colors w-max z-10 relative">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg> Print / Save PDF
+            </button>
+            
+            <img src={customAsset4} alt="" className="absolute right-[-20px] bottom-[-20px] w-[180px] object-contain drop-shadow-[0_10px_20px_rgba(0,0,0,0.15)] z-0 pointer-events-none" />
+          </article>
+
+          {/* Row 3 - Card 6: Academic Passport */}
+          <article className="col-span-1 rounded-[24px] bg-[#f0fbf7] p-6 text-[#0a175a] flex flex-col border border-[#d9f2e9] relative overflow-hidden min-h-[240px]">
+            <span className="text-[0.65rem] font-[800] uppercase tracking-[0.14em] text-[#01a995] mb-3 block">ACADEMIC PASSPORT</span>
+            <h3 className="text-[1.25rem] font-[800] leading-tight mb-2">One template,<br/>made personal.</h3>
+            <p className="text-[0.75rem] text-[#59647a] font-[500] leading-snug max-w-[150px] mb-4">
+              Customize appearance and personal details.
+            </p>
+
+            <div className="space-y-[10px] z-10 relative">
+              <div className="flex items-center gap-3 text-[0.65rem] font-[700] text-[#59647a]">
+                <span className="w-16">Cover color</span>
+                <div className="flex gap-[6px]">
+                  <div className="w-4 h-4 rounded-full bg-[#0a175a]"></div>
+                  <div className="w-4 h-4 rounded-full bg-[#01c3ad]"></div>
+                  <div className="w-4 h-4 rounded-full bg-[#f27a4b]"></div>
+                  <div className="w-4 h-4 rounded-full bg-[#6d5dfc]"></div>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 text-[0.65rem] font-[700] text-[#59647a]">
+                <span className="w-16">Accent color</span>
+                <div className="flex gap-[6px]">
+                  <div className="w-4 h-4 rounded-full bg-[#0a175a]"></div>
+                  <div className="w-4 h-4 rounded-full bg-[#01c3ad]"></div>
+                  <div className="w-4 h-4 rounded-full bg-[#f4c85a]"></div>
+                  <div className="w-4 h-4 rounded-full bg-[#e8efed]"></div>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 text-[0.65rem] font-[700] text-[#59647a]">
+                <span className="w-16">Icon style</span>
+                <div className="flex gap-[6px]">
+                  <div className="w-[18px] h-[18px] rounded-[4px] bg-white flex items-center justify-center border border-[#01c3ad] text-[10px]">🐧</div>
+                  <div className="w-[18px] h-[18px] rounded-[4px] bg-white/50 flex items-center justify-center border border-black/5 text-[#8e95a3] text-[10px]">🎓</div>
+                  <div className="w-[18px] h-[18px] rounded-[4px] bg-white/50 flex items-center justify-center border border-black/5 text-[#8e95a3] text-[10px]">⭐</div>
+                </div>
+              </div>
+            </div>
+            
+            <button className="mt-5 flex items-center justify-between w-max gap-2 rounded-full bg-white px-4 py-2 text-[0.75rem] font-[700] text-[#0a175a] shadow-sm border border-black/5 hover:bg-gray-50 transition-colors z-10 relative">
+              Customize Passport <ChevronRight size={12} strokeWidth={3} className="text-[#a0a5b1]" />
+            </button>
+            
+            <img src={customAssetPassport} alt="" className="absolute right-0 top-[20px] w-[170px] object-contain drop-shadow-xl z-0 pointer-events-none" />
+          </article>
+
+          {/* Row 3 - Card 7: Level Progression */}
+          <article className="col-span-1 md:col-span-2 rounded-[24px] bg-[#0a175a] p-8 md:p-10 text-white relative flex flex-col min-h-[240px] overflow-hidden">
+            <span className="text-[0.65rem] font-[800] uppercase tracking-[0.14em] text-[#01c3ad] mb-3 block relative z-10">LEVEL PROGRESSION</span>
+            <h3 className="text-[1.4rem] font-[800] leading-tight mb-2 relative z-10">Each rank<br/>follows real work.</h3>
+            <p className="text-[0.8rem] text-white/70 font-[400] max-w-[200px] leading-snug relative z-10">
+              Complete tasks, earn ranks, and unlock new milestones.
+            </p>
+            
+            <img src={customAssetLevels} alt="Level progression timeline" className="absolute bottom-6 right-6 w-full max-w-[480px] object-contain z-0 pointer-events-none" />
+          </article>
+        </div>
       </section>
 
       {/* IMPACT / TRUST */}
