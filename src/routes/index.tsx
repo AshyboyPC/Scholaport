@@ -5,6 +5,8 @@ import { PremiumCheckCircleIcon, PremiumShieldIcon, PremiumSettingsIcon } from "
 import { ClayAsset } from "@/components/journey/JourneyVisuals";
 import heroBgImage from "@/assets/images/hero-bg.png";
 import footerBgImage from "@/assets/images/footer-bg.png";
+import featureShowcaseImg from "@/assets/images/feature-showcase.png";
+import introBgTransparentImage from "@/assets/images/intro-bg-transparent.png";
 import { ScrollRevealText } from "@/components/ui/ScrollRevealText";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -407,106 +409,117 @@ function WelcomePage() {
         </div>
       </section>
 
-      {/* NEW PROCESS SECTION */}
-      <section id="how-it-works" className="mx-auto w-full max-w-[1400px] px-5 py-24 md:px-8">
-        
-        {/* HEADER */}
-        <div className="mb-20 text-center flex flex-col items-center">
-          <div className="inline-flex items-center gap-2 text-[0.67rem] font-[900] uppercase tracking-[0.1em] text-[#01a995] mb-6">
-            <span className="w-[6px] h-[6px] rounded-full bg-[#01a995]"></span>
-            PROCESS
-          </div>
-          <h2 className="mx-auto max-w-[50rem] text-[clamp(1.8rem,3.2vw,3rem)] font-[800] leading-[1.1] tracking-[-0.04em] text-[#0a175a]">
-            A student-first planning process built to turn transcripts into clearer routes
-            <span className="inline-flex items-center justify-center w-[1.15em] h-[1.15em] align-text-bottom mx-3 transform -translate-y-1">
-              <img src={customAsset1} alt="Map Pin" className="w-full h-full object-contain" />
+      {/* PROCESS SECTION */}
+      <section id="how-it-works" className="mx-auto w-full max-w-[1400px] px-6 py-24 md:px-10">
+
+        {/* PROCESS BADGE — left aligned */}
+        <div className="mb-6 flex items-center gap-2">
+          <span className="w-[7px] h-[7px] rounded-full bg-[#01a995]" />
+          <span className="text-[0.65rem] font-[900] uppercase tracking-[0.14em] text-[#01a995]">PROCESS</span>
+        </div>
+
+        {/* HEADING — centered, 3 lines */}
+        <div className="mb-16 text-center">
+          <h2 className="text-[clamp(1.9rem,3.4vw,3.1rem)] font-[800] leading-[1.15] tracking-[-0.04em] text-[#0a175a]">
+            A student-first planning process<br />
+            built to turn transcripts into clearer routes{" "}
+            <span className="inline-flex items-center justify-center w-[1em] h-[1em] align-middle translate-y-[-0.05em]">
+              <img src={customAsset1} alt="" className="w-full h-full object-contain" />
             </span>
-            <span className="text-[#8e98a8] font-[600]">and</span>
-            <span className="inline-flex items-center justify-center w-[1.15em] h-[1.15em] align-text-bottom mx-3 transform -translate-y-1">
-              <img src={customAsset2} alt="Compass" className="w-full h-full object-contain" />
-            </span>
-            <span className="text-[#8e98a8] font-[600]">more confident next steps</span>
           </h2>
+          <p className="mt-2 text-[clamp(1.9rem,3.4vw,3.1rem)] font-[600] leading-[1.15] tracking-[-0.04em] text-[#8e98a8]">
+            and{" "}
+            <span className="inline-flex items-center justify-center w-[0.9em] h-[0.9em] align-middle translate-y-[-0.05em]">
+              <img src={customAsset2} alt="" className="w-full h-full object-contain" />
+            </span>{" "}
+            more confident next steps
+          </p>
         </div>
 
         {/* CARDS GRID */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 relative z-10">
-          
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+
           {/* Card 1 */}
-          <article className="flex flex-col bg-[#f0fbf7] rounded-[24px] border border-[#d9f2e9] p-6 lg:p-8 pt-8 lg:pt-10 overflow-hidden relative min-h-[380px] lg:min-h-[420px]">
-            <div className="font-[800] text-[#01a995] text-lg mb-2">01</div>
-            <h3 className="font-[800] text-[#0a175a] text-xl mb-3 leading-tight tracking-tight">Upload transcript</h3>
-            <p className="text-[#59647a] text-[0.8rem] leading-[1.6] font-[600] max-w-[95%]">
-              Add your academic record securely so Scholaport can prepare it for review.
-            </p>
-            <div className="absolute -bottom-10 -right-4 w-[110%] max-w-[280px]">
-              <img src={customAsset3} alt="Upload Transcript" className="w-full h-auto drop-shadow-2xl hover:-translate-y-2 transition-transform duration-500 origin-bottom-right scale-110" />
+          <article className="flex flex-col bg-[#f3faf7] rounded-[20px] border border-[#daeee7] overflow-hidden" style={{ minHeight: 360 }}>
+            <div className="p-6 pb-0">
+              <div className="font-[800] text-[#01a995] text-base mb-2 tracking-tight">01</div>
+              <h3 className="font-[800] text-[#0a175a] text-[1.1rem] leading-snug tracking-[-0.02em] mb-2">Upload transcript</h3>
+              <p className="text-[#59647a] text-[0.78rem] leading-[1.6] font-[500]">
+                Add your academic record securely so Scholaport can prepare it for review.
+              </p>
+            </div>
+            <div className="flex-1 flex items-end justify-center px-4 pb-2 pt-4 min-h-[200px]">
+              <img src={customAsset3} alt="Upload transcript 3D" className="w-auto max-h-[200px] object-contain drop-shadow-xl" />
             </div>
           </article>
 
           {/* Card 2 */}
-          <article className="flex flex-col bg-[#f0f6ff] rounded-[24px] border border-[#e1edff] p-6 lg:p-8 pt-8 lg:pt-10 overflow-hidden relative min-h-[380px] lg:min-h-[420px]">
-            <div className="font-[800] text-[#01a995] text-lg mb-2">02</div>
-            <h3 className="font-[800] text-[#0a175a] text-xl mb-3 leading-tight tracking-tight">Review probable credits</h3>
-            <p className="text-[#59647a] text-[0.8rem] leading-[1.6] font-[600] max-w-[95%]">
-              See what may map clearly, what looks strong, and what still needs review.
-            </p>
-            <div className="absolute -bottom-6 -right-2 w-[110%] max-w-[280px]">
-              <img src={customAsset4} alt="Review probable credits" className="w-full h-auto drop-shadow-2xl hover:-translate-y-2 transition-transform duration-500 scale-125 origin-bottom-right" />
+          <article className="flex flex-col bg-[#f3faf7] rounded-[20px] border border-[#daeee7] overflow-hidden" style={{ minHeight: 360 }}>
+            <div className="p-6 pb-0">
+              <div className="font-[800] text-[#01a995] text-base mb-2 tracking-tight">02</div>
+              <h3 className="font-[800] text-[#0a175a] text-[1.1rem] leading-snug tracking-[-0.02em] mb-2">Review probable credits</h3>
+              <p className="text-[#59647a] text-[0.78rem] leading-[1.6] font-[500]">
+                See what may map clearly, what looks strong, and what still needs review.
+              </p>
+            </div>
+            <div className="flex-1 flex items-end justify-center px-4 pb-2 pt-4 min-h-[200px]">
+              <img src={customAsset4} alt="Review probable credits 3D" className="w-auto max-h-[200px] object-contain drop-shadow-xl" />
             </div>
           </article>
 
           {/* Card 3 */}
-          <article className="flex flex-col bg-[#fff8ec] rounded-[24px] border border-[#ffeed4] p-6 lg:p-8 pt-8 lg:pt-10 overflow-hidden relative min-h-[380px] lg:min-h-[420px]">
-            <div className="font-[800] text-[#01a995] text-lg mb-2">03</div>
-            <h3 className="font-[800] text-[#0a175a] text-xl mb-3 leading-tight tracking-tight">Find graduation gaps</h3>
-            <p className="text-[#59647a] text-[0.8rem] leading-[1.6] font-[600] max-w-[95%]">
-              Spot what is satisfied, missing, or still unclear against destination requirements.
-            </p>
-            <div className="absolute -bottom-8 -right-4 w-[110%] max-w-[280px]">
-              <img src={customAsset5} alt="Find graduation gaps" className="w-full h-auto drop-shadow-2xl hover:-translate-y-2 transition-transform duration-500 scale-110 origin-bottom-right" />
+          <article className="flex flex-col bg-[#f3faf7] rounded-[20px] border border-[#daeee7] overflow-hidden" style={{ minHeight: 360 }}>
+            <div className="p-6 pb-0">
+              <div className="font-[800] text-[#01a995] text-base mb-2 tracking-tight">03</div>
+              <h3 className="font-[800] text-[#0a175a] text-[1.1rem] leading-snug tracking-[-0.02em] mb-2">Find graduation gaps</h3>
+              <p className="text-[#59647a] text-[0.78rem] leading-[1.6] font-[500]">
+                Spot what is satisfied, missing, or still unclear against destination requirements.
+              </p>
+            </div>
+            <div className="flex-1 flex items-end justify-center px-4 pb-2 pt-4 min-h-[200px]">
+              <img src={customAsset5} alt="Find graduation gaps 3D" className="w-auto max-h-[200px] object-contain drop-shadow-xl" />
             </div>
           </article>
 
           {/* Card 4 */}
-          <article className="flex flex-col bg-[#f0fbf7] rounded-[24px] border border-[#d9f2e9] p-6 lg:p-8 pt-8 lg:pt-10 overflow-hidden relative min-h-[380px] lg:min-h-[420px]">
-            <div className="font-[800] text-[#01a995] text-lg mb-2">04</div>
-            <h3 className="font-[800] text-[#0a175a] text-xl mb-3 leading-tight tracking-tight">Build your next route</h3>
-            <p className="text-[#59647a] text-[0.8rem] leading-[1.6] font-[600] max-w-[95%]">
-              Turn results into a roadmap and a counselor-ready packet you can act on.
-            </p>
-            <div className="absolute -bottom-10 -right-6 w-[110%] max-w-[280px]">
-              <img src={customAsset6} alt="Build your next route" className="w-full h-auto drop-shadow-2xl hover:-translate-y-2 transition-transform duration-500 scale-[1.25] origin-bottom-right" />
+          <article className="flex flex-col bg-[#f3faf7] rounded-[20px] border border-[#daeee7] overflow-hidden" style={{ minHeight: 360 }}>
+            <div className="p-6 pb-0">
+              <div className="font-[800] text-[#01a995] text-base mb-2 tracking-tight">04</div>
+              <h3 className="font-[800] text-[#0a175a] text-[1.1rem] leading-snug tracking-[-0.02em] mb-2">Build your next route</h3>
+              <p className="text-[#59647a] text-[0.78rem] leading-[1.6] font-[500]">
+                Turn results into a roadmap and a counselor-ready packet you can act on.
+              </p>
+            </div>
+            <div className="flex-1 flex items-end justify-center px-4 pb-2 pt-4 min-h-[200px]">
+              <img src={customAsset6} alt="Build your next route 3D" className="w-auto max-h-[200px] object-contain drop-shadow-xl" />
             </div>
           </article>
 
         </div>
 
         {/* TIMELINE */}
-        <div ref={timelineRef} className="hidden lg:grid grid-cols-4 gap-6 mt-6 relative max-w-full">
+        <div ref={timelineRef} className="hidden lg:flex items-center justify-between mt-6 px-[calc(100%/8-11px)]">
           {[1, 2, 3, 4].map((step) => (
-            <div key={step} className="relative flex flex-col items-center justify-start h-12 w-full pt-[2px]">
-              {/* Vertical connection line */}
-              <div className="w-[1.5px] h-3 bg-[#01a995] gs-v-line mb-[2px]" />
-              
-              {/* The Dot (SVG to match exact design) */}
-              <svg className="w-[22px] h-[22px] z-10 relative gs-dot overflow-visible" viewBox="0 0 24 24" fill="none">
-                <circle cx="12" cy="12" r="10" fill="#fffdf8" stroke="#01a995" strokeWidth="1.5" filter="drop-shadow(0px 3px 4px rgba(1,169,149,0.15))" />
+            <div key={step} className="relative flex items-center" style={{ flex: step < 4 ? 1 : 'none' }}>
+              {/* Vertical tick above dot */}
+              <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 gs-v-line" style={{ width: '1.5px', height: '12px', background: '#01a995', transformOrigin: 'top' }} />
+              {/* Dot */}
+              <svg className="w-[22px] h-[22px] flex-shrink-0 gs-dot relative z-10" viewBox="0 0 24 24" fill="none" style={{ overflow: 'visible' }}>
+                <circle cx="12" cy="12" r="10" fill="#fffdf8" stroke="#01a995" strokeWidth="1.5" />
                 <circle cx="12" cy="12" r="4" fill="#01a995" />
               </svg>
-              
-              {/* The Horizontal Line to next step */}
-              {step !== 4 && (
-                <div className="absolute left-1/2 top-[24px] h-[1.5px] bg-[#01a995] gs-h-line" style={{ width: 'calc(100% + 1.5rem)' }}>
-                  {/* Arrow inside horizontal line container */}
-                  <div className="absolute right-[-14px] top-1/2 -translate-y-1/2 z-10 text-[#01a995] bg-[#fffdf8] px-1 gs-arrow">
-                    <ChevronRight size={18} strokeWidth={3} />
+              {/* Horizontal line + arrow to next */}
+              {step < 4 && (
+                <div className="gs-h-line flex-1 relative" style={{ height: '1.5px', background: '#01a995', transformOrigin: 'left', marginLeft: 0, marginRight: 0 }}>
+                  <div className="gs-arrow absolute right-[-9px] top-1/2 -translate-y-1/2 z-10 bg-[#fffdf8] pl-[1px]">
+                    <ChevronRight size={17} strokeWidth={3} color="#01a995" />
                   </div>
                 </div>
               )}
             </div>
           ))}
         </div>
+
       </section>
 
       {/* IMPACT / TRUST */}
