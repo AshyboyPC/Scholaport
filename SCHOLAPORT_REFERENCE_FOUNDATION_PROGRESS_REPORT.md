@@ -40,9 +40,18 @@ The earlier “Opening your passport” failure mode was traced to an unreachabl
 - “Try again” reruns account initialization;
 - “Return to sign in” removes only this project’s stale Supabase session and works while the remote service is unreachable;
 - loading, recovery, error, and not-found screens now share the ScholaPort visual system; and
-- existing session persistence, automatic refresh, profile loading, protected-route rules, and normal sign-out behavior remain intact.
+  - existing session persistence, automatic refresh, profile loading, protected-route rules, and normal sign-out behavior remain intact.
 
 The remote project itself was not replaced or simulated in production. The configured hostname remained unresolved in the local environment and is still documented as an infrastructure limitation.
+
+### Gamification & Passport Customization
+
+ScholaPort now incorporates engaging progression mechanics and deep personalization features to enhance student motivation:
+
+- **Passport Customization**: Users can now fully personalize their Academic Passport. This includes selecting passport cover colors, applying unique stamps earned through progress, and customizing their core identity themes.
+- **Profile Customization**: Extended customization options allow students to define their academic avatars, bio, and goal setting visuals, creating a more personalized home environment.
+- **Leveling & Gamification**: A robust leveling system was introduced to gamify the academic planning process. Students earn experience points (XP) and unlock new levels by completing key actions such as uploading transcripts, reviewing credit mappings, and addressing graduation gaps. Visual feedback (progress bars, level-up animations, and distinct rank badges) reinforces progress.
+- **Unified Profile & Settings**: The previously separate Profile and Settings interfaces were consolidated into a single, cohesive, tabbed hub. This "Switch from Profile and Settings" refactor minimizes navigation friction, allowing students to seamlessly toggle between identity customization (Profile) and functional preferences (Settings) within the same Liquid-Glass modal.
 
 ### Complete product-wide visual system
 
