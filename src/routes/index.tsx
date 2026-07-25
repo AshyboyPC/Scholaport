@@ -6,6 +6,7 @@ import { ClayAsset } from "@/components/journey/JourneyVisuals";
 import heroBgImage from "@/assets/images/hero-bg.png";
 import footerBgImage from "@/assets/images/footer-bg.png";
 import featureShowcaseImg from "@/assets/images/feature-showcase.png";
+import introBgTransparentImage from "@/assets/images/intro-bg-transparent.png";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -126,6 +127,32 @@ function WelcomePage() {
           </div>
         </div>
       </header>
+
+      {/* INTRODUCTION SECTION (HYPERLIQUID REFERENCE) */}
+      <section className="relative w-full flex flex-col items-center justify-center min-h-[1000px] md:min-h-[1300px] overflow-hidden">
+        {/* Background Image Layer */}
+        <div className="absolute inset-0 pointer-events-none flex items-center justify-center w-full">
+          <div 
+            className="w-full h-full"
+            style={{
+              backgroundImage: `url(${introBgTransparentImage})`,
+              backgroundSize: 'contain',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',
+            }}
+          ></div>
+        </div>
+
+        {/* Foreground Content (Centered in the empty space) */}
+        <div className="relative z-10 w-full max-w-2xl mx-auto px-5 text-center">
+          <p className="mb-8 text-[1.05rem] md:text-[1.15rem] leading-[1.65] text-[#101a3f]/90 font-[500]">
+            Scholaport was formed to untangle the complexities of student mobility and enable seamless transcript deployment across international borders. It lowers the barrier to entry for global education by standardizing records in one of the most rigorous compliance environments.
+          </p>
+          <p className="text-[1.05rem] md:text-[1.15rem] leading-[1.65] text-[#101a3f]/90 font-[500]">
+            As a centralized warehouse for academic history, Scholaport drives institutional trust, expands counseling utility, and captures comprehensive learning outcomes through verified data. <span className="font-[650] text-[#01a995]">It offers students and counselors a distinct way to gain exposure to universal standards, unified progress tracking, and long-term academic mobility.</span>
+          </p>
+        </div>
+      </section>
 
       {/* FEATURE SHOWCASE (DESIGN REFERENCE) */}
       <section className="mx-auto w-full max-w-7xl px-5 py-24 md:px-8">
