@@ -47,26 +47,22 @@ function WelcomePage() {
         </div>
         
         {/* MORPHING NAVIGATION */}
-        <nav className={`fixed z-50 left-1/2 -translate-x-1/2 transition-all flex items-center ${
+        <nav className={`fixed z-50 left-1/2 -translate-x-1/2 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] flex items-center ${
           isScrolled 
-            ? "duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] top-4 w-max h-[64px] pl-[180px] pr-[174px] rounded-[32px] bg-white/76 border border-white/42 shadow-[0_10px_32px_rgba(7,17,63,0.1),inset_0_1px_0_rgba(255,255,255,0.72)] backdrop-blur-[18px] saturate-[1.1] text-[#344061]" 
-            : "duration-0 ease-out top-4 w-[200px] h-[64px] rounded-[32px] bg-transparent border border-transparent shadow-none backdrop-blur-none text-white"
+            ? "top-4 w-max h-[64px] pl-[180px] pr-[174px] rounded-[32px] bg-white/76 border border-white/42 shadow-[0_10px_32px_rgba(7,17,63,0.1),inset_0_1px_0_rgba(255,255,255,0.72)] backdrop-blur-[18px] saturate-[1.1] text-[#344061]" 
+            : "top-4 w-[200px] h-[64px] rounded-[32px] bg-transparent border border-transparent shadow-none backdrop-blur-none text-white"
         }`}>
 
           {/* LOGO (Always absolute) */}
-          <Link to="/" aria-label="Scholaport home" className={`absolute top-1/2 -translate-y-1/2 transition-all ${
-            isScrolled 
-              ? "duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] left-6" 
-              : "duration-0 left-1/2 -translate-x-1/2"
+          <Link to="/" aria-label="Scholaport home" className={`absolute top-1/2 -translate-y-1/2 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+            isScrolled ? "left-6" : "left-1/2 -translate-x-1/2"
           }`}>
             <ScholaportLogo className="h-7 sm:h-8 transition-colors duration-500" showWordmark inverse={!isScrolled} />
           </Link>
 
           {/* LINKS CONTAINER */}
-          <div className={`hidden lg:flex items-center transition-all ${
-            isScrolled 
-              ? "duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] w-max gap-1 mx-auto opacity-100" 
-              : "duration-0 w-0 opacity-0 overflow-hidden pointer-events-none"
+          <div className={`hidden lg:flex items-center transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+            isScrolled ? "w-max gap-1 mx-auto opacity-100" : "w-0 opacity-0 overflow-hidden pointer-events-none"
           }`}>
             
             {/* LEFT LINKS */}
