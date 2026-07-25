@@ -28,6 +28,8 @@ import "@fontsource/noto-sans-devanagari/600.css";
 import "@fontsource/noto-sans-devanagari/700.css";
 
 import appCss from "../styles.css?url";
+import gumriotSmoothUrl from "@/assets/fonts/Gumriot-Smooth.ttf?url";
+import gumriotRegularUrl from "@/assets/fonts/Gumriot-Regular.ttf?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider, useAuth } from "@/components/AuthProvider";
