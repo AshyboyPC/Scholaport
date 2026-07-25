@@ -5,10 +5,20 @@ import { PremiumCheckCircleIcon, PremiumShieldIcon, PremiumSettingsIcon } from "
 import { ClayAsset } from "@/components/journey/JourneyVisuals";
 import heroBgImage from "@/assets/images/hero-bg.png";
 import footerBgImage from "@/assets/images/footer-bg.png";
-import featureShowcaseImg from "@/assets/images/feature-showcase.png";
-import introBgTransparentImage from "@/assets/images/intro-bg-transparent.png";
 import { ScrollRevealText } from "@/components/ui/ScrollRevealText";
-import { MapPin, Compass, ChevronRight } from "lucide-react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
+import { ChevronRight } from "lucide-react";
+
+import customAsset1 from "@/assets/images/custom_asset_1.png";
+import customAsset2 from "@/assets/images/custom_asset_2.png";
+import customAsset3 from "@/assets/images/custom_asset_3.png";
+import customAsset4 from "@/assets/images/custom_asset_4.png";
+import customAsset5 from "@/assets/images/custom_asset_5.png";
+import customAsset6 from "@/assets/images/custom_asset_6.png";
+
+gsap.registerPlugin(ScrollTrigger);
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -26,6 +36,37 @@ export const Route = createFileRoute("/")({
 
 function WelcomePage() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const timelineRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(() => {
+    if (!timelineRef.current) return;
+    const vLines = gsap.utils.toArray(".gs-v-line", timelineRef.current);
+    const dots = gsap.utils.toArray(".gs-dot", timelineRef.current);
+    const hLines = gsap.utils.toArray(".gs-h-line", timelineRef.current);
+    const arrows = gsap.utils.toArray(".gs-arrow", timelineRef.current);
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: timelineRef.current,
+        start: "top 85%",
+        toggleActions: "play none none reverse",
+      }
+    });
+
+    gsap.set(vLines, { scaleY: 0, transformOrigin: "top" });
+    gsap.set(dots, { scale: 0, opacity: 0, transformOrigin: "center" });
+    gsap.set(hLines, { scaleX: 0, transformOrigin: "left" });
+    gsap.set(arrows, { opacity: 0, x: -10 });
+
+    vLines.forEach((_, i) => {
+      tl.to(vLines[i], { scaleY: 1, duration: 0.2, ease: "power2.out" })
+        .to(dots[i], { scale: 1, opacity: 1, duration: 0.4, ease: "back.out(1.7)" }, "-=0.05");
+      if (hLines[i]) {
+        tl.to(hLines[i], { scaleX: 1, duration: 0.3, ease: "power1.inOut" }, "-=0.1")
+          .to(arrows[i], { opacity: 1, x: 0, duration: 0.2, ease: "power2.out" }, "-=0.1");
+      }
+    });
+  }, { scope: timelineRef });
 
   useEffect(() => {
     const updateNav = () => {
@@ -377,14 +418,12 @@ function WelcomePage() {
           </div>
           <h2 className="mx-auto max-w-[50rem] text-[clamp(1.8rem,3.2vw,3rem)] font-[800] leading-[1.1] tracking-[-0.04em] text-[#0a175a]">
             A student-first planning process built to turn transcripts into clearer routes
-            <span className="inline-flex items-center justify-center bg-[#01a995] w-[1.15em] h-[1.15em] rounded-[10px] align-text-bottom mx-3 shadow-[0_6px_16px_rgba(1,169,149,0.3)] transform -translate-y-1">
-              <MapPin className="text-white w-[55%] h-[55%]" strokeWidth={2.5} />
+            <span className="inline-flex items-center justify-center w-[1.15em] h-[1.15em] align-text-bottom mx-3 transform -translate-y-1">
+              <img src={customAsset1} alt="Map Pin" className="w-full h-full object-contain" />
             </span>
             <span className="text-[#8e98a8] font-[600]">and</span>
-            <span className="inline-flex items-center justify-center bg-gradient-to-br from-[#01a995] to-[#01c3ad] w-[1.15em] h-[1.15em] rounded-full align-text-bottom mx-3 shadow-[0_6px_16px_rgba(1,169,149,0.3)] p-[3px] transform -translate-y-1">
-              <div className="w-full h-full bg-white rounded-full flex items-center justify-center">
-                <Compass className="text-[#01a995] w-[60%] h-[60%]" strokeWidth={2.5} />
-              </div>
+            <span className="inline-flex items-center justify-center w-[1.15em] h-[1.15em] align-text-bottom mx-3 transform -translate-y-1">
+              <img src={customAsset2} alt="Compass" className="w-full h-full object-contain" />
             </span>
             <span className="text-[#8e98a8] font-[600]">more confident next steps</span>
           </h2>
@@ -401,7 +440,7 @@ function WelcomePage() {
               Add your academic record securely so Scholaport can prepare it for review.
             </p>
             <div className="absolute -bottom-10 -right-4 w-[110%] max-w-[280px]">
-              <ClayAsset asset="transcript-upload" className="w-full h-auto drop-shadow-2xl hover:-translate-y-2 transition-transform duration-500 origin-bottom-right scale-110" />
+              <img src={customAsset3} alt="Upload Transcript" className="w-full h-auto drop-shadow-2xl hover:-translate-y-2 transition-transform duration-500 origin-bottom-right scale-110" />
             </div>
           </article>
 
@@ -413,7 +452,7 @@ function WelcomePage() {
               See what may map clearly, what looks strong, and what still needs review.
             </p>
             <div className="absolute -bottom-6 -right-2 w-[110%] max-w-[280px]">
-              <ClayAsset asset="credit-mapping" className="w-full h-auto drop-shadow-2xl hover:-translate-y-2 transition-transform duration-500 scale-125 origin-bottom-right" />
+              <img src={customAsset4} alt="Review probable credits" className="w-full h-auto drop-shadow-2xl hover:-translate-y-2 transition-transform duration-500 scale-125 origin-bottom-right" />
             </div>
           </article>
 
@@ -425,7 +464,7 @@ function WelcomePage() {
               Spot what is satisfied, missing, or still unclear against destination requirements.
             </p>
             <div className="absolute -bottom-8 -right-4 w-[110%] max-w-[280px]">
-              <ClayAsset asset="requirement-gap" className="w-full h-auto drop-shadow-2xl hover:-translate-y-2 transition-transform duration-500 scale-110 origin-bottom-right" />
+              <img src={customAsset5} alt="Find graduation gaps" className="w-full h-auto drop-shadow-2xl hover:-translate-y-2 transition-transform duration-500 scale-110 origin-bottom-right" />
             </div>
           </article>
 
@@ -437,33 +476,32 @@ function WelcomePage() {
               Turn results into a roadmap and a counselor-ready packet you can act on.
             </p>
             <div className="absolute -bottom-10 -right-6 w-[110%] max-w-[280px]">
-              <ClayAsset asset="academic-roadmap" className="w-full h-auto drop-shadow-2xl hover:-translate-y-2 transition-transform duration-500 scale-[1.25] origin-bottom-right" />
+              <img src={customAsset6} alt="Build your next route" className="w-full h-auto drop-shadow-2xl hover:-translate-y-2 transition-transform duration-500 scale-[1.25] origin-bottom-right" />
             </div>
           </article>
 
         </div>
 
         {/* TIMELINE */}
-        <div className="hidden lg:grid grid-cols-4 gap-6 mt-10 relative max-w-full">
+        <div ref={timelineRef} className="hidden lg:grid grid-cols-4 gap-6 mt-6 relative max-w-full">
           {[1, 2, 3, 4].map((step) => (
-            <div key={step} className="relative flex items-center justify-center h-8">
-              {/* The connecting line */}
-              <div 
-                className={`absolute top-1/2 -translate-y-1/2 h-[1.5px] bg-[#01a995] ${
-                  step === 1 ? "left-1/2 right-0" : 
-                  step === 4 ? "left-0 right-1/2" : 
-                  "left-0 right-0"
-                } ${step !== 4 ? "w-[calc(100%+1.5rem)]" : ""}`}
-                style={{ zIndex: 0 }}
-              />
+            <div key={step} className="relative flex flex-col items-center justify-start h-12 w-full pt-[2px]">
+              {/* Vertical connection line */}
+              <div className="w-[1.5px] h-3 bg-[#01a995] gs-v-line mb-[2px]" />
               
-              {/* The Dot */}
-              <div className="relative z-10 w-2.5 h-2.5 rounded-full bg-[#01a995] ring-[5px] ring-[#fffdf8]" />
+              {/* The Dot (SVG to match exact design) */}
+              <svg className="w-[22px] h-[22px] z-10 relative gs-dot overflow-visible" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="10" fill="#fffdf8" stroke="#01a995" strokeWidth="1.5" filter="drop-shadow(0px 3px 4px rgba(1,169,149,0.15))" />
+                <circle cx="12" cy="12" r="4" fill="#01a995" />
+              </svg>
               
-              {/* The Arrow */}
+              {/* The Horizontal Line to next step */}
               {step !== 4 && (
-                <div className="absolute right-[-14px] top-1/2 -translate-y-1/2 z-10 text-[#01a995] bg-[#fffdf8] px-1">
-                  <ChevronRight size={18} strokeWidth={3} />
+                <div className="absolute left-1/2 top-[24px] h-[1.5px] bg-[#01a995] gs-h-line" style={{ width: 'calc(100% + 1.5rem)' }}>
+                  {/* Arrow inside horizontal line container */}
+                  <div className="absolute right-[-14px] top-1/2 -translate-y-1/2 z-10 text-[#01a995] bg-[#fffdf8] px-1 gs-arrow">
+                    <ChevronRight size={18} strokeWidth={3} />
+                  </div>
                 </div>
               )}
             </div>
