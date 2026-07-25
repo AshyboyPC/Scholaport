@@ -7,7 +7,7 @@
   src: url('./assets/fonts/Gumriot-Smooth.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
-  font-display: swap;
+  font-display: block;
 }
 
 @font-face {
@@ -15,12 +15,10 @@
   src: url('./assets/fonts/Gumriot-Regular.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
-  font-display: swap;
+  font-display: block;
 }
 
 body {
-  opacity: 1 !important;
-  visibility: visible !important;
   transition: opacity 0.3s ease-out;
 }
 

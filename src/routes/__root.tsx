@@ -28,8 +28,6 @@ import "@fontsource/noto-sans-devanagari/600.css";
 import "@fontsource/noto-sans-devanagari/700.css";
 
 import appCss from "../styles.css?url";
-import gumriotSmoothUrl from "@/assets/fonts/Gumriot-Smooth.ttf?url";
-import gumriotRegularUrl from "@/assets/fonts/Gumriot-Regular.ttf?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider, useAuth } from "@/components/AuthProvider";
@@ -135,7 +133,17 @@ function RootShell({ children }: { children: ReactNode }) {
     <html lang="en">
       <head>
         <HeadContent />
-        <style dangerouslySetInnerHTML={{ __html: `body { opacity: 0; visibility: hidden; }` }} />
+        <style dangerouslySetInnerHTML={{ __html: `
+          body { opacity: 0; visibility: hidden; }
+          body.fonts-loaded { opacity: 1; visibility: visible; }
+        ` }} />
+        <script dangerouslySetInnerHTML={{ __html: `
+          if (document.fonts && document.fonts.ready) {
+            document.fonts.ready.then(() => document.body.classList.add('fonts-loaded'));
+          } else {
+            setTimeout(() => document.body.classList.add('fonts-loaded'), 100);
+          }
+        `}} />
       </head>
       <body>
         {children}
