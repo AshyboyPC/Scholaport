@@ -154,7 +154,7 @@ function WelcomePage() {
         {/* Center Image Area */}
         <div className="relative w-full h-[300px] md:h-[550px] mb-20 flex items-center justify-center">
           {/* The exact image provided by the user with CSS multiply to cleanly drop the white background */}
-          <div className="absolute inset-0 mix-blend-multiply" style={{
+          <div className="absolute inset-0 mix-blend-multiply scale-[1.15] md:scale-[1.25]" style={{
             backgroundImage: `url(${featureShowcaseImg})`,
             backgroundSize: 'contain',
             backgroundPosition: 'center',
