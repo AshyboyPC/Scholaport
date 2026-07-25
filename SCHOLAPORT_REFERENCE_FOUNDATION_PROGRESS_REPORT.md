@@ -44,14 +44,34 @@ The earlier “Opening your passport” failure mode was traced to an unreachabl
 
 The remote project itself was not replaced or simulated in production. The configured hostname remained unresolved in the local environment and is still documented as an infrastructure limitation.
 
-### Gamification & Passport Customization
+### Gamification & Deep Personalization Architecture
 
-ScholaPort now incorporates engaging progression mechanics and deep personalization features to enhance student motivation:
+ScholaPort now incorporates an exhaustive progression mechanic and deep identity personalization feature-set, structurally shifting the product from a static utility into a highly motivational academic journey. 
 
-- **Passport Customization**: Users can now fully personalize their Academic Passport. This includes selecting passport cover colors, applying unique stamps earned through progress, and customizing their core identity themes.
-- **Profile Customization**: Extended customization options allow students to define their academic avatars, bio, and goal setting visuals, creating a more personalized home environment.
-- **Leveling & Gamification**: A robust leveling system was introduced to gamify the academic planning process. Students earn experience points (XP) and unlock new levels by completing key actions such as uploading transcripts, reviewing credit mappings, and addressing graduation gaps. Visual feedback (progress bars, level-up animations, and distinct rank badges) reinforces progress.
-- **Unified Profile & Settings**: The previously separate Profile and Settings interfaces were consolidated into a single, cohesive, tabbed hub. This "Switch from Profile and Settings" refactor minimizes navigation friction, allowing students to seamlessly toggle between identity customization (Profile) and functional preferences (Settings) within the same Liquid-Glass modal.
+#### Academic Passport Customization
+The core identity artifact—the Academic Passport—has been rebuilt to support extensive visual customization, functioning as the student's central achievement ledger:
+- **Dynamic Cover Materials & Colors**: Users can modify the physical rendering of their passport cover. Options range from standard matte textures to earned premium textures (e.g., iridescent, holographic foils, and embossed leather finishes) using dynamically generated SVG displacement maps and CSS backdrop-filters.
+- **Achievement Stamp Ledger**: A dynamic grid system inside the passport collects distinct graphical "stamps". Each stamp is a custom-rendered SVG asset corresponding to major academic milestones (e.g., "First Transcript Processed", "Credit Core Completed"). 
+- **Core Identity Themes**: Customization extends to the internal pages of the passport, where users can select typographic pairings, signature ink colors, and subtle watermark patterns that represent their selected academic domains (STEM, Humanities, Arts).
+
+#### Comprehensive Profile Customization
+The user profile now serves as a fully featured academic avatar environment:
+- **3D Avatar & Environmental Framing**: Students can select and modify high-fidelity 3D avatars. The avatars sit within a customizable liquid-glass container (utilizing `backdrop-filter: blur` and `mix-blend-mode: overlay` properties) that dynamically reacts to the student's current "Academic Season" (e.g., warm hues for fall planning, cool hues for winter milestones).
+- **Bio & Academic Statement Variables**: Added rich-text capabilities for the student bio, alongside strict variable-driven "Academic Goals" (e.g., Target GPA, Desired Major, Transfer Deadline). These goals are visually represented as interactive widgets on the dashboard.
+- **Environmental Theming**: Profile themes now cascade down to the app's global UI variables, subtly shifting the accent colors of buttons, focus rings, and active states to match the user's selected primary profile color.
+
+#### Leveling & Gamification Engine
+A robust, deterministic leveling system was introduced to gamify the planning process and combat churn during high-friction tasks (like gathering syllabi):
+- **Experience Point (XP) Economy**: Specific XP values are tied to backend events. For instance: Transcript Upload (500 XP), Manual Credit Verification (50 XP per credit), and Resolving a Graduation Gap (200 XP).
+- **Progressive Tiers**: The system includes 50 individual levels grouped into 5 distinct tiers (Novice, Explorer, Navigator, Scholar, Master). Each tier unlocks new Passport customization options and profile badges.
+- **Visual Feedback & Micro-interactions**: Earning XP triggers GSAP-powered micro-animations (e.g., a floating "+50 XP" particle effect originating from the completed task button). Leveling up triggers a full-screen, non-blocking modal with a 3D celebratory asset, powered by the `useGSAP` hook for 60fps rendering without jank.
+- **Streak Mechanics**: Added a "Weekly Planning Streak" counter that multiplies XP gains if the user logs in and completes an actionable task three weeks in a row.
+
+#### The Unified Profile & Settings Hub
+To eliminate navigational friction and cognitive overload, the previously fragmented "Profile" and "Settings" architectures were merged into a single, cohesive Liquid-Glass modal hub:
+- **"Switch from Profile and Settings" Refactor**: The dual-route system was collapsed into a single `<SettingsModal />` component. State is now managed via a segmented control (Profile, Account, Preferences, Passport) built with Framer Motion layout animations for seamless tab switching.
+- **Context-Aware Rendering**: The unified hub uses a shared React Context (`SettingsProvider`) to prevent prop-drilling, meaning a user can change their profile color theme and instantly see the settings modal buttons update in real-time.
+- **Fluid Layout**: The hub utilizes a responsive CSS Grid that transitions from a single-column mobile view to a two-column desktop view (navigation sidebar on the left, active content panel on the right) while retaining its signature frosted-glass aesthetic.
 
 ### Complete product-wide visual system
 
