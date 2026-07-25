@@ -36,6 +36,7 @@ import { DocumentStack } from "@/components/journey/JourneyVisuals";
 import { getMvpProfileUnsupportedReasons } from "@/lib/mvp-reference-scope";
 import { useInterfacePreferences } from "@/hooks/use-interface-preferences";
 import { I18nProvider } from "@/lib/i18n";
+import { SmoothScroll } from "@/components/SmoothScroll";
 
 function NotFoundComponent() {
   return (
@@ -187,13 +188,15 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <AuthGate />
-      </AuthProvider>
-      <NetworkBanner />
-      <Toaster position="top-center" richColors />
-    </QueryClientProvider>
+    <SmoothScroll>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <AuthGate />
+        </AuthProvider>
+        <NetworkBanner />
+        <Toaster position="top-center" richColors />
+      </QueryClientProvider>
+    </SmoothScroll>
   );
 }
 
