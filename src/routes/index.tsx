@@ -40,6 +40,38 @@ export const Route = createFileRoute("/")({
 
 function WelcomePage() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const timelineRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(() => {
+    if (!timelineRef.current) return;
+    const vLines = gsap.utils.toArray(".gs-v-line", timelineRef.current);
+    const dots = gsap.utils.toArray(".gs-dot", timelineRef.current);
+    const hLines = gsap.utils.toArray(".gs-h-line", timelineRef.current);
+    const arrows = gsap.utils.toArray(".gs-arrow", timelineRef.current);
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: timelineRef.current,
+        start: "top 85%",
+        toggleActions: "play none none reverse",
+      }
+    });
+
+    gsap.set(vLines, { scaleY: 0, transformOrigin: "top" });
+    gsap.set(dots, { scale: 0, opacity: 0, transformOrigin: "center" });
+    gsap.set(hLines, { scaleX: 0, transformOrigin: "left" });
+    gsap.set(arrows, { scale: 0, opacity: 0, transformOrigin: "center" });
+
+    vLines.forEach((_, i) => {
+      tl.to(vLines[i], { scaleY: 1, duration: 0.3, ease: "power2.out" })
+        .to(dots[i], { scale: 1, opacity: 1, duration: 0.4, ease: "back.out(1.7)" }, "-=0.1");
+      
+      if (hLines[i]) {
+        tl.to(hLines[i], { scaleX: 1, duration: 0.4, ease: "power2.inOut" }, "-=0.1")
+          .to(arrows[i], { scale: 1, opacity: 1, duration: 0.3, ease: "back.out(2)" }, "-=0.2");
+      }
+    });
+  }, { scope: timelineRef });
 
   useEffect(() => {
     const updateNav = () => {
@@ -469,7 +501,7 @@ function WelcomePage() {
         </div>
 
         {/* TIMELINE */}
-        <div className="hidden lg:flex items-center justify-between mt-6 px-[calc(100%/8-11px)]">
+        <div ref={timelineRef} className="hidden lg:flex items-center justify-between mt-6 px-[calc(100%/8-11px)]">
           {[1, 2, 3, 4].map((step) => (
             <div key={step} className="relative flex items-center" style={{ flex: step < 4 ? 1 : 'none' }}>
               {/* Vertical tick above dot */}
@@ -482,7 +514,7 @@ function WelcomePage() {
               {/* Horizontal line + arrow to next */}
               {step < 4 && (
                 <div className="gs-h-line flex-1 relative" style={{ height: '1.5px', background: '#01a995', transformOrigin: 'left', marginLeft: 0, marginRight: 0 }}>
-                  <div className="gs-arrow absolute right-[-9px] top-1/2 -translate-y-1/2 z-10 bg-[#fffdf8] pl-[1px]">
+                  <div className="gs-arrow absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 bg-[#f3faf7] px-[4px]">
                     <ChevronRight size={17} strokeWidth={3} color="#01a995" />
                   </div>
                 </div>
