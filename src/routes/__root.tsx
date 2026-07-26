@@ -139,11 +139,13 @@ function RootShell({ children }: { children: ReactNode }) {
           body.fonts-loaded { opacity: 1; visibility: visible; }
         ` }} />
         <script dangerouslySetInnerHTML={{ __html: `
-          if (document.fonts && document.fonts.ready) {
-            document.fonts.ready.then(() => document.body.classList.add('fonts-loaded'));
-          } else {
-            setTimeout(() => document.body.classList.add('fonts-loaded'), 100);
-          }
+          window.addEventListener('DOMContentLoaded', () => {
+            if (document.fonts && document.fonts.ready) {
+              document.fonts.ready.then(() => document.body.classList.add('fonts-loaded'));
+            } else {
+              setTimeout(() => document.body.classList.add('fonts-loaded'), 100);
+            }
+          });
         `}} />
       </head>
       <body suppressHydrationWarning>

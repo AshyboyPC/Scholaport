@@ -1,18 +1,54 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { ScholaportLogo } from "@/components/ScholaportLogo";
 import { useEffect, useRef, useState } from "react";
-import { PremiumCheckCircleIcon, PremiumShieldIcon, PremiumSettingsIcon } from "@/components/icons/PremiumIcon";
+import {
+  PremiumBookIcon,
+  PremiumBuildingIcon,
+  PremiumCalendarIcon,
+  PremiumCheckCircleIcon,
+  PremiumDatabaseIcon,
+  PremiumDocumentsIcon,
+  PremiumGapIcon,
+  PremiumGlobeIcon,
+  PremiumGraduationIcon,
+  PremiumHelpIcon,
+  PremiumLinkCircleIcon,
+  PremiumLockIcon,
+  PremiumMapPointIcon,
+  PremiumPacketIcon,
+  PremiumPathMatchIcon,
+  PremiumProfileIcon,
+  PremiumRoadmapIcon,
+  PremiumSearchIcon,
+  PremiumShieldIcon,
+  PremiumSourceFileIcon,
+  PremiumTargetIcon,
+  PremiumTwinIcon,
+  PremiumVerifiedIcon,
+  PremiumWarningIcon,
+} from "@/components/icons/PremiumIcon";
 import { ClayAsset } from "@/components/journey/JourneyVisuals";
+import { FaqSection } from "@/components/marketing/FaqSection";
+import { ReleasePathSection } from "@/components/marketing/ReleasePathSection";
 import heroBgImage from "@/assets/images/hero-bg.png";
 import footerBgImage from "@/assets/images/footer-bg.png";
 import featureShowcaseImg from "@/assets/images/feature-showcase.png";
 import introBgTransparentImage from "@/assets/images/intro-bg-transparent.png";
-import { ScrollRevealText } from "@/components/ui/ScrollRevealText";
+import { ScrollRevealText, revealText } from "@/components/ui/ScrollRevealText";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
-import { ChevronRight } from "lucide-react";
-
+import { ArrowLeft, ArrowRight, ChevronDown, ChevronRight, Info } from "lucide-react";
+import bentoTranscript from "@/assets/scholaport-journey/transcript-upload.png";
+import bentoGap from "@/assets/scholaport-journey/requirement-gap.webp";
+import bentoRoadmap from "@/assets/scholaport-journey/academic-roadmap.png";
+import bentoPacket from "@/assets/scholaport-journey/counselor-packet.png";
+import bentoPassport from "@/assets/images/academic-passport-bento.png";
+import bentoProgression from "@/assets/images/level-progression-bento.png";
+import whoForStudentImg from "@/assets/images/who-for-student.png";
+import whoForCounselorImg from "@/assets/images/who-for-counselor.png";
+import whoForFamiliesImg from "@/assets/images/who-for-families.png";
+import whoForTeamsImg from "@/assets/images/who-for-teams.png";
 import customAsset1 from "@/assets/images/custom_asset_1.png";
 import customAsset2 from "@/assets/images/custom_asset_2.png";
 import customAsset3 from "@/assets/images/custom_asset_3.png";
@@ -21,8 +57,8 @@ import customAsset5 from "@/assets/images/custom_asset_5.png";
 import customAsset6 from "@/assets/images/custom_asset_6.png";
 import customAsset7 from "@/assets/images/custom_asset_7.png";
 import customAsset8 from "@/assets/images/custom_asset_8.png";
-import customAssetPassport from "@/assets/images/custom_asset_passport.png";
-import customAssetLevels from "@/assets/images/custom_asset_levels.png";
+import poriMascot from "@/assets/pori-mascot.png";
+import trustMapSection from "@/assets/images/trust-map-section.png";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -42,11 +78,309 @@ export const Route = createFileRoute("/")({
 
 function WelcomePage() {
   const [isScrolled, setIsScrolled] = useState(false);
-  // timelineRef is removed as it's no longer needed
+  const [showSourcesModal, setShowSourcesModal] = useState(false);
+  const timelineRef = useRef<HTMLDivElement>(null);
+  const bentoGridRef = useRef<HTMLDivElement>(null);
+  const whoForRef = useRef<HTMLDivElement>(null);
+  const marketingRef = useRef<HTMLElement>(null);
+
+  useGSAP(() => {
+    if (!marketingRef.current) return;
+
+    const mm = gsap.matchMedia();
+
+    mm.add("(prefers-reduced-motion: no-preference)", () => {
+      const hero = marketingRef.current!.querySelector(".motion-hero");
+      const heroLines = gsap.utils.toArray<HTMLElement>(".motion-hero-line", hero);
+      const heroBackdrop = marketingRef.current!.querySelector(".motion-hero-backdrop");
+
+      gsap
+        .timeline({ defaults: { ease: "power4.out" } })
+        .fromTo(
+          heroBackdrop,
+          { scale: 1.18, yPercent: -3 },
+          { scale: 1, yPercent: 0, duration: 2.2, ease: "expo.out" },
+        )
+        .fromTo(
+          heroLines,
+          {
+            yPercent: 18,
+            scale: 0.985,
+            opacity: 0,
+            clipPath: "inset(0 0 100% 0)",
+            transformOrigin: "center bottom",
+          },
+          {
+            yPercent: 0,
+            scale: 1,
+            opacity: 1,
+            clipPath: "inset(0 0 0% 0)",
+            duration: 1.15,
+            stagger: 0.11,
+            ease: "power4.out",
+          },
+          0.34,
+        )
+        .fromTo(
+          ".motion-hero-copy",
+          { y: 12, opacity: 0 },
+          { y: 0, opacity: 1, duration: 1, ease: "power2.out" },
+          0.86,
+        );
+
+      gsap.to(heroBackdrop, {
+        yPercent: 12,
+        ease: "none",
+        scrollTrigger: { trigger: hero, start: "top top", end: "bottom top", scrub: 1.1 },
+      });
+
+      const systems = marketingRef.current!.querySelector(".motion-systems");
+      const systemsVisual = systems?.querySelector(".motion-systems-visual");
+      const systemsCards = gsap.utils.toArray<HTMLElement>(".motion-system-card", systems);
+      if (systems && systemsVisual) {
+        gsap.fromTo(
+          systemsVisual,
+          { clipPath: "inset(0 50% 0 50%)", scale: 1.08 },
+          {
+            clipPath: "inset(0 0% 0 0%)",
+            scale: 1,
+            ease: "power3.inOut",
+            scrollTrigger: { trigger: systemsVisual, start: "top 82%", end: "center 55%", scrub: 0.8 },
+          },
+        );
+        gsap.fromTo(
+          systemsCards,
+          { x: (index) => (index % 2 ? 42 : -42), opacity: 0 },
+          {
+            x: 0,
+            opacity: 1,
+            duration: 0.8,
+            stagger: { each: 0.1, from: "edges" },
+            ease: "power3.out",
+            scrollTrigger: { trigger: systemsCards[0], start: "top 86%" },
+          },
+        );
+      }
+
+      const process = marketingRef.current!.querySelector(".motion-process");
+      const processCards = gsap.utils.toArray<HTMLElement>(".motion-process-card", process);
+      if (process && processCards.length) {
+        gsap.fromTo(
+          processCards,
+          { rotateY: -24, x: -30, opacity: 0, transformOrigin: "left center" },
+          {
+            rotateY: 0,
+            x: 0,
+            opacity: 1,
+            duration: 0.85,
+            stagger: 0.14,
+            ease: "expo.out",
+            scrollTrigger: { trigger: process, start: "top 70%" },
+          },
+        );
+      }
+
+      const trust = marketingRef.current!.querySelector(".motion-trust");
+      const trustRows = gsap.utils.toArray<HTMLElement>(".motion-trust-row", trust);
+      if (trust && trustRows.length) {
+        gsap.fromTo(
+          trustRows,
+          { x: (index) => (index % 2 ? 55 : -55), opacity: 0 },
+          {
+            x: 0,
+            opacity: 1,
+            duration: 0.9,
+            stagger: 0.12,
+            ease: "power4.out",
+            scrollTrigger: { trigger: trust, start: "top 72%" },
+          },
+        );
+      }
+
+      const footer = marketingRef.current!.querySelector(".motion-footer");
+      const footerLandscape = footer?.querySelector(".motion-footer-landscape");
+      const footerContent = footer?.querySelector(".motion-footer-content");
+      if (footer && footerLandscape && footerContent) {
+        gsap.fromTo(
+          footerLandscape,
+          { scale: 1.13, yPercent: -4 },
+          {
+            scale: 1,
+            yPercent: 8,
+            ease: "none",
+            scrollTrigger: { trigger: footer, start: "top bottom", end: "bottom bottom", scrub: 1.2 },
+          },
+        );
+        gsap.fromTo(
+          footerContent,
+          { y: 55, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 1,
+            ease: "power3.out",
+            immediateRender: false,
+            clearProps: "transform,opacity",
+            scrollTrigger: {
+              trigger: footer,
+              start: "top 65%",
+              once: true,
+              invalidateOnRefresh: true,
+            },
+          },
+        );
+      }
+    });
+  }, { scope: marketingRef });
+
+  useGSAP(() => {
+    if (!whoForRef.current || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const intro = whoForRef.current.querySelector(".who-intro");
+    const audienceCards = gsap.utils.toArray<HTMLElement>(".who-audience-card", whoForRef.current);
+    const audienceVisuals = gsap.utils.toArray<HTMLElement>(".who-audience-visual", whoForRef.current);
+    const supportCards = gsap.utils.toArray<HTMLElement>(".who-support-card", whoForRef.current);
+
+    gsap
+      .timeline({
+        defaults: { ease: "power3.out" },
+        scrollTrigger: {
+          trigger: whoForRef.current,
+          start: "top 72%",
+          toggleActions: "play none none reverse",
+        },
+      })
+      .fromTo(
+        intro,
+        { y: 22, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.85 },
+      )
+      .fromTo(
+        audienceCards,
+        {
+          opacity: 0,
+          clipPath: "inset(0 0 100% 0 round 28px)",
+        },
+        {
+          opacity: 1,
+          clipPath: "inset(0 0 0% 0 round 28px)",
+          duration: 0.95,
+          stagger: 0.16,
+          ease: "power3.inOut",
+        },
+        0.18,
+      )
+      .fromTo(
+        audienceVisuals,
+        { scale: 0.9, opacity: 0, transformOrigin: "center bottom" },
+        { scale: 1, opacity: 1, duration: 0.75, stagger: 0.14, ease: "power2.out" },
+        0.52,
+      )
+      .fromTo(
+        supportCards,
+        { opacity: 0, clipPath: "inset(100% 0 0 0 round 24px)" },
+        {
+          opacity: 1,
+          clipPath: "inset(0% 0 0 0 round 24px)",
+          duration: 0.7,
+          stagger: 0.12,
+          ease: "power3.inOut",
+        },
+        0.72,
+      );
+  }, { scope: whoForRef });
+
+  useGSAP(() => {
+    if (!bentoGridRef.current || window.matchMedia("(prefers-reduced-motion: reduce)").matches)
+      return;
+    const anchor = bentoGridRef.current.querySelector(".bento-anchor");
+    const capabilities = gsap.utils.toArray<HTMLElement>(
+      ".bento-capability",
+      bentoGridRef.current,
+    );
+
+    gsap
+      .timeline({
+        defaults: { ease: "power4.out" },
+        scrollTrigger: {
+          trigger: bentoGridRef.current,
+          start: "top 76%",
+          toggleActions: "play none none reverse",
+        },
+      })
+      .fromTo(
+        anchor,
+        {
+          scale: 0.94,
+          opacity: 0,
+          transformOrigin: "center",
+        },
+        {
+          scale: 1,
+          opacity: 1,
+          duration: 0.9,
+          ease: "power3.out",
+        },
+      )
+      .fromTo(
+        ".bento-anchor > :not(img)",
+        { y: 16, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.6, stagger: 0.06 },
+        0.34,
+      )
+      .fromTo(
+        capabilities,
+        {
+          scale: 0.84,
+          opacity: 0,
+          transformOrigin: "center",
+        },
+        {
+          scale: 1,
+          opacity: 1,
+          duration: 0.78,
+          stagger: { each: 0.1, from: "center", grid: "auto" },
+          ease: "expo.out",
+        },
+        0.56,
+      );
+  }, { scope: bentoGridRef });
+
+  useGSAP(() => {
+    if (!timelineRef.current || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const vLines = gsap.utils.toArray(".gs-v-line", timelineRef.current);
+    const dots = gsap.utils.toArray(".gs-dot", timelineRef.current);
+    const hLines = gsap.utils.toArray(".gs-h-line", timelineRef.current);
+    const arrows = gsap.utils.toArray(".gs-arrow", timelineRef.current);
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: timelineRef.current,
+        start: "top 85%",
+        toggleActions: "play none none reverse",
+      }
+    });
+
+    gsap.set(vLines, { scaleY: 0, transformOrigin: "top" });
+    gsap.set(dots, { scale: 0, opacity: 0, transformOrigin: "center" });
+    gsap.set(hLines, { scaleX: 0, transformOrigin: "left" });
+    gsap.set(arrows, { scale: 0, opacity: 0, transformOrigin: "center" });
+
+    vLines.forEach((_, i) => {
+      tl.to(vLines[i] as Element, { scaleY: 1, duration: 0.3, ease: "power2.out" })
+        .to(dots[i] as Element, { scale: 1, opacity: 1, duration: 0.4, ease: "back.out(1.7)" }, "-=0.1");
+
+      if (hLines[i]) {
+        tl.to(hLines[i] as Element, { scaleX: 1, duration: 0.4, ease: "power2.inOut" }, "-=0.1")
+          .to(arrows[i] as Element, { scale: 1, opacity: 1, duration: 0.3, ease: "back.out(2)" }, "-=0.2");
+      }
+    });
+  }, { scope: timelineRef });
 
   useEffect(() => {
     const updateNav = () => {
-      setIsScrolled(window.scrollY > 24);
+      setIsScrolled((currentlyExpanded) =>
+        currentlyExpanded ? window.scrollY > 4 : window.scrollY > 40,
+      );
     };
     updateNav();
     window.addEventListener("scroll", updateNav, { passive: true });
@@ -54,104 +388,82 @@ function WelcomePage() {
   }, []);
 
   return (
-    <main className="bg-[#fffdf8] text-[#0a175a] pb-0 marketing-page">
-      
+    <main ref={marketingRef} className="bg-[#fffdf8] text-[#0a175a] pb-0 marketing-page">
+
       {/* HEADER / HERO */}
-      <header className="relative min-h-[760px] overflow-hidden rounded-b-[34px] bg-[#0a175a] text-white md:min-h-[820px]" id="home">
+      <header className="motion-hero relative min-h-[820px] overflow-hidden rounded-b-[34px] bg-[#0a175a] text-white md:min-h-[900px]" id="home">
         {/* Background Image */}
-        <div className="absolute inset-0">
+        <div className="motion-hero-backdrop absolute inset-0">
           <img src={heroBgImage} alt="" className="w-full h-full object-cover opacity-80" />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#0a175a]/40 via-transparent to-[#0a175a]/90"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0a175a]/55 via-[#0a175a]/10 to-[#0a175a]/95"></div>
         </div>
-        
+
         {/* MORPHING NAVIGATION */}
-        <nav className={`fixed z-50 left-1/2 -translate-x-1/2 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] flex items-center ${
-          isScrolled 
-            ? "top-4 w-max h-[64px] pl-[180px] pr-[174px] rounded-[32px] bg-white/76 border border-white/42 shadow-[0_10px_32px_rgba(7,17,63,0.1),inset_0_1px_0_rgba(255,255,255,0.72)] backdrop-blur-[18px] saturate-[1.1] text-[#344061]" 
+        <nav className={`fixed z-50 left-1/2 -translate-x-1/2 transition-all ${isScrolled ? "duration-500" : "duration-150"} ease-[cubic-bezier(0.16,1,0.3,1)] flex items-center ${isScrolled
+            ? "top-4 w-max h-[64px] pl-[180px] pr-[174px] rounded-[32px] bg-white/76 border border-white/42 shadow-[0_10px_32px_rgba(7,17,63,0.1),inset_0_1px_0_rgba(255,255,255,0.72)] backdrop-blur-[18px] saturate-[1.1] text-[#344061]"
             : "top-4 w-[200px] h-[64px] rounded-[32px] bg-transparent border border-transparent shadow-none backdrop-blur-none text-white"
-        }`}>
+          }`}>
 
           {/* LOGO (Always absolute) */}
-          <Link to="/" aria-label="Scholaport home" className={`absolute top-1/2 -translate-y-1/2 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-            isScrolled ? "left-6" : "left-1/2 -translate-x-1/2"
-          }`}>
+          <Link to="/" aria-label="Scholaport home" className={`absolute top-1/2 -translate-y-1/2 transition-all ${isScrolled ? "duration-500" : "duration-150"} ease-[cubic-bezier(0.16,1,0.3,1)] ${isScrolled ? "left-6" : "left-1/2 -translate-x-1/2"
+            }`}>
             <ScholaportLogo className="h-7 sm:h-8 transition-colors duration-500" showWordmark inverse={!isScrolled} />
           </Link>
 
           {/* LINKS CONTAINER */}
-          <div className={`hidden lg:flex items-center transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-            isScrolled ? "w-max gap-1 mx-auto opacity-100" : "w-0 opacity-0 overflow-hidden pointer-events-none"
-          }`}>
-            
+          <div className={`hidden lg:flex items-center transition-all ${isScrolled ? "duration-[400ms]" : "duration-100"} ease-[cubic-bezier(0.16,1,0.3,1)] ${isScrolled ? "w-max gap-1 mx-auto opacity-100" : "w-0 opacity-0 overflow-hidden pointer-events-none"
+            }`}>
+
             {/* LEFT LINKS */}
-            <div className={`flex items-center transition-all duration-700 gap-1`}>
-               <a href="#philosophy" className={`transition-all duration-300 text-[0.78rem] whitespace-nowrap px-5 py-2.5 hover:bg-black/5 rounded-full font-[800]`}>Benefits</a>
-               <a href="#infrastructure" className={`transition-all duration-300 text-[0.78rem] whitespace-nowrap px-5 py-2.5 hover:bg-black/5 rounded-full font-[800]`}>Infrastructure</a>
+            <div className="flex items-center gap-1">
+              <a href="#philosophy" className={`transition-all duration-300 text-[0.78rem] whitespace-nowrap px-5 py-2.5 hover:bg-black/5 rounded-full font-[800]`}>Benefits</a>
+              <a href="#infrastructure" className={`transition-all duration-300 text-[0.78rem] whitespace-nowrap px-5 py-2.5 hover:bg-black/5 rounded-full font-[800]`}>Infrastructure</a>
             </div>
 
             {/* SPACER FOR LOGO (only active when not scrolled) */}
-            <div className={`transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] w-0 opacity-0`}></div>
+            <div className="w-0 opacity-0"></div>
 
             {/* RIGHT LINKS */}
-            <div className={`flex items-center transition-all duration-700 gap-1`}>
-               <a href="#how-it-works" className={`transition-all duration-300 text-[0.78rem] whitespace-nowrap px-5 py-2.5 hover:bg-black/5 rounded-full font-[800]`}>Process</a>
-               <a href="#beta" className={`transition-all duration-300 text-[0.78rem] whitespace-nowrap px-5 py-2.5 hover:bg-black/5 rounded-full font-[800]`}>Evidence</a>
+            <div className="flex items-center gap-1">
+              <a href="#how-it-works" className={`transition-all duration-300 text-[0.78rem] whitespace-nowrap px-5 py-2.5 hover:bg-black/5 rounded-full font-[800]`}>Process</a>
+              <a href="#beta" className={`transition-all duration-300 text-[0.78rem] whitespace-nowrap px-5 py-2.5 hover:bg-black/5 rounded-full font-[800]`}>Evidence</a>
             </div>
           </div>
 
           {/* BUTTON (Always absolute) */}
-          <div className={`absolute top-1/2 -translate-y-1/2 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-            isScrolled ? "right-2 opacity-100 pointer-events-auto" : "right-2 opacity-0 pointer-events-none"
-          }`}>
-            <a href="#home" className={`marketing-button transition-colors duration-500 h-[46px] ${
-              isScrolled ? "marketing-button--ink" : "marketing-button--light"
+          <div className={`absolute top-1/2 -translate-y-1/2 transition-all ${isScrolled ? "duration-[400ms]" : "duration-100"} ease-[cubic-bezier(0.16,1,0.3,1)] ${isScrolled ? "right-2 opacity-100 pointer-events-auto" : "right-2 opacity-0 pointer-events-none"
             }`}>
+            <a href="#home" className={`marketing-button transition-colors duration-500 h-[46px] ${isScrolled ? "marketing-button--ink" : "marketing-button--light"
+              }`}>
               Join waitlist
             </a>
           </div>
 
         </nav>
 
-        <div className="relative z-10 mx-auto flex min-h-[760px] max-w-6xl flex-col items-center px-5 pt-32 text-center md:min-h-[820px] md:px-8 md:pt-36">
-          <h1 className="max-w-5xl text-[16vw] font-[800] leading-[0.98] tracking-[-0.06em] text-white md:text-[5.4rem]" style={{ fontFamily: "var(--font-display)" }}>
-            <span className="block">Your academic record</span>
-            <span className="block text-[0.8em] text-[#9ff2e6] mt-2">
-              deserves a clear next chapter.
+        <div className="relative z-10 mx-auto flex min-h-[820px] max-w-[1500px] flex-col items-center justify-center px-8 pb-20 pt-32 text-center md:min-h-[900px] md:px-16 md:pb-24 md:pt-36">
+          <h1 className="w-full text-[14vw] font-[800] leading-[0.9] tracking-[-0.065em] text-white sm:text-[5.3rem] md:text-[6.6rem] lg:text-[7.8rem]" style={{ fontFamily: "var(--font-display)" }}>
+            <span className="block overflow-hidden pb-[0.08em]">
+              <span className="motion-hero-line block">Your academic record</span>
+            </span>
+            <span className="mt-2 block overflow-hidden pb-[0.1em]">
+              <span className="motion-hero-line block text-[0.72em] text-[#9ff2e6]">
+                deserves a clear next chapter.
+              </span>
             </span>
           </h1>
-          <p className="mt-9 max-w-xl text-[1rem] leading-[1.65] text-white/75 font-[560]">
+          <p className="motion-hero-copy mt-10 max-w-2xl text-[1.16rem] leading-[1.65] text-white/78 font-[560] md:text-[1.35rem]">
             Scholaport turns a stack of coursework into a student-owned path for the next school
             system, without pretending the hard questions are simple.
           </p>
-          {/* WAITLIST SIGNUP */}
-          <div className="relative mt-12 w-full max-w-[460px] z-20">
-            <form className="flex items-center rounded-full bg-white/10 border border-white/20 p-2 pl-6 backdrop-blur-lg shadow-[0_20px_40px_rgba(0,0,0,0.2)]">
-              <input 
-                type="email" 
-                placeholder="Enter your email address" 
-                className="flex-1 bg-transparent text-[1rem] font-[560] text-white placeholder-white/50 outline-none w-full"
-                required
-              />
-              <button type="submit" className="marketing-button marketing-button--light h-[52px] rounded-full px-8 shrink-0">
-                Join Beta
-              </button>
-            </form>
-            <div className="mt-5 flex items-center justify-center gap-2 text-[0.76rem] font-[650] text-white/50">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#01c3ad] opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#01c3ad]"></span>
-              </span>
-              Accepting early access requests
-            </div>
-          </div>
         </div>
       </header>
 
       {/* INTRODUCTION SECTION (HYPERLIQUID REFERENCE) */}
-      <section className="relative w-full flex flex-col items-center justify-center min-h-[700px] md:min-h-[950px] overflow-hidden">
+      <section className="relative w-full flex flex-col items-center justify-center min-h-[780px] md:min-h-[1020px] lg:min-h-[1120px] py-12 md:py-20 overflow-hidden">
         {/* Background Image Layer */}
-        <div className="absolute inset-0 pointer-events-none flex items-center justify-center w-full">
-          <div 
+        <div className="absolute inset-0 pointer-events-none flex items-center justify-center w-full scale-[1.15] md:scale-[1.25] lg:scale-[1.32]">
+          <div
             className="w-full h-full"
             style={{
               backgroundImage: `url(${introBgTransparentImage})`,
@@ -163,50 +475,144 @@ function WelcomePage() {
         </div>
 
         {/* Foreground Content (Centered in the empty space) */}
-        <div className="relative z-10 w-full max-w-2xl mx-auto px-5 text-center">
-          <ScrollRevealText 
-            paragraphs={[
-              {
-                className: "mb-8 text-[1.05rem] md:text-[1.15rem] leading-[1.65] text-[#101a3f] font-[500]",
-                text: "Scholaport was formed to untangle the complexities of student mobility and enable seamless transcript deployment across international borders. It lowers the barrier to entry for global education by standardizing records in one of the most rigorous compliance environments."
-              },
-              {
-                className: "text-[1.05rem] md:text-[1.15rem] leading-[1.65] text-[#101a3f] font-[500]",
-                text: "As a centralized warehouse for academic history, Scholaport drives institutional trust, expands counseling utility, and captures comprehensive learning outcomes through verified data.",
-                highlightText: "It offers students and counselors a distinct way to gain exposure to universal standards, unified progress tracking, and long-term academic mobility.",
-                highlightClassName: "font-[650] text-[#01a995]"
-              }
-            ]}
-          />
+        <div className="relative z-10 w-full max-w-4xl mx-auto px-5 text-center">
+          <ScrollRevealText>
+            <p className="mb-6 text-[0.96rem] md:text-[1.08rem] leading-[1.7] text-[#101a3f] font-[500] text-left md:text-center">
+              {revealText("Global education is moving faster than the systems built to recognize it. UNESCO reported that ")}
+              {revealText("6.9 million students", "font-[800] text-[#01a995]")}
+              {revealText(" now study outside their home countries, ")}
+              {revealText("three times", "font-[800] text-[#ff7a59]")}
+              {revealText(" the number in 2000. In the United States alone, ")}
+              {revealText("54,356 foreign students", "font-[800] text-[#01a995]")}
+              {revealText(" were enrolled in K–12 programs in 2024, while ")}
+              {revealText("18.3 million children", "font-[800] text-[#01a995]")}
+              {revealText(" lived in immigrant families. Yet the latest national data show that English learners graduate on time at ")}
+              {revealText("72%", "font-[800] text-[#ff7a59]")}
+              {revealText(", compared with ")}
+              {revealText("87%", "font-[800] text-[#01a995]")}
+              {revealText(" of students overall. When curricula, languages, grading systems, credit units, and local graduation rules do not align, years of completed learning can become unclear at the exact moment families must make course-placement and graduation decisions.")}
+            </p>
+            <p className="text-[0.96rem] md:text-[1.08rem] leading-[1.7] text-[#101a3f] font-[500] text-left md:text-center">
+              {revealText("Based on our review of publicly documented education and credential platforms, ")}
+              {revealText("ScholaPort is the world’s first student-owned, pre-counselor academic mobility system", "font-[800] text-[#01a995]")}
+              {revealText(" built specifically for internationally transferring high-school students. Traditional credential services produce evaluation reports mainly for admissions, employment, licensing, or immigration. ")}
+              {revealText("ScholaPort connects the entire high-school transition in one private workspace:", "font-[750] text-[#0a175a]")}
+              {revealText(" ")}
+              {revealText("transcript extraction and translation,", "font-[750] text-[#ff7a59]")}
+              {revealText(" ")}
+              {revealText("student-confirmed course records,", "font-[750] text-[#ffb703]")}
+              {revealText(" ")}
+              {revealText("probable credit mappings with confidence and review flags,", "font-[750] text-[#01a995]")}
+              {revealText(" ")}
+              {revealText("destination-specific graduation-gap analysis,", "font-[750] text-[#ff7a59]")}
+              {revealText(" ")}
+              {revealText("a prioritized academic roadmap,", "font-[750] text-[#01a995]")}
+              {revealText(" and ")}
+              {revealText("a counselor-ready packet.", "font-[750] text-[#3b82f6]")}
+              {revealText(" Every result preserves uncertainty, traces academic claims to source evidence, and leaves final decisions with the receiving school.")}
+            </p>
+          </ScrollRevealText>
+
+          {/* Modal / Dialog Overlay for Data Sources (Fixed Viewport Centered z-[9999]) */}
+          {showSourcesModal && (
+            <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-[#0a175a]/50 backdrop-blur-sm animate-in fade-in duration-200">
+              <div 
+                className="fixed inset-0" 
+                onClick={() => setShowSourcesModal(false)} 
+              />
+              <div className="relative z-10 w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-3xl bg-white p-7 border border-[#d9f2e9] shadow-[0_25px_70px_rgba(10,23,90,0.25)] text-left animate-in zoom-in-95 duration-200">
+                <div className="flex items-center justify-between pb-4 border-b border-gray-100 mb-5">
+                  <h4 className="text-base font-bold text-[#0a175a] flex items-center gap-2">
+                    <PremiumSourceFileIcon className="w-5 h-5 text-[#01a995]" />
+                    Data Sources & Population Definitions
+                  </h4>
+                  <button 
+                    onClick={() => setShowSourcesModal(false)} 
+                    className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 font-bold transition-colors"
+                  >
+                    ✕
+                  </button>
+                </div>
+                
+                <div className="space-y-4 text-xs text-[#526079] leading-relaxed">
+                  <div className="p-4 rounded-2xl bg-[#f0fbf7] border border-[#d9f2e9]">
+                    <div className="font-bold text-[#0a175a] text-sm mb-1.5 flex items-center justify-between">
+                      <span>1. Global Student Mobility (6.9M)</span>
+                      <span className="text-[10px] font-bold text-[#01a995] bg-[#01a995]/15 px-2.5 py-0.5 rounded-full">Tertiary Population Scope</span>
+                    </div>
+                    <p className="mb-1 text-gray-700"><strong>Source:</strong> UNESCO Institute for Statistics (UIS) & OECD Education at a Glance (2024).</p>
+                    <p><strong>Population Scope:</strong> Describes higher-education (tertiary) international students worldwide. Cited to demonstrate overall international student mobility growth since 2000 (2.1M to 6.9M).</p>
+                  </div>
+
+                  <div className="p-4 rounded-2xl bg-[#f0f6ff] border border-[#e1edff]">
+                    <div className="font-bold text-[#0a175a] text-sm mb-1.5">2. US K-12 Foreign Student Enrollment (54,356)</div>
+                    <p className="mb-1 text-gray-700"><strong>Source:</strong> US Dept. of Homeland Security, Student and Exchange Visitor Program (SEVP / SEVIS Report 2024).</p>
+                    <p><strong>Population Scope:</strong> Represents nonimmigrant F-1 and M-1 visa holders actively enrolled in US K-12 primary and secondary schools.</p>
+                  </div>
+
+                  <div className="p-4 rounded-2xl bg-[#fff8ec] border border-[#ffeed4]">
+                    <div className="font-bold text-[#0a175a] text-sm mb-1.5">3. Children in Immigrant Families & Graduation Gap (18.3M / 72% vs 87%)</div>
+                    <p className="mb-1 text-gray-700"><strong>Source:</strong> US Census Bureau ACS & National Center for Education Statistics (NCES 2023/2024 Report).</p>
+                    <p><strong>Population Scope:</strong> NCES ACGR data measuring 4-year adjusted cohort graduation rates for English Learners (72%) vs overall US high school population (87%).</p>
+                  </div>
+                </div>
+
+                <div className="mt-6 pt-4 border-t border-gray-100 flex items-center justify-between text-[11px] text-[#526079]">
+                  <span>Last Reviewed: July 2026</span>
+                  <button 
+                    onClick={() => setShowSourcesModal(false)}
+                    className="rounded-full bg-[#0a175a] px-5 py-2 text-xs font-bold text-white hover:bg-[#0a175a]/90 transition-colors"
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Sources Disclosure Button (Hidden when modal is open so it never overlaps the modal popup) */}
+        <div className={`absolute bottom-4 md:bottom-6 left-1/2 -translate-x-1/2 transition-opacity duration-200 ${showSourcesModal ? 'opacity-0 pointer-events-none z-0' : 'z-20'}`}>
+          <button 
+            onClick={() => setShowSourcesModal(true)}
+            className="inline-flex items-center gap-1.5 text-xs font-bold text-[#01a995] hover:text-[#0a175a] bg-[#f0fbf7]/90 hover:bg-[#e1f5ee] px-4 py-2 rounded-full border border-[#d9f2e9] transition-all shadow-sm cursor-pointer backdrop-blur-sm"
+          >
+            <Info className="w-3.5 h-3.5" />
+            <span>View data sources and definitions</span>
+            <ChevronDown className="w-3.5 h-3.5" />
+          </button>
         </div>
       </section>
 
       {/* FEATURE SHOWCASE (DESIGN REFERENCE) */}
-      <section className="mx-auto w-full max-w-7xl px-5 py-24 md:px-8">
+      <section className="motion-systems mx-auto w-full max-w-7xl px-5 py-24 md:px-8">
         {/* Top Header Area */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
           <div className="max-w-3xl">
-            <div className="inline-flex items-center rounded-full bg-[#01c3ad]/15 px-3 py-1 mb-5">
-              <span className="text-[0.65rem] font-[800] uppercase tracking-wider text-[#01a995]">
-                ✦ Engineered for Academic Clarity
+            <div className="inline-flex items-center gap-2 rounded-full bg-[#01a995]/15 px-4 py-1.5 mb-5 border border-[#01a995]/20 backdrop-blur-sm">
+              <PremiumMapPointIcon className="w-3.5 h-3.5 text-[#01a995]" />
+              <span className="text-[0.68rem] font-[800] uppercase tracking-wider text-[#01a995]">
+                BUILT AROUND REAL EDUCATION SYSTEMS
               </span>
             </div>
-            <h2 className="text-[clamp(2.5rem,5vw,4.5rem)] font-[800] leading-[1.05] tracking-[-0.04em] text-[#0a175a]" style={{ fontFamily: "Gumriot-Regular" }}>
-              A Workspace Built for <br className="hidden md:block" /><span className="text-[#01c3ad]">Students & Counselors.</span>
+            <h2 className="text-[clamp(2.5rem,5vw,4.5rem)] font-[800] leading-[1.05] tracking-[-0.04em]" style={{ fontFamily: "Gumriot-Regular" }}>
+              <span className="text-[#0a175a]">There Is No Generic</span><br />
+              <span className="text-[#01c3ad]">India-to-United States</span><br />
+              <span className="text-[#01c3ad]">Transfer.</span>
             </h2>
             <p className="mt-6 text-[1.1rem] leading-[1.65] text-[#526079] font-[560] max-w-2xl">
-              Built for ultimate clarity, Scholaport gives students the perfect foundation to track their progress, showcase their record, and plan their future.
+              A Tamil Nadu HSC record is not the same as an Andhra Pradesh Intermediate record. Georgia and Texas do not follow the same graduation framework. ScholaPort models every supported route by its actual board, curriculum, and destination jurisdiction instead of forcing students through one generic national template.
             </p>
           </div>
           <div className="shrink-0 mb-2">
-            <a href="#home" className="inline-flex h-12 items-center justify-center rounded-full bg-[#0a175a] px-8 text-[0.9rem] font-[700] text-white hover:bg-[#0a175a]/90 transition-colors shadow-lg">
-              Get Started
+            <a href="#philosophy" className="inline-flex h-12 items-center justify-center rounded-full bg-[#0a175a] px-8 text-[0.9rem] font-[700] text-white hover:bg-[#0a175a]/90 transition-colors shadow-lg">
+              View Current Coverage
             </a>
           </div>
         </div>
 
         {/* Center Image Area */}
-        <div className="relative w-full h-[300px] md:h-[550px] mb-20 flex items-center justify-center">
+        <div className="motion-systems-visual relative w-full h-[300px] md:h-[550px] mb-20 flex items-center justify-center">
           {/* The exact image provided by the user with CSS multiply to cleanly drop the white background */}
           <div className="absolute inset-0 mix-blend-multiply scale-[1.15] md:scale-[1.25]" style={{
             backgroundImage: `url(${featureShowcaseImg})`,
@@ -218,178 +624,467 @@ function WelcomePage() {
 
         {/* Bottom Features Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12">
-          {/* Feature 1 */}
-          <div>
-            <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-[#01c3ad]/10 text-[#01c3ad]">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
-            </div>
-            <h3 className="text-[1.05rem] font-[800] text-[#0a175a] mb-2">Instant Import</h3>
-            <p className="text-[0.9rem] leading-[1.6] text-[#526079] font-[550]">Bring your transcripts in minutes, no manual entry required.</p>
+          {/* Item 1: Tamil Nadu */}
+          <div className="motion-system-card p-6 rounded-2xl bg-[#f0fbf7] border border-[#d9f2e9]">
+            <span className="inline-block rounded-full bg-[#01a995]/15 px-3 py-1 text-[10px] font-bold text-[#01a995] uppercase tracking-wider mb-3">
+              SSLC and HSC
+            </span>
+            <h3 className="text-[1.2rem] font-[800] text-[#0a175a] mb-2">Tamil Nadu</h3>
+            <p className="text-[0.9rem] leading-[1.6] text-[#526079] font-[550]">
+              Source records are interpreted through their own State Board curriculum structure.
+            </p>
           </div>
-          {/* Feature 2 */}
-          <div>
-            <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-[#01c3ad]/10 text-[#01c3ad]">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
-            </div>
-            <h3 className="text-[1.05rem] font-[800] text-[#0a175a] mb-2">Universal Format</h3>
-            <p className="text-[0.9rem] leading-[1.6] text-[#526079] font-[550]">A standardized record that builds trust with institutions.</p>
+
+          {/* Item 2: Andhra Pradesh */}
+          <div className="motion-system-card p-6 rounded-2xl bg-[#fff8ec] border border-[#ffeed4]">
+            <span className="inline-block rounded-full bg-[#ff7a59]/15 px-3 py-1 text-[10px] font-bold text-[#ff7a59] uppercase tracking-wider mb-3">
+              SSC and Intermediate
+            </span>
+            <h3 className="text-[1.2rem] font-[800] text-[#0a175a] mb-2">Andhra Pradesh</h3>
+            <p className="text-[0.9rem] leading-[1.6] text-[#526079] font-[550]">
+              Secondary and Intermediate records remain connected to their actual source curriculum.
+            </p>
           </div>
-          {/* Feature 3 */}
-          <div>
-            <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-[#01c3ad]/10 text-[#01c3ad]">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
-            </div>
-            <h3 className="text-[1.05rem] font-[800] text-[#0a175a] mb-2">Seamless Portability</h3>
-            <p className="text-[0.9rem] leading-[1.6] text-[#526079] font-[550]">Carry your record seamlessly across school systems.</p>
+
+          {/* Item 3: Georgia */}
+          <div className="motion-system-card p-6 rounded-2xl bg-[#f0f6ff] border border-[#e1edff]">
+            <span className="inline-block rounded-full bg-[#0a175a]/15 px-3 py-1 text-[10px] font-bold text-[#0a175a] uppercase tracking-wider mb-3">
+              State Graduation Framework
+            </span>
+            <h3 className="text-[1.2rem] font-[800] text-[#0a175a] mb-2">Georgia</h3>
+            <p className="text-[0.9rem] leading-[1.6] text-[#526079] font-[550]">
+              Confirmed courses are compared with Georgia-specific graduation requirements.
+            </p>
           </div>
-          {/* Feature 4 */}
-          <div>
-            <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-[#01c3ad]/10 text-[#01c3ad]">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
-            </div>
-            <h3 className="text-[1.05rem] font-[800] text-[#0a175a] mb-2">Always Accessible</h3>
-            <p className="text-[0.9rem] leading-[1.6] text-[#526079] font-[550]">Optimized for desktop, tablet, and mobile viewing.</p>
+
+          {/* Item 4: Texas */}
+          <div className="motion-system-card p-6 rounded-2xl bg-[#f0fbf7] border border-[#d9f2e9]">
+            <span className="inline-block rounded-full bg-[#01a995]/15 px-3 py-1 text-[10px] font-bold text-[#01a995] uppercase tracking-wider mb-3">
+              Foundation High School Program
+            </span>
+            <h3 className="text-[1.2rem] font-[800] text-[#0a175a] mb-2">Texas</h3>
+            <p className="text-[0.9rem] leading-[1.6] text-[#526079] font-[550]">
+              Texas planning uses its own diploma framework rather than a generic U.S. model.
+            </p>
           </div>
         </div>
       </section>
 
-      {/* PHILOSOPHY / BENEFITS */}
-      <section id="philosophy" className="mx-auto max-w-7xl px-5 py-20 md:px-8 md:py-28">
-        <div className="grid gap-10 md:grid-cols-[.7fr_1.5fr]">
-          <div className="text-[0.67rem] font-[900] uppercase tracking-[0.1em] text-[#01a995]">
-            <span className="mr-2 text-[#f86746] drop-shadow-[0_0_8px_rgba(248,103,70,0.4)]">●</span>
-            The benefits
-            <br />
-            <span className="pl-5">of Scholaport</span>
-          </div>
-          <div>
-            <h2 className="max-w-4xl text-[clamp(2.25rem,4vw,4rem)] font-[800] leading-[1.02] tracking-[-0.055em] text-[#0a175a]">
-              A better view of what you already learned.
-            </h2>
-            <p className="mt-5 max-w-3xl text-[1.04rem] leading-[1.75] text-[#526079] font-[570]">
-              Moving schools should not mean starting from zero. Scholaport gives your prior work a
-              place to land, while keeping the boundaries of what the product can and cannot know in
-              plain sight.
-            </p>
-            <a href="#home" className="mt-7 inline-flex items-center gap-4 rounded-full bg-[#0a175a] px-5 py-2.5 text-[0.78rem] font-[800] text-white hover:-translate-y-0.5 transition-transform" style={{ boxShadow: "inset 0 1px 0 rgb(255 255 255 / 20%)" }}>
-              Request beta access
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white text-[#0a175a]">
-                →
-              </span>
-            </a>
-          </div>
-        </div>
+      {/* WHO SCHOLAPORT IS FOR SECTION */}
+      <section ref={whoForRef} className="mx-auto w-full max-w-[1400px] px-5 py-20 md:px-8 lg:py-24">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
 
-        <div className="mt-16 grid gap-4 md:grid-cols-[.7fr_1fr_1fr]">
-          <article className="flex min-h-[190px] overflow-hidden rounded-[24px] bg-[#fffdf8] border border-[#dde4e5] shadow-[0_2px_8px_rgba(10,23,90,0.08)]">
-            <div className="relative w-2/5 overflow-hidden bg-[#0a175a]">
-              <div className="absolute -left-8 top-8 h-28 w-28 rotate-[28deg] rounded-[28px] bg-[#01c3ad] shadow-[18px_20px_0_#01a995]"></div>
-              <div className="absolute bottom-[-18px] right-[-20px] h-28 w-28 rounded-full border-[18px] border-white/35"></div>
-            </div>
-            <div className="flex flex-1 flex-col justify-between p-5">
-              <div>
-                <span className="text-3xl font-[800] tracking-tight text-[#0a175a]">100%</span>
-                <div className="text-xs font-[800] uppercase text-[#01a995]">Student-owned</div>
+          {/* LEFT COLUMN: Header & Info (4 Cols on lg) */}
+          <div className="who-intro flex flex-col justify-between lg:col-span-4">
+            <div>
+              <div className="inline-flex items-center gap-2 rounded-full bg-[#ff7a59]/15 px-4 py-1.5 mb-6 border border-[#ff7a59]/20 backdrop-blur-sm">
+                <PremiumTwinIcon className="w-3.5 h-3.5 text-[#ff7a59]" />
+                <span className="text-[0.68rem] font-[800] uppercase tracking-wider text-[#ff7a59]">
+                  WHO SCHOLAPORT IS FOR
+                </span>
               </div>
-              <p className="text-[10px] leading-[1.65] text-[#69758d] font-[620]">
-                Your record stays yours, under your complete control.
+              <h2 className="text-[clamp(2.2rem,3.8vw,3.4rem)] font-[800] leading-[1.08] tracking-[-0.04em] text-[#0a175a] mb-6">
+                Built for the student carrying the record and the counselor receiving it.
+              </h2>
+              <p className="text-[0.98rem] leading-[1.7] text-[#526079] font-[500] mb-8">
+                ScholaPort gives transferring students one place to organize their academic history before the first planning meeting. Counselors receive a cleaner view of confirmed courses, probable mappings, open requirements, and the questions that still need a human decision.
               </p>
+
+              {/* Beta Info Card */}
+              <div className="mb-8 flex items-start gap-4 rounded-2xl bg-[#f0fbf7] p-4 border border-[#d9f2e9] backdrop-blur-sm">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-[#01a995] shadow-sm border border-[#01a995]/20">
+                  <PremiumMapPointIcon className="w-5 h-5" />
+                </div>
+                <p className="text-xs leading-[1.6] text-[#2d3748] font-[600]">
+                  Private beta for high school transfers from Tamil Nadu or Andhra Pradesh into Georgia or Texas.
+                </p>
+              </div>
+
+              {/* CTA Button */}
+              <a href="#home" className="inline-flex items-center gap-3 rounded-full bg-[#0a175a] px-7 py-4 text-sm font-bold text-white shadow-lg transition-transform hover:-translate-y-0.5 mb-8">
+                See what the beta includes &rarr;
+              </a>
             </div>
-          </article>
-          <article className="relative min-h-[190px] overflow-hidden rounded-[24px] bg-[#0a175a] text-white shadow-[0_2px_8px_rgba(10,23,90,0.08)]">
-            <div className="absolute inset-0 overflow-hidden bg-[#0a175a]">
-              <div className="absolute -right-6 -top-8 h-48 w-48 rounded-full bg-[#01c3ad]/60 blur-sm"></div>
-              <div className="absolute bottom-[-30px] right-[18%] h-40 w-40 rotate-[30deg] rounded-[34px] border border-white/40 bg-white/15 shadow-[20px_-16px_0_rgba(1,169,149,.28)]"></div>
+
+            {/* Navigation Arrows */}
+            <div className="hidden lg:flex items-center gap-3 mt-6">
+              <button className="flex h-12 w-12 items-center justify-center rounded-2xl border border-gray-200 bg-white text-[#0a175a] hover:bg-gray-50 transition-colors shadow-sm">
+                <ArrowLeft className="w-5 h-5" />
+              </button>
+              <button className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#0a175a] text-white hover:bg-[#0a175a]/90 transition-colors shadow-sm">
+                <ArrowRight className="w-5 h-5" />
+              </button>
             </div>
-            <div className="absolute inset-0 bg-gradient-to-r from-[#07113f]/90 to-transparent"></div>
-            <div className="relative flex h-full flex-col justify-between p-6">
-              <div>
-                <span className="text-3xl font-[800] tracking-tight">Clear</span>
-                <div className="text-[0.67rem] font-[900] uppercase text-[#9ff2e6] tracking-[0.1em]">
-                  Uncertainty labeled
+          </div>
+
+          {/* MIDDLE & RIGHT COLUMNS: 2 Main Columns (8 Cols on lg) */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:col-span-8">
+
+            {/* STUDENT COLUMN (Top Card + Bottom Card) */}
+            <div className="flex flex-col gap-6">
+
+              {/* Student Main Card */}
+              <div className="who-audience-card flex flex-col justify-between overflow-hidden rounded-[28px] bg-[#f0fbf7] p-7 border border-[#d9f2e9] shadow-[0_4px_20px_rgba(10,23,90,0.04)] relative h-[520px]">
+                <div>
+                  <div className="inline-block rounded-full bg-[#01a995] px-4 py-1 text-xs font-bold text-white mb-4">
+                    Student
+                  </div>
+                  <h3 className="text-2xl font-[800] text-[#0a175a] leading-snug tracking-tight mb-3">
+                    Understand what you are bringing.
+                  </h3>
+                  <p className="text-xs leading-relaxed text-[#526079] font-[500] mb-2">
+                    Review your extracted course information, confirm what is accurate, see how your record may fit the destination system, and keep every next step in one private workspace.
+                  </p>
+                </div>
+
+                {/* 3D Asset */}
+                <div className="my-auto flex items-center justify-center py-2">
+                  <img src={whoForStudentImg} alt="Student Academic Passport" className="who-audience-visual w-[94%] max-h-[235px] object-contain drop-shadow-2xl" />
+                </div>
+
+                {/* Chips Row */}
+                <div className="grid grid-cols-3 gap-2 mt-auto pt-4 border-t border-[#d9f2e9]">
+                  <div className="flex items-center gap-1.5 rounded-xl bg-white/90 px-2 py-2 text-[10px] font-bold text-[#2d3748] border border-white">
+                    <PremiumGraduationIcon className="w-3.5 h-3.5 text-[#01a995] shrink-0" />
+                    <span className="truncate">Grades 9–12</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 rounded-xl bg-white/90 px-2 py-2 text-[10px] font-bold text-[#2d3748] border border-white">
+                    <PremiumLockIcon className="w-3.5 h-3.5 text-[#01a995] shrink-0" />
+                    <span className="truncate">Private workspace</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 rounded-xl bg-white/90 px-2 py-2 text-[10px] font-bold text-[#2d3748] border border-white">
+                    <PremiumCalendarIcon className="w-3.5 h-3.5 text-[#01a995] shrink-0" />
+                    <span className="truncate">Before meeting</span>
+                  </div>
                 </div>
               </div>
-              <p className="max-w-[190px] text-[10px] leading-relaxed text-white/70">
-                Uncertain credit mapping results stay clearly labeled so you know what needs review.
-              </p>
+
+              {/* Families Card */}
+              <div className="who-support-card flex items-center gap-4 overflow-hidden rounded-[24px] bg-[#fff8ec] p-5 border border-[#ffeed4] shadow-sm relative min-h-[125px]">
+                <img src={whoForFamiliesImg} alt="Families 3D House" className="w-20 h-20 shrink-0 object-contain drop-shadow-lg" />
+                <div className="flex-1 pr-2">
+                  <h4 className="text-sm font-[800] text-[#0a175a] mb-0.5">
+                    Families supporting the move
+                  </h4>
+                  <div className="text-[10.5px] font-bold text-[#ff7a59] mb-1">Help the student prepare.</div>
+                  <p className="text-[10.5px] leading-snug text-[#526079] font-[500]">
+                    Support record gathering, deadline tracking, and question preparation using the student’s organized workflow.
+                  </p>
+                </div>
+                <button className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#ffe8e0] text-[#ff7a59] hover:bg-[#ff7a59] hover:text-white transition-colors">
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+
             </div>
-          </article>
-          <article className="flex min-h-[190px] flex-col justify-between rounded-[24px] bg-[#fffdf8] border border-[#dde4e5] p-6 shadow-[0_2px_8px_rgba(10,23,90,0.08)]">
-            <div>
-              <span className="text-3xl font-[800] tracking-tight text-[#0a175a]">Final</span>
-              <div className="text-[0.67rem] font-[900] uppercase text-[#f86746] tracking-[0.1em]">School authority</div>
+
+            {/* COUNSELOR COLUMN (Top Card + Bottom Card) */}
+            <div className="flex flex-col gap-6">
+
+              {/* Counselor Main Card */}
+              <div className="who-audience-card flex flex-col justify-between overflow-hidden rounded-[28px] bg-[#f0f6ff] p-7 border border-[#e1edff] shadow-[0_4px_20px_rgba(10,23,90,0.04)] relative h-[520px]">
+                <div>
+                  <div className="inline-block rounded-full bg-[#01a995] px-4 py-1 text-xs font-bold text-white mb-4">
+                    Counselor
+                  </div>
+                  <h3 className="text-2xl font-[800] text-[#0a175a] leading-snug tracking-tight mb-3">
+                    Begin with context, not a document pile.
+                  </h3>
+                  <p className="text-xs leading-relaxed text-[#526079] font-[500] mb-2">
+                    Review the student's source curriculum, proposed mappings, unresolved requirements, and prepared questions through one organized planning packet.
+                  </p>
+                </div>
+
+                {/* 3D Asset */}
+                <div className="my-auto flex items-center justify-center py-2">
+                  <img src={whoForCounselorImg} alt="Counselor Tray 3D" className="who-audience-visual w-[94%] max-h-[235px] object-contain drop-shadow-2xl" />
+                </div>
+
+                {/* Chips Row */}
+                <div className="grid grid-cols-3 gap-2 mt-auto pt-4 border-t border-[#e1edff]">
+                  <div className="flex items-center gap-1.5 rounded-xl bg-white/90 px-2 py-2 text-[10px] font-bold text-[#2d3748] border border-white">
+                    <PremiumPacketIcon className="w-3.5 h-3.5 text-[#01a995] shrink-0" />
+                    <span className="truncate">Packet-ready</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 rounded-xl bg-white/90 px-2 py-2 text-[10px] font-bold text-[#2d3748] border border-white">
+                    <PremiumPathMatchIcon className="w-3.5 h-3.5 text-[#01a995] shrink-0" />
+                    <span className="truncate">Probable mappings</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 rounded-xl bg-white/90 px-2 py-2 text-[10px] font-bold text-[#2d3748] border border-white">
+                    <PremiumHelpIcon className="w-3.5 h-3.5 text-[#01a995] shrink-0" />
+                    <span className="truncate">Open requirements</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Teams Card */}
+              <div className="who-support-card flex items-center gap-4 overflow-hidden rounded-[24px] bg-[#f0fbf7] p-5 border border-[#d9f2e9] shadow-sm relative min-h-[125px]">
+                <img src={whoForTeamsImg} alt="Teams School 3D" className="w-20 h-20 shrink-0 object-contain drop-shadow-lg" />
+                <div className="flex-1 pr-2">
+                  <h4 className="text-sm font-[800] text-[#0a175a] mb-0.5">
+                    School support teams
+                  </h4>
+                  <div className="text-[10.5px] font-bold text-[#01a995] mb-1">Receive a clearer starting point.</div>
+                  <p className="text-[10.5px] leading-snug text-[#526079] font-[500]">
+                    Use the student-provided planning packet as context for intake, placement review, and the questions that still require a school decision.
+                  </p>
+                </div>
+                <button className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#d9f2e9] text-[#01a995] hover:bg-[#01a995] hover:text-white transition-colors">
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+
             </div>
-            <p className="max-w-xs text-[10px] leading-[1.65] text-[#69758d] font-[620]">
-              Schools and counselors always keep the final say on credit and graduation decisions.
-            </p>
-          </article>
+
+          </div>
+
         </div>
       </section>
 
-      {/* INFRASTRUCTURE */}
-      <section id="infrastructure" className="mx-auto max-w-7xl px-5 py-16 md:px-8 md:py-24">
-        <div className="mb-12 grid gap-8 md:grid-cols-[.7fr_1.5fr]">
-          <div className="text-[0.67rem] font-[900] uppercase tracking-[0.1em] text-[#01a995]">
-            <span className="mr-2 text-[#f86746] drop-shadow-[0_0_8px_rgba(248,103,70,0.4)]">●</span>
-            Engineered for clarity
-          </div>
-          <h2 className="max-w-4xl text-[clamp(2.25rem,4vw,4rem)] font-[800] leading-[1.02] tracking-[-0.055em] text-[#0a175a]">
-            From a document pile to a route you can use.
-          </h2>
+
+
+
+
+      {/* FEATURES BENTO SECTION */}
+      <section className="mx-auto w-full max-w-[1400px] px-6 py-24 md:px-10">
+        <div className="inline-flex items-center gap-2 rounded-full bg-[#3b82f6]/15 px-4 py-1.5 mb-6 border border-[#3b82f6]/20 backdrop-blur-sm">
+          <PremiumDocumentsIcon className="w-3.5 h-3.5 text-[#3b82f6]" />
+          <span className="text-[0.68rem] font-[800] uppercase tracking-wider text-[#3b82f6]">
+            FEATURES & CAPABILITIES
+          </span>
         </div>
 
-        <div className="grid items-end gap-5 md:grid-cols-[.45fr_.45fr_1.6fr]">
-          <article className="flex min-h-[210px] flex-col justify-between rounded-[24px] bg-[#fffdf8] border border-[#dde4e5] p-6 shadow-[0_2px_8px_rgba(10,23,90,0.08)]">
-            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#bfebdd] text-[#0a175a]">
-              <PremiumShieldIcon />
-            </span>
-            <div>
-              <h3 className="text-[0.67rem] font-[900] uppercase tracking-[0.1em] text-[#0a175a]">Private by design</h3>
-              <p className="mt-3 text-[10px] leading-[1.65] text-[#69758d] font-[620]">
-                Clear controls and responsible data practices keep your transcript and plans safe.
+        <div className="mb-16">
+          <h2 className="text-[clamp(1.9rem,3.4vw,3.1rem)] font-[800] leading-[1.15] tracking-[-0.04em] text-[#0a175a]">
+            From records to a clear route.<br />
+            All in ScholaPort.
+          </h2>
+          <p className="mt-4 max-w-2xl text-[1.1rem] leading-[1.6] text-[#69758d] font-[500]">
+            One connected workspace for students to review their record, understand the destination framework, and prepare for more productive counselor conversations.
+          </p>
+        </div>
+
+        <div ref={bentoGridRef} className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+
+          {/* Transcript Review (2x2) */}
+          <article className="bento-card bento-anchor col-span-1 md:col-span-2 lg:row-span-2 lg:col-span-2 flex flex-col justify-between overflow-hidden rounded-[24px] bg-[#0a175a] p-8 lg:p-10 text-white relative">
+            <div className="z-10 w-full max-w-[60%]">
+              <span className="text-[0.65rem] font-[900] uppercase tracking-[0.14em] text-[#01a995] mb-4 block">TRANSCRIPT REVIEW</span>
+              <h3 className="text-3xl lg:text-4xl font-[800] leading-[1.15] tracking-[-0.02em] mb-4">
+                Review the record<br />before it moves forward.
+              </h3>
+              <p className="text-[#a5b4c9] text-sm lg:text-base leading-relaxed mb-8 max-w-sm">
+                Upload, map, and confirm every course so nothing gets missed.
               </p>
+
+              <ul className="space-y-4 text-sm text-[#d4dfed]">
+                <li className="flex items-center gap-3">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/10 text-[#01a995]">
+                    <PremiumCheckCircleIcon className="w-4 h-4" />
+                  </div>
+                  Map courses to requirements
+                </li>
+                <li className="flex items-center gap-3">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/10 text-[#01a995]">
+                    <PremiumWarningIcon className="w-4 h-4" />
+                  </div>
+                  Detect gaps and mismatches
+                </li>
+                <li className="flex items-center gap-3">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/10 text-[#01a995]">
+                    <PremiumShieldIcon className="w-4 h-4" />
+                  </div>
+                  Lock in an accurate record
+                </li>
+              </ul>
+            </div>
+
+            <img src={bentoTranscript} alt="Transcript Upload" className="absolute -right-4 top-1/2 -translate-y-1/2 w-[55%] lg:w-[48%] object-contain drop-shadow-2xl z-0 pointer-events-none" />
+
+            <div className="z-10 mt-12 self-start rounded-[16px] border border-white/10 bg-[#07113f]/80 p-5 backdrop-blur-md">
+              <div className="text-[10px] font-[800] uppercase tracking-widest text-[#a5b4c9] mb-3">REVIEW STATUS</div>
+              <div className="flex gap-6 mb-4">
+                <div className="text-center"><div className="text-xl font-bold">5</div><div className="text-[10px] text-[#a5b4c9]">Mapped</div></div>
+                <div className="text-center"><div className="text-xl font-bold">5</div><div className="text-[10px] text-[#a5b4c9]">Matched</div></div>
+                <div className="text-center"><div className="text-xl font-bold">5</div><div className="text-[10px] text-[#a5b4c9]">Confirmed</div></div>
+              </div>
+              <button className="w-full rounded-full bg-[#01a995] py-2 text-xs font-bold text-white transition-colors hover:bg-[#018b7a]">
+                View gap analysis &rarr;
+              </button>
             </div>
           </article>
-          <article className="flex min-h-[210px] flex-col justify-between rounded-[24px] bg-[#fffdf8] border border-[#dde4e5] p-6 shadow-[0_2px_8px_rgba(10,23,90,0.08)]">
-            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#ffe1d8] text-[#0a175a]">
-              <PremiumSettingsIcon />
-            </span>
-            <div>
-              <h3 className="text-[0.67rem] font-[900] uppercase tracking-[0.1em] text-[#0a175a]">Reliable support</h3>
-              <p className="mt-3 text-[10px] leading-[1.65] text-[#69758d] font-[620]">
-                Guidance remains available between meetings, deadlines, and moments of uncertainty.
-              </p>
-            </div>
-          </article>
-          <article className="relative min-h-[390px] overflow-hidden rounded-[26px] bg-[#07113f]">
-            <div className="absolute inset-0 overflow-hidden bg-[#0a175a]">
-              <div className="absolute -left-12 top-10 h-64 w-64 rotate-[24deg] rounded-[48px] bg-[#01c3ad]/60 shadow-[32px_34px_0_rgba(1,169,149,.26)]"></div>
-              <div className="absolute right-[12%] top-[16%] h-44 w-44 rounded-full border-[22px] border-white/20"></div>
-              <div className="absolute bottom-[-42px] right-[-24px] h-48 w-48 rounded-[42px] bg-white/10"></div>
-              <div className="absolute -right-4 -top-4">
-                <ClayAsset asset="secure-profile" className="w-56 h-64 object-contain opacity-90 drop-shadow-xl" />
+
+          {/* Gap Analysis (1x2) */}
+          <article className="bento-card bento-capability col-span-1 lg:row-span-2 flex flex-col justify-between overflow-hidden rounded-[24px] bg-[#fff6f0] p-8 text-[#0a175a] relative">
+            <div className="z-10">
+              <span className="text-[0.65rem] font-[900] uppercase tracking-[0.14em] text-[#ff7a59] mb-4 block">GAP ANALYSIS</span>
+              <h3 className="text-2xl font-[800] leading-[1.15] tracking-[-0.02em] mb-6">
+                See what looks satisfied, missing, or unclear.
+              </h3>
+              <div className="space-y-4 bg-white/60 p-4 rounded-2xl backdrop-blur-sm border border-white/80">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#01a995] text-white">
+                    <PremiumCheckCircleIcon className="w-3 h-3" />
+                  </div>
+                  <div>
+                    <div className="font-bold text-sm leading-tight">16.5</div>
+                    <div className="text-[10px] text-[#69758d]">Likely earned</div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#ffb703] text-white">
+                    <PremiumWarningIcon className="w-3 h-3" />
+                  </div>
+                  <div>
+                    <div className="font-bold text-sm leading-tight">5</div>
+                    <div className="text-[10px] text-[#69758d]">Missing credits</div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#ff7a59] text-white">
+                    <PremiumHelpIcon className="w-3 h-3" />
+                  </div>
+                  <div>
+                    <div className="font-bold text-sm leading-tight">1</div>
+                    <div className="text-[10px] text-[#69758d]">Review items</div>
+                  </div>
+                </div>
               </div>
             </div>
-            <div className="absolute inset-x-0 bottom-0 bg-[#07113f]/85 p-6 text-white backdrop-blur-md">
-              <div className="mb-2 text-[0.67rem] font-[900] uppercase text-[#9ff2e6] tracking-[0.1em]">
-                Counselor Handoff
+
+            <img src={bentoGap} alt="Gap Analysis" className="absolute right-[-8%] bottom-6 w-[110%] object-contain drop-shadow-xl z-0 pointer-events-none" />
+
+            <button className="z-10 mt-48 w-max rounded-full bg-white px-5 py-2 text-xs font-bold text-[#0a175a] shadow-sm transition-shadow hover:shadow-md border border-[#f0e6e0]">
+              Open gap analysis &rarr;
+            </button>
+          </article>
+
+          {/* Make Pori your own (1x1) */}
+          <article className="bento-card bento-capability col-span-1 flex flex-col justify-between overflow-hidden rounded-[24px] bg-[#f0fbf7] p-8 text-[#0a175a] relative">
+            <div className="z-10 w-1/2">
+              <span className="text-[0.65rem] font-[900] uppercase tracking-[0.14em] text-[#01a995] mb-2 block">Your companion</span>
+              <h3 className="text-xl font-[800] leading-[1.15] tracking-[-0.02em] mb-4">
+                Make Pori your own
+              </h3>
+              <ul className="space-y-2 text-[11px] font-[600] text-[#4a5568]">
+                {["Base", "Expression", "Head", "Accessory", "Detail"].map((item) => (
+                  <li key={item} className="flex items-center gap-2">
+                    <div className="flex h-4 w-4 items-center justify-center rounded-full bg-[#01a995] text-white">
+                      <PremiumCheckCircleIcon className="w-2.5 h-2.5" />
+                    </div>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <img src={poriMascot} alt="Pori Customization" className="absolute right-0 -bottom-2 w-[60%] object-contain drop-shadow-lg z-0 pointer-events-none" />
+          </article>
+
+          {/* Academic Roadmap (1x1) */}
+          <article className="bento-card bento-capability col-span-1 flex flex-col justify-between overflow-hidden rounded-[24px] bg-[#f0fbf7] p-8 text-[#0a175a] relative">
+            <div className="z-10 relative">
+              <span className="text-[0.65rem] font-[900] uppercase tracking-[0.14em] text-[#01a995] mb-2 block">ACADEMIC ROADMAP</span>
+              <h3 className="text-xl font-[800] leading-[1.15] tracking-[-0.02em] mb-2">
+                Move one clear step at a time.
+              </h3>
+              <p className="text-xs text-[#69758d] mb-4 max-w-[80%] leading-relaxed font-[500]">
+                Resolve the local elective, then unlock the remaining schedule.
+              </p>
+              <div className="inline-block rounded-full bg-[#d9f2e9] px-3 py-1 text-[10px] font-[800] text-[#01a995]">
+                Next: Local Elective
               </div>
-              <p className="max-w-xl text-[11px] leading-relaxed text-white/65">
-                The workspace keeps the student’s transcript, possible credit connections,
-                graduation questions, and counselor handoff in one calm place.
+            </div>
+            <img src={bentoRoadmap} alt="Academic Roadmap" className="absolute -right-6 -bottom-6 w-[120%] object-contain drop-shadow-xl z-0 pointer-events-none" />
+            <button className="z-10 mt-20 w-max rounded-full bg-white px-5 py-2 text-xs font-bold text-[#0a175a] shadow-sm transition-shadow hover:shadow-md border border-[#e2ede9]">
+              View roadmap &rarr;
+            </button>
+          </article>
+
+          {/* Counselor Packet (1x1) */}
+          <article className="bento-card bento-capability col-span-1 flex flex-col justify-between overflow-hidden rounded-[24px] bg-[#f0f6ff] p-8 text-[#0a175a] relative">
+            <div className="z-10 w-2/3">
+              <span className="text-[0.65rem] font-[900] uppercase tracking-[0.14em] text-[#3b82f6] mb-2 block">COUNSELOR PACKET</span>
+              <h3 className="text-xl font-[800] leading-[1.15] tracking-[-0.02em] mb-3">
+                A printable packet that's ready when you are.
+              </h3>
+              <p className="text-[11px] font-[500] text-[#69758d] mb-12">
+                Summarize the plan, mapping, gaps, and next steps.
               </p>
             </div>
+            <img src={bentoPacket} alt="Counselor Packet" className="absolute -right-6 -bottom-6 w-[75%] object-contain drop-shadow-xl z-0 pointer-events-none" />
+            <button className="z-10 mt-auto w-max rounded-full bg-white px-4 py-2 text-xs font-bold text-[#0a175a] shadow-sm transition-shadow hover:shadow-md border border-[#e2ebf5] flex items-center gap-2">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+              Print / Save PDF
+            </button>
           </article>
+
+          {/* Academic Passport (1x1) */}
+          <article className="bento-card bento-capability col-span-1 flex flex-col justify-between overflow-hidden rounded-[24px] bg-[#f0fbf7] p-8 text-[#0a175a] relative">
+            <div className="z-10 w-3/5">
+              <span className="text-[0.65rem] font-[900] uppercase tracking-[0.14em] text-[#01a995] mb-2 block">ACADEMIC PASSPORT</span>
+              <h3 className="text-xl font-[800] leading-[1.15] tracking-[-0.02em] mb-2">
+                One template, made personal.
+              </h3>
+              <p className="text-[10px] font-[500] text-[#69758d] mb-6">
+                Customize appearance and personal details.
+              </p>
+
+              <div className="space-y-3 mb-8 bg-white/70 backdrop-blur-sm p-3 rounded-[14px] border border-white">
+                <div className="flex items-center justify-between text-[9px] font-bold">
+                  Cover color
+                  <div className="flex gap-1.5">
+                    {["#0a175a", "#01a995", "#ff7a59", "#ffb703"].map(c => <div key={c} className="w-3.5 h-3.5 rounded-full" style={{ backgroundColor: c }}></div>)}
+                  </div>
+                </div>
+                <div className="flex items-center justify-between text-[9px] font-bold">
+                  Accent color
+                  <div className="flex gap-1.5">
+                    {["#0a175a", "#01a995", "#ff7a59", "#ffb703"].map(c => <div key={c} className="w-3.5 h-3.5 rounded-full" style={{ backgroundColor: c }}></div>)}
+                  </div>
+                </div>
+                <div className="flex items-center justify-between text-[9px] font-bold">
+                  Icon style
+                  <div className="flex gap-1.5">
+                    <div className="w-4 h-4 rounded-[4px] border-[1.5px] border-[#01a995] flex items-center justify-center bg-[#f0fbf7]"><img src={poriMascot} className="w-3" /></div>
+                    <div className="w-4 h-4 rounded-[4px] bg-white border border-gray-200 flex items-center justify-center text-[8px] text-gray-400">★</div>
+                    <div className="w-4 h-4 rounded-[4px] bg-white border border-gray-200 flex items-center justify-center text-[8px] text-gray-400">★</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <img src={bentoPassport} alt="Academic Passport" className="absolute -right-8 top-1/2 -translate-y-1/2 w-[62%] md:w-[68%] lg:w-[72%] max-h-[115%] object-contain drop-shadow-2xl z-0 pointer-events-none scale-110" />
+            <button className="z-10 mt-auto w-max rounded-full bg-white px-4 py-2 text-xs font-bold text-[#0a175a] shadow-sm transition-shadow hover:shadow-md border border-[#e2ede9]">
+              Customize Passport &rarr;
+            </button>
+          </article>
+
+          {/* Level Progression (2x1) */}
+          <article className="bento-card bento-capability col-span-1 md:col-span-2 overflow-hidden rounded-[24px] bg-[#07184f] p-8 text-white relative flex flex-col justify-between">
+            <div className="z-10 mb-2 max-w-sm">
+              <span className="text-[0.65rem] font-[900] uppercase tracking-[0.14em] text-[#01a995] mb-2 block">LEVEL PROGRESSION</span>
+              <h3 className="text-2xl font-[800] leading-[1.15] tracking-[-0.02em] mb-2">
+                Each rank follows real work.
+              </h3>
+              <p className="text-[#a5b4c9] text-xs font-[500]">
+                Complete tasks, earn ranks, and unlock new milestones.
+              </p>
+            </div>
+
+            <img src={bentoProgression} alt="Level Progression Timeline" className="w-[95%] md:w-[88%] mx-auto -mb-6 mt-4 object-contain pointer-events-none self-center" />
+          </article>
+
         </div>
       </section>
 
       {/* PROCESS SECTION */}
-      <section id="how-it-works" className="mx-auto w-full max-w-[1400px] px-6 py-24 md:px-10">
+      <section id="how-it-works" className="motion-process mx-auto w-full max-w-[1400px] px-6 py-24 md:px-10">
 
-        {/* PROCESS BADGE — left aligned */}
-        <div className="mb-6 flex items-center gap-2">
-          <span className="w-[7px] h-[7px] rounded-full bg-[#01a995]" />
-          <span className="text-[0.65rem] font-[900] uppercase tracking-[0.14em] text-[#01a995]">PROCESS</span>
+        {/* PROCESS BADGE */}
+        <div className="inline-flex items-center gap-2 rounded-full bg-[#01a995]/15 px-4 py-1.5 mb-6 border border-[#01a995]/20 backdrop-blur-sm">
+          <PremiumRoadmapIcon className="w-3.5 h-3.5 text-[#01a995]" />
+          <span className="text-[0.68rem] font-[800] uppercase tracking-wider text-[#01a995]">
+            STUDENT-FIRST PROCESS
+          </span>
         </div>
 
         {/* HEADING — centered, 3 lines */}
@@ -397,362 +1092,457 @@ function WelcomePage() {
           <h2 className="text-[clamp(1.9rem,3.4vw,3.1rem)] font-[800] leading-[1.15] tracking-[-0.04em] text-[#0a175a]">
             A student-first planning process<br />
             built to turn transcripts into clearer routes{" "}
-            <img src={customAsset7} alt="" className="inline-block w-[1.4em] h-[1.4em] align-middle translate-y-[-0.1em]" />
+            <img src={customAsset7} alt="" className="inline-block h-[1.15em] w-auto object-contain align-middle pointer-events-none" />
           </h2>
           <p className="mt-2 text-[clamp(1.9rem,3.4vw,3.1rem)] font-[600] leading-[1.15] tracking-[-0.04em] text-[#8e98a8]">
-            and{" "}
-      {/* FEATURES SECTION (Bento Grid) */}
-      <section id="features" className="mx-auto w-full max-w-[1400px] px-6 py-24 md:px-10">
+            and more confident{" "}
+            <img src={customAsset8} alt="" className="inline-block h-[1.15em] w-auto object-contain align-middle pointer-events-none" />{" "}
+            next steps
+          </p>
+        </div>
+
+        {/* CARDS GRID */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+
+          {/* Card 1 */}
+          <article className="motion-process-card flex flex-col bg-[#f0fbf7] rounded-[20px] border border-[#d9f2e9] overflow-hidden" style={{ minHeight: 360 }}>
+            <div className="p-6 pb-0">
+              <div className="font-[800] text-[#01a995] text-lg mb-1 tracking-tight">01</div>
+              <h3 className="font-[800] text-[#0a175a] text-[1.35rem] leading-tight tracking-[-0.02em] mb-3">Upload transcript</h3>
+              <p className="text-[#59647a] text-[0.9rem] leading-[1.5] font-[500]">
+                Add your academic record securely so Scholaport can prepare it for review.
+              </p>
+            </div>
+            <div className="flex-1 flex items-end justify-center px-4 pb-2 pt-4 min-h-[200px]">
+              <img src={customAsset3} alt="Upload transcript 3D" className="w-auto max-h-[200px] object-contain drop-shadow-xl" />
+            </div>
+          </article>
+
+          {/* Card 2 */}
+          <article className="motion-process-card flex flex-col bg-[#f0f6ff] rounded-[20px] border border-[#e1edff] overflow-hidden" style={{ minHeight: 360 }}>
+            <div className="p-6 pb-0">
+              <div className="font-[800] text-[#01a995] text-lg mb-1 tracking-tight">02</div>
+              <h3 className="font-[800] text-[#0a175a] text-[1.35rem] leading-tight tracking-[-0.02em] mb-3">Review probable mappings</h3>
+              <p className="text-[#59647a] text-[0.9rem] leading-[1.5] font-[500]">
+                Review how confirmed courses may correspond to the destination framework, including confidence and counselor-review indicators.
+              </p>
+            </div>
+            <div className="flex-1 flex items-end justify-center px-4 pb-2 pt-4 min-h-[200px]">
+              <img src={customAsset1} alt="Review probable mappings 3D" className="w-auto max-h-[200px] object-contain drop-shadow-xl" />
+            </div>
+          </article>
+
+          {/* Card 3 */}
+          <article className="motion-process-card flex flex-col bg-[#fff8ec] rounded-[20px] border border-[#ffeed4] overflow-hidden" style={{ minHeight: 360 }}>
+            <div className="p-6 pb-0">
+              <div className="font-[800] text-[#01a995] text-lg mb-1 tracking-tight">03</div>
+              <h3 className="font-[800] text-[#0a175a] text-[1.35rem] leading-tight tracking-[-0.02em] mb-3">Find graduation gaps</h3>
+              <p className="text-[#59647a] text-[0.9rem] leading-[1.5] font-[500]">
+                Spot what is satisfied, missing, or still unclear against destination requirements.
+              </p>
+            </div>
+            <div className="flex-1 flex items-end justify-center px-4 pb-2 pt-4 min-h-[200px]">
+              <img src={customAsset2} alt="Find graduation gaps 3D" className="w-auto max-h-[200px] object-contain drop-shadow-xl" />
+            </div>
+          </article>
+
+          {/* Card 4 */}
+          <article className="motion-process-card flex flex-col bg-[#f0fbf7] rounded-[20px] border border-[#d9f2e9] overflow-hidden" style={{ minHeight: 360 }}>
+            <div className="p-6 pb-0">
+              <div className="font-[800] text-[#01a995] text-lg mb-1 tracking-tight">04</div>
+              <h3 className="font-[800] text-[#0a175a] text-[1.35rem] leading-tight tracking-[-0.02em] mb-3">Build your next route</h3>
+              <p className="text-[#59647a] text-[0.9rem] leading-[1.5] font-[500]">
+                Turn results into a roadmap and a counselor-ready packet you can act on.
+              </p>
+            </div>
+            <div className="flex-1 flex items-end justify-center px-4 pb-2 pt-4 min-h-[200px]">
+              <img src={customAsset6} alt="Build your next route 3D" className="w-auto max-h-[200px] object-contain drop-shadow-xl" />
+            </div>
+          </article>
+
+        </div>
+
+        {/* TIMELINE */}
+        <div ref={timelineRef} className="hidden lg:grid grid-cols-4 gap-4 mt-6 relative w-full">
+          {[1, 2, 3, 4].map((step) => (
+            <div key={step} className="relative flex flex-col items-center justify-start h-12 w-full pt-[2px]">
+              {/* Vertical tick above dot */}
+              <div className="gs-v-line w-[1.5px] h-3 bg-[#01a995] mb-1 transform origin-top" />
+              {/* Dot */}
+              <svg className="w-[22px] h-[22px] flex-shrink-0 gs-dot relative z-10" viewBox="0 0 24 24" fill="none" style={{ overflow: 'visible' }}>
+                <circle cx="12" cy="12" r="10" fill="#fffdf8" stroke="#01a995" strokeWidth="1.5" />
+                <circle cx="12" cy="12" r="4" fill="#01a995" />
+              </svg>
+              {/* Horizontal line + arrow to next */}
+              {step < 4 && (
+                <div className="gs-h-line absolute left-1/2 top-[29px] h-[1.5px] bg-[#01a995] w-[calc(100%+1rem)] origin-left z-0">
+                  <div className="gs-arrow absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 bg-[#ffffff] px-[4px]">
+                    <ChevronRight size={17} strokeWidth={3} color="#01a995" />
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+
+      </section>
+
+      {/* TRUST IS PART OF THE PRODUCT - BENTO DESIGN (1:1 EXACT REPLICA OF ATTACHED DESIGN 6c778235-46df-4290-8938-57106f406438.png) */}
+      <section id="trust-product" className="motion-trust mx-auto w-full max-w-[1400px] px-4 py-20 md:px-8">
         
-        {/* Header */}
-        <div className="mb-10 max-w-2xl">
-          <div className="mb-4 flex items-center gap-2">
-            <span className="text-[0.65rem] font-[900] uppercase tracking-[0.14em] text-[#01c3ad]">FEATURES</span>
-          </div>
-          <h2 className="text-[clamp(2.25rem,4vw,3.5rem)] font-[800] leading-[1.1] tracking-[-0.04em] text-[#0a175a]">
-            From records to a clear route.<br />
-            All in ScholaPort.
-          </h2>
-          <p className="mt-4 text-[1.1rem] leading-[1.6] text-[#59647a] font-[500]">
-            Every tool counselors need to review, plan, and guide with confidence.
-          </p>
-        </div>
-
-        {/* Bento Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-min">
+        {/* MASTER BENTO DASHBOARD CONTAINER */}
+        <div className="w-full rounded-[32px] md:rounded-[40px] bg-white p-6 sm:p-10 md:p-12 border border-[#e2ece8] shadow-[0_15px_60px_rgba(10,23,90,0.05)] font-sans">
           
-          {/* Card 1: Transcript Review (col-span-2 row-span-2) */}
-          <article className="col-span-1 md:col-span-2 lg:row-span-2 rounded-[24px] bg-[#0a175a] p-8 md:p-10 text-white relative overflow-hidden flex flex-col min-h-[480px]">
-            <span className="text-[0.65rem] font-[800] uppercase tracking-[0.14em] text-[#01c3ad] mb-4">TRANSCRIPT REVIEW</span>
-            <h3 className="text-3xl md:text-4xl font-[800] leading-tight max-w-[280px] mb-4">Review the record before it moves forward.</h3>
-            <p className="text-[0.95rem] text-white/80 font-[400] max-w-[240px] leading-[1.5] mb-8">
-              Upload, map, and confirm every course so nothing gets missed.
-            </p>
+          {/* ROW 1: TOP SECTION (LEFT TEXT & 4 STAT CARDS, RIGHT DARK MAP CARD) */}
+          <div className="motion-trust-row grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch mb-8">
             
-            <ul className="space-y-4 mb-10 text-sm font-[500] text-white/90 z-10">
-              <li className="flex items-center gap-3">
-                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/10 border border-white/20 text-[#01c3ad]"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></span>
-                Map courses to requirements
-              </li>
-              <li className="flex items-center gap-3">
-                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/10 border border-white/20 text-[#01c3ad]"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><circle cx="10" cy="13" r="2"></circle><path d="m14 17-2.5-2.5"></path></svg></span>
-                Detect gaps and mismatches
-              </li>
-              <li className="flex items-center gap-3">
-                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/10 border border-white/20 text-[#01c3ad]"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></span>
-                Lock in an accurate record
-              </li>
-            </ul>
+            {/* LEFT COLUMN: EYEBROW, HEADLINE, BODY, AND 4 STAT CARDS */}
+            <div className="lg:col-span-7 flex flex-col justify-between">
+              <div>
+                {/* EYEBROW */}
+                <div className="inline-flex items-center gap-2 text-xs font-[800] uppercase tracking-wider text-[#01a995] mb-4">
+                  <span className="text-[#01a995]">✦</span>
+                  <span>TRUST IS PART OF THE PRODUCT</span>
+                </div>
 
-            {/* REVIEW STATUS Card inside Transcript Review */}
-            <div className="mt-auto relative z-10 rounded-2xl bg-white/5 border border-white/10 p-5 w-full max-w-[340px] backdrop-blur-md">
-              <div className="text-[0.55rem] font-[800] uppercase tracking-[0.14em] text-white/60 mb-3">REVIEW STATUS</div>
-              <div className="grid grid-cols-3 gap-2 mb-4">
-                <div className="flex flex-col items-center justify-center rounded-xl bg-white/5 py-3 border border-white/10">
-                  <span className="text-xl font-[800]">5</span>
-                  <span className="text-[0.6rem] font-[600] text-white/70">Mapped</span>
+                {/* HEADLINE */}
+                <h2 className="text-[clamp(2.2rem,4vw,3.4rem)] font-[800] leading-[1.08] tracking-[-0.035em] text-[#0a175a] mb-5">
+                  Source-backed when known.<br />
+                  Explicit when uncertain.
+                </h2>
+
+                {/* BODY PARAGRAPH */}
+                <p className="text-[0.92rem] leading-[1.65] text-[#526079] font-[500] max-w-2xl mb-8">
+                  Education rules change by curriculum, jurisdiction, cohort, and year. ScholaPort does not ask an AI model to invent a universal equivalency. Supported academic claims are connected to reviewed reference data, probable mappings remain open to review, and missing coverage stays visible instead of being replaced with confident guesses.
+                </p>
+              </div>
+
+              {/* 4 STAT CARDS ROW */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 pt-2">
+                {/* Card 1 */}
+                <div className="p-4 rounded-[20px] bg-white border border-[#d9f2e9] shadow-[0_2px_10px_rgba(10,23,90,0.02)] flex flex-col justify-between">
+                  <div className="w-10 h-10 rounded-xl bg-[#e6f7f3] border border-[#c3ede3] flex items-center justify-center text-[#01a995] mb-4">
+                    <PremiumDatabaseIcon className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <div className="text-3xl font-[900] text-[#0a175a] tracking-tight mb-1">86</div>
+                    <div className="text-[0.72rem] font-[700] text-[#526079] leading-[1.3]">Imported<br />source records</div>
+                  </div>
                 </div>
-                <div className="flex flex-col items-center justify-center rounded-xl bg-white/5 py-3 border border-white/10">
-                  <span className="text-xl font-[800]">5</span>
-                  <span className="text-[0.6rem] font-[600] text-white/70">Matched</span>
+
+                {/* Card 2 */}
+                <div className="p-4 rounded-[20px] bg-white border border-[#d9f2e9] shadow-[0_2px_10px_rgba(10,23,90,0.02)] flex flex-col justify-between">
+                  <div className="w-10 h-10 rounded-xl bg-[#e6f7f3] border border-[#c3ede3] flex items-center justify-center text-[#01a995] mb-4">
+                    <PremiumTargetIcon className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <div className="text-3xl font-[900] text-[#0a175a] tracking-tight mb-1">4</div>
+                    <div className="text-[0.72rem] font-[700] text-[#526079] leading-[1.3]">Beta source<br />curricula</div>
+                  </div>
                 </div>
-                <div className="flex flex-col items-center justify-center rounded-xl bg-[#1e2a6b] py-3 border border-[#303e85] shadow-[inset_0_1px_0_rgba(255,255,255,0.1)]">
-                  <span className="text-xl font-[800]">5</span>
-                  <span className="text-[0.6rem] font-[600] text-[#8ca8ff]">Confirmed</span>
+
+                {/* Card 3 */}
+                <div className="p-4 rounded-[20px] bg-white border border-[#d9f2e9] shadow-[0_2px_10px_rgba(10,23,90,0.02)] flex flex-col justify-between">
+                  <div className="w-10 h-10 rounded-xl bg-[#e6f7f3] border border-[#c3ede3] flex items-center justify-center text-[#01a995] mb-4">
+                    <PremiumBuildingIcon className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <div className="text-3xl font-[900] text-[#0a175a] tracking-tight mb-1">2</div>
+                    <div className="text-[0.72rem] font-[700] text-[#526079] leading-[1.3]">Destination<br />frameworks</div>
+                  </div>
+                </div>
+
+                {/* Card 4 */}
+                <div className="p-4 rounded-[20px] bg-white border border-[#d9f2e9] shadow-[0_2px_10px_rgba(10,23,90,0.02)] flex flex-col justify-between">
+                  <div className="w-10 h-10 rounded-xl bg-[#e6f7f3] border border-[#c3ede3] flex items-center justify-center text-[#01a995] mb-4">
+                    <PremiumDocumentsIcon className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <div className="text-3xl font-[900] text-[#0a175a] tracking-tight mb-1">19</div>
+                    <div className="text-[0.72rem] font-[700] text-[#526079] leading-[1.3]">Modeled destination<br />requirements</div>
+                  </div>
                 </div>
               </div>
-              <button className="w-full flex items-center justify-center gap-2 rounded-full bg-[#01c3ad] py-2.5 text-[0.8rem] font-[700] text-[#0a175a] hover:bg-[#02d8c0] transition-colors">
-                View gap analysis <ChevronRight size={14} strokeWidth={3} />
-              </button>
             </div>
 
-            {/* Absolute 3D Asset */}
-            <img src={customAsset3} alt="" className="absolute right-[-20px] top-[40px] w-[340px] object-contain drop-shadow-[0_20px_30px_rgba(0,0,0,0.3)] z-0 hidden sm:block" />
-          </article>
+            {/* RIGHT COLUMN: DARK MAP VISUAL CARD */}
+            <div className="lg:col-span-5 flex items-center justify-center">
+              <div className="w-full flex items-center justify-center">
+                <img 
+                  src={trustMapSection} 
+                  alt="Beta 1.0 Coverage Map" 
+                  className="w-full h-auto object-contain" 
+                />
+              </div>
+            </div>
 
-          {/* Card 2: Gap Analysis (col-span-1 row-span-2) */}
-          <article className="col-span-1 lg:row-span-2 rounded-[24px] bg-[#fff8ef] p-6 text-[#0a175a] flex flex-col border border-[#f5e6d3] relative overflow-hidden min-h-[480px]">
-            <span className="text-[0.65rem] font-[800] uppercase tracking-[0.14em] text-[#f27a4b] mb-4">GAP ANALYSIS</span>
-            <h3 className="text-[1.35rem] font-[800] leading-tight mb-6 pr-4">See what looks satisfied, missing, or unclear.</h3>
+          </div>
+
+          {/* ROW 2: NOTICE BAR (RIPPLED BORDER BOX WITH GLOBE ICON) */}
+          <div className="motion-trust-row rounded-[22px] bg-[#f0fbf7] border border-[#d9f2e9] p-4 px-6 flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
+            <div className="flex items-center gap-4">
+              <div className="w-11 h-11 rounded-full bg-white border border-[#d9f2e9] flex items-center justify-center text-[#01a995] shrink-0 shadow-sm">
+                <PremiumGlobeIcon className="w-5 h-5" />
+              </div>
+              <div className="text-xs text-[#0a175a] font-[600] leading-relaxed">
+                <strong className="font-[800] text-sm text-[#0a175a] block mb-0.5">20 countries exist in the research inventory.</strong>
+                <span className="text-[#526079]">Beta 1.0 coverage is limited to the verified routes shown here.</span>
+              </div>
+            </div>
+            {/* Subtle Dot Pattern Decorative Grid */}
+            <div className="hidden md:flex gap-1 opacity-25 shrink-0">
+              <div className="grid grid-cols-4 gap-1">
+                {[...Array(12)].map((_, i) => (
+                  <span key={i} className="w-1.5 h-1.5 rounded-full bg-[#01a995]" />
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* ROW 3: OUR EVIDENCE METHODOLOGY (4-STEP HORIZONTAL PIPELINE) */}
+          <div className="motion-trust-row grid grid-cols-1 lg:grid-cols-12 gap-4 mb-8 items-stretch">
             
-            <div className="flex flex-col gap-4 mb-auto z-10">
-              <div className="flex items-center gap-3 bg-white rounded-xl p-3 shadow-sm border border-black/5 w-max pr-6">
-                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#01c3ad] text-white text-sm">✓</div>
+            {/* LEFT BANNER CARD */}
+            <div className="lg:col-span-3 rounded-[22px] bg-[#02132b] p-6 text-white flex flex-col justify-between border border-[#0d2847] shadow-sm">
+              <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-[#01a995] mb-6">
+                <PremiumVerifiedIcon className="w-4 h-4 text-[#01a995]" />
+              </div>
+              <div>
+                <h3 className="text-lg font-[800] leading-tight text-white mb-3">Our evidence<br />methodology</h3>
+                <p className="text-[0.76rem] leading-relaxed text-white/70 font-[450]">
+                  A four-step process that keeps academic planning trustworthy, transparent, and reviewable.
+                </p>
+              </div>
+            </div>
+
+            {/* RIGHT 4 PIPELINE STEP CARDS CONNECTED BY DASHED ARROW LINE */}
+            <div className="lg:col-span-9 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 relative">
+              
+              {/* Step 1 */}
+              <div className="p-5 rounded-[22px] bg-white border border-[#d9f2e9] shadow-[0_2px_10px_rgba(10,23,90,0.02)] flex flex-col justify-between relative">
                 <div>
-                  <div className="font-[800] text-[0.95rem] leading-none">16.5</div>
-                  <div className="text-[0.55rem] font-[600] text-[#8e95a3] uppercase tracking-wider mt-1">Likely earned</div>
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="w-9 h-9 rounded-xl bg-[#e6f7f3] border border-[#c3ede3] flex items-center justify-center text-[#01a995]">
+                      <PremiumSearchIcon className="w-4 h-4" />
+                    </div>
+                    <span className="w-6 h-6 rounded-full bg-[#01a995] text-white text-[10px] font-bold flex items-center justify-center shadow-sm">1</span>
+                  </div>
+                  <h4 className="text-sm font-[800] text-[#0a175a] mb-2">Research the jurisdiction</h4>
+                  <p className="text-[0.73rem] leading-relaxed text-[#526079] font-[500]">
+                    Collect official curricula, policies, and authoritative guidance for the source jurisdiction.
+                  </p>
                 </div>
               </div>
-              <div className="flex items-center gap-3 bg-white rounded-xl p-3 shadow-sm border border-black/5 w-max pr-6">
-                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#ffb732] text-white font-bold text-sm">!</div>
+
+              {/* Step 2 */}
+              <div className="p-5 rounded-[22px] bg-white border border-[#d9f2e9] shadow-[0_2px_10px_rgba(10,23,90,0.02)] flex flex-col justify-between relative">
                 <div>
-                  <div className="font-[800] text-[0.95rem] leading-none">5</div>
-                  <div className="text-[0.55rem] font-[600] text-[#8e95a3] uppercase tracking-wider mt-1">Missing credits</div>
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="w-9 h-9 rounded-xl bg-[#e6f7f3] border border-[#c3ede3] flex items-center justify-center text-[#01a995]">
+                      <PremiumLinkCircleIcon className="w-4 h-4" />
+                    </div>
+                    <span className="w-6 h-6 rounded-full bg-[#01a995] text-white text-[10px] font-bold flex items-center justify-center shadow-sm">2</span>
+                  </div>
+                  <h4 className="text-sm font-[800] text-[#0a175a] mb-2">Connect claims to evidence</h4>
+                  <p className="text-[0.73rem] leading-relaxed text-[#526079] font-[500]">
+                    Map academic claims to reviewed source records with citations and effective dates.
+                  </p>
                 </div>
               </div>
-              <div className="flex items-center gap-3 bg-white rounded-xl p-3 shadow-sm border border-black/5 w-max pr-6">
-                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#f25c54] text-white font-bold text-sm">?</div>
+
+              {/* Step 3 */}
+              <div className="p-5 rounded-[22px] bg-white border border-[#d9f2e9] shadow-[0_2px_10px_rgba(10,23,90,0.02)] flex flex-col justify-between relative">
                 <div>
-                  <div className="font-[800] text-[0.95rem] leading-none">1</div>
-                  <div className="text-[0.55rem] font-[600] text-[#8e95a3] uppercase tracking-wider mt-1">Review items</div>
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="w-9 h-9 rounded-xl bg-[#e6f7f3] border border-[#c3ede3] flex items-center justify-center text-[#01a995]">
+                      <PremiumGapIcon className="w-4 h-4" />
+                    </div>
+                    <span className="w-6 h-6 rounded-full bg-[#01a995] text-white text-[10px] font-bold flex items-center justify-center shadow-sm">3</span>
+                  </div>
+                  <h4 className="text-sm font-[800] text-[#0a175a] mb-2">Mark the coverage state</h4>
+                  <p className="text-[0.73rem] leading-relaxed text-[#526079] font-[500]">
+                    Label as supported, probable, or missing so uncertainty is visible at every step.
+                  </p>
+                </div>
+              </div>
+
+              {/* Step 4 */}
+              <div className="p-5 rounded-[22px] bg-white border border-[#d9f2e9] shadow-[0_2px_10px_rgba(10,23,90,0.02)] flex flex-col justify-between relative">
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="w-9 h-9 rounded-xl bg-[#e6f7f3] border border-[#c3ede3] flex items-center justify-center text-[#01a995]">
+                      <PremiumProfileIcon className="w-4 h-4" />
+                    </div>
+                    <span className="w-6 h-6 rounded-full bg-[#01a995] text-white text-[10px] font-bold flex items-center justify-center shadow-sm">4</span>
+                  </div>
+                  <h4 className="text-sm font-[800] text-[#0a175a] mb-2">Preserve human review</h4>
+                  <p className="text-[0.73rem] leading-relaxed text-[#526079] font-[500]">
+                    Route to students and counselors for confirmation and final decisions.
+                  </p>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+          {/* ROW 4: BOTTOM DASHBOARD ROW (3 TRUST CARDS + CURRENT BETA 1.0 PLANNING SCOPE CARD) */}
+          <div className="motion-trust-row grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
+            
+            {/* Card 1: Private by default */}
+            <div className="lg:col-span-3 bg-[#f0fbf7]/60 border border-[#d9f2e9] p-5 rounded-[22px] flex flex-col justify-between">
+              <div>
+                <div className="w-9 h-9 rounded-xl bg-white border border-[#d9f2e9] flex items-center justify-center text-[#01a995] mb-4 shadow-sm">
+                  <PremiumLockIcon className="w-4 h-4" />
+                </div>
+                <h4 className="text-base font-[800] text-[#0a175a] mb-2">Private by default</h4>
+                <p className="text-[0.73rem] text-[#526079] leading-relaxed font-[500]">
+                  Academic records and transcript files are stored through authenticated, user-scoped access rather than being made publicly visible.
+                </p>
+              </div>
+            </div>
+
+            {/* Card 2: Student-confirmed evidence */}
+            <div className="lg:col-span-3 bg-[#f0fbf7]/60 border border-[#d9f2e9] p-5 rounded-[22px] flex flex-col justify-between">
+              <div>
+                <div className="w-9 h-9 rounded-xl bg-white border border-[#d9f2e9] flex items-center justify-center text-[#01a995] mb-4 shadow-sm">
+                  <PremiumVerifiedIcon className="w-4 h-4" />
+                </div>
+                <h4 className="text-base font-[800] text-[#0a175a] mb-2">Student-confirmed evidence</h4>
+                <p className="text-[0.73rem] text-[#526079] leading-relaxed font-[500]">
+                  Extracted and translated course information remains editable until the student reviews and confirms it. Only confirmed course records move into mapping and planning.
+                </p>
+              </div>
+              <div className="w-7 h-[3px] bg-[#01a995] rounded-full mt-4" />
+            </div>
+
+            {/* Card 3: The school decides */}
+            <div className="lg:col-span-3 bg-[#f0fbf7]/60 border border-[#d9f2e9] p-5 rounded-[22px] flex flex-col justify-between">
+              <div>
+                <div className="w-9 h-9 rounded-xl bg-white border border-[#d9f2e9] flex items-center justify-center text-[#01a995] mb-4 shadow-sm">
+                  <PremiumBuildingIcon className="w-4 h-4" />
+                </div>
+                <h4 className="text-base font-[800] text-[#0a175a] mb-2">The school decides</h4>
+                <p className="text-[0.73rem] text-[#526079] leading-relaxed font-[500]">
+                  ScholaPort organizes evidence, probable mappings, open requirements, and prepared questions. The receiving school or counselor makes all final credit, placement, and graduation decisions.
+                </p>
+              </div>
+              <div className="w-7 h-[3px] bg-[#01a995] rounded-full mt-4" />
+            </div>
+
+            {/* Card 4: Current Beta 1.0 planning scope */}
+            <div className="lg:col-span-3 bg-[#02132b] text-white p-5 rounded-[22px] flex flex-col justify-between border border-[#0d2847] shadow-sm">
+              <div>
+                <h4 className="text-sm font-[800] text-white mb-3">Current Beta 1.0 planning scope</h4>
+                
+                <div className="mb-3">
+                  <div className="text-[0.66rem] font-[700] text-[#01a995] uppercase tracking-wider mb-2">Source curricula</div>
+                  <div className="grid grid-cols-2 gap-1.5">
+                    <div className="p-2 rounded-lg bg-white/10 border border-white/15 text-[0.68rem] font-bold flex items-center gap-1">
+                      <PremiumCheckCircleIcon className="w-3 h-3 text-[#01a995] shrink-0" />
+                      <span className="truncate">Tamil Nadu SSLC</span>
+                    </div>
+                    <div className="p-2 rounded-lg bg-white/10 border border-white/15 text-[0.68rem] font-bold flex items-center gap-1">
+                      <PremiumCheckCircleIcon className="w-3 h-3 text-[#01a995] shrink-0" />
+                      <span className="truncate">Tamil Nadu HSC</span>
+                    </div>
+                    <div className="p-2 rounded-lg bg-white/10 border border-white/15 text-[0.68rem] font-bold flex items-center gap-1">
+                      <PremiumCheckCircleIcon className="w-3 h-3 text-[#01a995] shrink-0" />
+                      <span className="truncate">Andhra Pradesh SSC</span>
+                    </div>
+                    <div className="p-2 rounded-lg bg-white/10 border border-white/15 text-[0.68rem] font-bold flex items-center gap-1">
+                      <PremiumCheckCircleIcon className="w-3 h-3 text-[#01a995] shrink-0" />
+                      <span className="truncate">Andhra Pradesh Intermediate</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <div className="text-[0.66rem] font-[700] text-[#01a995] uppercase tracking-wider mb-2">Destination frameworks</div>
+                  <div className="grid grid-cols-2 gap-1.5">
+                    <div className="p-2 rounded-lg bg-white/10 border border-white/15 text-[0.68rem] font-bold flex items-center gap-1">
+                      <PremiumCheckCircleIcon className="w-3 h-3 text-[#01a995] shrink-0" />
+                      <span>Georgia</span>
+                    </div>
+                    <div className="p-2 rounded-lg bg-white/10 border border-white/15 text-[0.68rem] font-bold flex items-center gap-1">
+                      <PremiumCheckCircleIcon className="w-3 h-3 text-[#01a995] shrink-0" />
+                      <span>Texas</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <button className="mt-6 flex items-center justify-between w-max gap-2 rounded-full bg-white px-5 py-2.5 text-[0.8rem] font-[700] text-[#0a175a] shadow-sm border border-black/5 hover:bg-gray-50 transition-colors z-10">
-              Open gap analysis <ChevronRight size={14} strokeWidth={3} className="text-[#a0a5b1]" />
-            </button>
+          </div>
 
-            <img src={customAsset2} alt="" className="absolute right-[-40px] bottom-10 w-[240px] object-contain drop-shadow-xl z-0 pointer-events-none" />
-          </article>
-
-          {/* Card 3: Pori Companion */}
-          <article className="col-span-1 rounded-[24px] bg-[#f0fbf7] p-6 text-[#0a175a] flex flex-col border border-[#d9f2e9] relative overflow-hidden h-full min-h-[232px]">
-            <span className="text-[0.65rem] font-[800] uppercase tracking-[0.14em] text-[#01a995] mb-2 block">Your companion</span>
-            <h3 className="text-xl font-[800] leading-tight mb-4">Make Pori<br/>your own</h3>
-            
-            <ul className="space-y-[6px] text-[0.7rem] font-[600] text-[#59647a] z-10">
-              {["Base", "Expression", "Head", "Accessory", "Detail"].map((item) => (
-                <li key={item} className="flex items-center gap-2">
-                  <div className="flex h-[14px] w-[14px] items-center justify-center rounded-full bg-[#01c3ad] text-white text-[8px]">✓</div>
-                  {item}
-                </li>
-              ))}
-            </ul>
-            
-            <img src={customAsset5} alt="" className="absolute right-[-10px] top-[40px] w-[140px] object-contain drop-shadow-lg z-0 pointer-events-none" />
-          </article>
-
-          {/* Card 4: Academic Roadmap */}
-          <article className="col-span-1 rounded-[24px] bg-[#f0fbf7] p-6 text-[#0a175a] flex flex-col border border-[#d9f2e9] relative overflow-hidden h-full min-h-[232px] justify-between">
-            <div>
-              <span className="text-[0.65rem] font-[800] uppercase tracking-[0.14em] text-[#01a995] mb-2 block">ACADEMIC ROADMAP</span>
-              <h3 className="text-[1.2rem] font-[800] leading-tight mb-2">Move one clear<br/>step at a time.</h3>
-              <p className="text-[0.7rem] text-[#59647a] font-[500] leading-snug max-w-[160px]">
-                Resolve the local elective, then unlock the remaining schedule.
-              </p>
-            </div>
-            
-            <div className="mt-3 z-10">
-              <span className="inline-block rounded-full bg-[#dcf6ef] px-3 py-1 text-[0.6rem] font-[700] text-[#01a995]">Next: Local Elective</span>
-            </div>
-
-            <button className="mt-4 flex items-center justify-between w-max gap-2 rounded-full bg-white px-4 py-2 text-[0.75rem] font-[700] text-[#0a175a] shadow-sm border border-black/5 hover:bg-gray-50 transition-colors z-10 relative">
-              View roadmap <ChevronRight size={12} strokeWidth={3} className="text-[#a0a5b1]" />
-            </button>
-            
-            <img src={customAsset6} alt="" className="absolute right-[-60px] bottom-10 w-[260px] object-contain drop-shadow-xl z-0 pointer-events-none" />
-          </article>
-
-          {/* Row 3 - Card 5: Counselor Packet */}
-          <article className="col-span-1 rounded-[24px] bg-[#f2f6ff] p-6 text-[#0a175a] flex flex-col border border-[#e5edff] relative overflow-hidden min-h-[240px]">
-            <span className="text-[0.65rem] font-[800] uppercase tracking-[0.14em] text-[#4863d4] mb-3 block">COUNSELOR PACKET</span>
-            <h3 className="text-[1.25rem] font-[800] leading-tight max-w-[180px] mb-2">A printable packet that's ready when you are.</h3>
-            <p className="text-[0.75rem] text-[#59647a] font-[500] max-w-[140px] leading-snug">
-              Summarize the plan, mapping, gaps, and next steps.
-            </p>
-            
-            <button className="mt-auto flex items-center justify-center gap-2 rounded-full bg-white px-4 py-2 text-[0.75rem] font-[700] text-[#0a175a] shadow-sm border border-black/5 hover:bg-gray-50 transition-colors w-max z-10 relative">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg> Print / Save PDF
-            </button>
-            
-            <img src={customAsset4} alt="" className="absolute right-[-20px] bottom-[-20px] w-[180px] object-contain drop-shadow-[0_10px_20px_rgba(0,0,0,0.15)] z-0 pointer-events-none" />
-          </article>
-
-          {/* Row 3 - Card 6: Academic Passport */}
-          <article className="col-span-1 rounded-[24px] bg-[#f0fbf7] p-6 text-[#0a175a] flex flex-col border border-[#d9f2e9] relative overflow-hidden min-h-[240px]">
-            <span className="text-[0.65rem] font-[800] uppercase tracking-[0.14em] text-[#01a995] mb-3 block">ACADEMIC PASSPORT</span>
-            <h3 className="text-[1.25rem] font-[800] leading-tight mb-2">One template,<br/>made personal.</h3>
-            <p className="text-[0.75rem] text-[#59647a] font-[500] leading-snug max-w-[150px] mb-4">
-              Customize appearance and personal details.
-            </p>
-
-            <div className="space-y-[10px] z-10 relative">
-              <div className="flex items-center gap-3 text-[0.65rem] font-[700] text-[#59647a]">
-                <span className="w-16">Cover color</span>
-                <div className="flex gap-[6px]">
-                  <div className="w-4 h-4 rounded-full bg-[#0a175a]"></div>
-                  <div className="w-4 h-4 rounded-full bg-[#01c3ad]"></div>
-                  <div className="w-4 h-4 rounded-full bg-[#f27a4b]"></div>
-                  <div className="w-4 h-4 rounded-full bg-[#6d5dfc]"></div>
-                </div>
+          {/* ROW 5: BOTTOM FLOATING CTA ACTION BUTTON */}
+          <div className="flex justify-center mt-10">
+            <a
+              href="/reference-coverage"
+              className="inline-flex items-center gap-3 bg-white border border-[#d9f2e9] shadow-[0_8px_30px_rgba(10,23,90,0.06)] hover:shadow-xl rounded-full px-8 py-3.5 transition-all text-xs font-[800] text-[#0a175a] hover:-translate-y-0.5"
+            >
+              <div className="w-6 h-6 rounded-full bg-[#e6f7f3] border border-[#c3ede3] flex items-center justify-center text-[#01a995]">
+                <PremiumBookIcon className="w-3.5 h-3.5" />
               </div>
-              <div className="flex items-center gap-3 text-[0.65rem] font-[700] text-[#59647a]">
-                <span className="w-16">Accent color</span>
-                <div className="flex gap-[6px]">
-                  <div className="w-4 h-4 rounded-full bg-[#0a175a]"></div>
-                  <div className="w-4 h-4 rounded-full bg-[#01c3ad]"></div>
-                  <div className="w-4 h-4 rounded-full bg-[#f4c85a]"></div>
-                  <div className="w-4 h-4 rounded-full bg-[#e8efed]"></div>
-                </div>
-              </div>
-              <div className="flex items-center gap-3 text-[0.65rem] font-[700] text-[#59647a]">
-                <span className="w-16">Icon style</span>
-                <div className="flex gap-[6px]">
-                  <div className="w-[18px] h-[18px] rounded-[4px] bg-white flex items-center justify-center border border-[#01c3ad] text-[10px]">🐧</div>
-                  <div className="w-[18px] h-[18px] rounded-[4px] bg-white/50 flex items-center justify-center border border-black/5 text-[#8e95a3] text-[10px]">🎓</div>
-                  <div className="w-[18px] h-[18px] rounded-[4px] bg-white/50 flex items-center justify-center border border-black/5 text-[#8e95a3] text-[10px]">⭐</div>
-                </div>
-              </div>
-            </div>
-            
-            <button className="mt-5 flex items-center justify-between w-max gap-2 rounded-full bg-white px-4 py-2 text-[0.75rem] font-[700] text-[#0a175a] shadow-sm border border-black/5 hover:bg-gray-50 transition-colors z-10 relative">
-              Customize Passport <ChevronRight size={12} strokeWidth={3} className="text-[#a0a5b1]" />
-            </button>
-            
-            <img src={customAssetPassport} alt="" className="absolute right-0 top-[20px] w-[170px] object-contain drop-shadow-xl z-0 pointer-events-none" />
-          </article>
+              <span>Explore our evidence and coverage</span>
+              <ArrowRight className="w-4 h-4 text-[#01a995]" />
+            </a>
+          </div>
 
-          {/* Row 3 - Card 7: Level Progression */}
-          <article className="col-span-1 md:col-span-2 rounded-[24px] bg-[#0a175a] p-8 md:p-10 text-white relative flex flex-col min-h-[240px] overflow-hidden">
-            <span className="text-[0.65rem] font-[800] uppercase tracking-[0.14em] text-[#01c3ad] mb-3 block relative z-10">LEVEL PROGRESSION</span>
-            <h3 className="text-[1.4rem] font-[800] leading-tight mb-2 relative z-10">Each rank<br/>follows real work.</h3>
-            <p className="text-[0.8rem] text-white/70 font-[400] max-w-[200px] leading-snug relative z-10">
-              Complete tasks, earn ranks, and unlock new milestones.
-            </p>
-            
-            <img src={customAssetLevels} alt="Level progression timeline" className="absolute bottom-6 right-6 w-full max-w-[480px] object-contain z-0 pointer-events-none" />
-          </article>
         </div>
+
       </section>
 
-      {/* IMPACT / TRUST */}
-      <section className="mx-auto max-w-7xl px-5 py-10 md:px-8 md:py-16" aria-label="Scholaport impact">
-        <div className="grid gap-3 md:grid-cols-3 md:grid-rows-[170px_170px]">
-          <article className="row-span-2 flex min-h-[330px] flex-col justify-between overflow-hidden rounded-[24px] bg-[#fffdf8] border border-[#dde4e5] p-5 shadow-sm">
-            <div className="relative flex h-40 items-center justify-center overflow-hidden rounded-[18px] bg-[#fffdf8]">
-              <div className="absolute h-24 w-24 rotate-[-18deg] rounded-[24px] bg-[#01c3ad] shadow-[14px_16px_0_#9ff2e6,0_20px_26px_rgba(10,23,90,.16)]"></div>
-              <div className="absolute h-20 w-20 rotate-[18deg] rounded-[20px] border border-white/80 bg-[#0a175a] shadow-[-13px_15px_0_#cdd3de]"></div>
-              <div className="relative flex h-16 w-16 items-center justify-center rounded-full bg-white text-2xl text-[#0a175a] shadow-xl">
-                ✦
-              </div>
-            </div>
-            <div>
-              <h3 className="max-w-[210px] text-[1.15rem] font-[800] leading-tight tracking-tight text-[#0a175a]">
-                Built for the people behind every learning experience.
-              </h3>
-              <a href="#home" className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#0a175a] px-4 py-2 text-[0.78rem] font-[800] text-white hover:-translate-y-0.5 transition-transform" style={{ boxShadow: "inset 0 1px 0 rgb(255 255 255 / 20%)" }}>
-                Join waitlist
-                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white text-sm text-[#0a175a]">
-                  →
-                </span>
-              </a>
-            </div>
-          </article>
-          <article className="relative overflow-hidden rounded-[24px] bg-[#e8efed] p-5 shadow-[0_1px_3px_rgba(10,23,90,0.08)]">
-            <div className="absolute -right-2 -top-5 h-36 w-36 rounded-full bg-[#01c3ad] opacity-40 blur-2xl"></div>
-            <div className="absolute right-7 top-4 h-24 w-24 rotate-[20deg] rounded-[22px] border border-white/80 bg-gradient-to-br from-white to-[#9ff2e6] shadow-[10px_14px_0_#0a175a]" style={{ transformStyle: "preserve-3d" }}></div>
-            <div className="relative z-10 flex h-full flex-col justify-end">
-              <h3 className="max-w-[190px] text-[1.15rem] font-[800] leading-tight tracking-tight text-[#0a175a]">
-                Trusted by academic teams.
-              </h3>
-              <p className="mt-1 text-xs leading-[1.65] text-[#59647a] font-[600]">
-                Designed around real learner needs.
-              </p>
-            </div>
-          </article>
-          <article className="relative overflow-hidden rounded-[24px] bg-[#fffdf8] border border-[#dde4e5] p-5 shadow-[0_1px_3px_rgba(10,23,90,0.08)]">
-            <div className="absolute right-7 top-4">
-              <div className="relative flex h-24 w-16 items-center justify-center rounded-b-[28px] rounded-t-[14px] bg-gradient-to-r from-[#0a175a] via-[#01c3ad] to-[#9ff2e6] shadow-[10px_14px_0_#cdd3de]">
-                <div className="absolute -top-4 h-7 w-7 rotate-45 rounded-[5px] bg-[#f4c85a] shadow-md"></div>
-                <div className="h-11 w-11 rounded-full border-4 border-white/50"></div>
-              </div>
-            </div>
-            <div className="relative z-10 flex h-full flex-col justify-end">
-              <div className="text-3xl font-[800] tracking-tight text-[#0a175a]">24/7</div>
-              <p className="mt-1 max-w-[150px] text-[10px] leading-[1.65] text-[#69758d] font-[620]">
-                Guidance ready when learners need it.
-              </p>
-            </div>
-          </article>
-          <article className="relative col-span-1 overflow-hidden rounded-[24px] bg-[#e8efed] p-5 md:col-span-2 shadow-[0_1px_3px_rgba(10,23,90,0.08)]">
-            <div className="absolute -right-3 -bottom-6 h-44 w-44 rounded-full bg-[#0a175a] shadow-[-16px_-12px_0_#01c3ad]"></div>
-            <div className="absolute bottom-7 right-11 h-28 w-28 rotate-[-12deg] rounded-[28px] border border-white/40 bg-[#9ff2e6] shadow-[14px_15px_0_#0a175a]" style={{ transformStyle: "preserve-3d" }}>
-              <div className="absolute inset-5 rounded-full border-4 border-[#01c3ad] bg-white/60"></div>
-            </div>
-            <div className="relative z-10 flex h-full max-w-[290px] flex-col justify-end">
-              <h3 className="text-[1.15rem] font-[800] leading-tight tracking-tight text-[#0a175a]">
-                Bring every academic signal into focus and make the next step
-                clearer.
-              </h3>
-              <p className="mt-1 text-[0.76rem] leading-[1.65] text-[#59647a] font-[600]">
-                Support that adapts to each learner journey.
-              </p>
-            </div>
-          </article>
-        </div>
-      </section>
-
-      {/* BETA / EVIDENCE */}
-      <section id="beta" className="mx-auto max-w-7xl px-5 py-20 md:px-8">
-        <div className="mb-12 flex flex-col justify-between gap-6 md:flex-row md:items-end">
-          <h2 className="max-w-2xl text-[clamp(2.25rem,4vw,4rem)] font-[800] leading-[1.02] tracking-[-0.055em] text-[#0a175a]">
-            The beta is deliberately narrow.
-          </h2>
-          <p className="max-w-xs text-[1.04rem] leading-[1.75] text-[#526079] font-[570]">
-            Scholaport is being shaped with real transfer decisions in mind.
-          </p>
-        </div>
-        <div className="grid gap-5 md:grid-cols-3">
-          <article className="rounded-[26px] bg-[#0a175a] p-7 text-white shadow-md">
-            <div className="text-3xl font-[800]">4+</div>
-            <h3 className="mt-16 text-[1.15rem] font-[800]">Research studies</h3>
-            <p className="mt-3 text-[0.76rem] leading-[1.65] text-white/72 font-[620]">
-              Evidence supports the design and efficacy of the academic
-              experience.
-            </p>
-          </article>
-          <article className="rounded-[26px] bg-[#fffdf8] border border-[#dde4e5] p-7 shadow-[0_1px_3px_rgba(10,23,90,0.08)]">
-            <div className="text-3xl font-[800] text-[#0a175a]">24/7</div>
-            <h3 className="mt-16 text-[1.15rem] font-[800] text-[#0a175a]">Continuous availability</h3>
-            <p className="mt-3 text-[0.76rem] leading-[1.65] text-[#69758d] font-[620]">
-              Reliable support without waitlists or unnecessary operational
-              overhead.
-            </p>
-          </article>
-          <article className="rounded-[26px] bg-[#01c3ad] p-7 text-[#0a175a] shadow-md">
-            <div className="text-3xl font-[800]">1M+</div>
-            <h3 className="mt-16 text-[1.15rem] font-[800]">Satisfied users</h3>
-            <p className="mt-3 text-[0.76rem] leading-[1.65] text-[#0a175a]/75 font-[620]">
-              A proven foundation that grows with institutions and their
-              learners.
-            </p>
-          </article>
-        </div>
-      </section>
+      <ReleasePathSection />
+      <FaqSection />
 
       {/* NEW FOOTER / WAITLIST SECTION */}
-      <section className="relative w-full overflow-hidden bg-[#02263d] pt-40 pb-0 text-white rounded-t-[40px] md:rounded-t-[60px] transform-gpu">
-        
+      <section
+        className="motion-footer relative w-full overflow-hidden pt-40 pb-0 text-white rounded-t-[40px] md:rounded-t-[60px] transform-gpu"
+        style={{
+          background:
+            "linear-gradient(180deg, #d9f1ec 0px, #8dcac2 300px, #286f76 590px, #02263d 800px)",
+        }}
+      >
+
         {/* Background Landscape Image */}
-        <div className="absolute inset-x-0 top-0 h-[800px] w-full" style={{
+        <div className="motion-footer-landscape absolute inset-x-0 top-0 h-[800px] w-full" style={{
           backgroundImage: `url(${footerBgImage})`,
           backgroundSize: 'cover',
           backgroundPosition: 'top center',
           backgroundRepeat: 'no-repeat',
         }}>
-          {/* Subtle gradient to ensure smooth blend into #02263d */}
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#02263d]"></div>
+          {/* Teal-aqua wash keeps the invitation grounded while blending into the deep footer. */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(180deg, rgba(17, 112, 111, 0.18) 0%, rgba(20, 104, 110, 0.34) 52%, rgba(2, 38, 61, 0.96) 100%)",
+            }}
+          />
         </div>
 
         {/* Foreground Content */}
-        <div className="relative z-10 mx-auto flex max-w-5xl flex-col items-center px-5 text-center">
-          <div className="text-[0.67rem] font-[900] uppercase tracking-[0.1em] text-white/70 mb-4">
-            Private Beta
+        <div className="motion-footer-content relative z-10 mx-auto flex max-w-5xl flex-col items-center px-5 text-center">
+          <div className="inline-flex items-center gap-2 rounded-full bg-[#075e63]/55 px-4 py-1.5 mb-5 border border-white/20 backdrop-blur-sm">
+            <PremiumLockIcon className="w-3.5 h-3.5 text-[#d7fff8]" />
+            <span className="text-[0.68rem] font-[800] uppercase tracking-wider text-[#d7fff8]">
+              PRIVATE BETA ACCESS
+            </span>
           </div>
-          
+
           <h2 className="mb-6 text-[clamp(2.5rem,6vw,5.5rem)] font-[800] leading-[1.0] tracking-[-0.04em] text-[#0a175a]" style={{ fontFamily: "Gumriot" }}>
             JOIN THE BETA.
           </h2>
-          
+
           <p className="mb-10 max-w-md text-[1.04rem] leading-[1.65] text-[#273a6a] font-[600]">
             Scholaport is rolling out in cohorts. Add your email to secure a spot in our upcoming beta release.
           </p>
 
-          <form className="flex w-full max-w-[520px] items-center rounded-full bg-[#02263d]/40 p-2 pl-6 shadow-2xl backdrop-blur-lg border border-white/20 hover:border-white/40 transition-colors duration-300">
-            <input 
-              type="email" 
-              placeholder="Enter your email address..." 
+          <form className="flex w-full max-w-[520px] items-center rounded-full bg-[#07545d]/65 p-2 pl-6 shadow-2xl backdrop-blur-lg border border-white/20 hover:border-white/40 transition-colors duration-300">
+            <input
+              type="email"
+              placeholder="Enter your email address..."
               className="flex-1 bg-transparent text-[1.05rem] font-[560] text-white placeholder-white/50 outline-none w-full"
               required
             />

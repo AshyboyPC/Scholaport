@@ -8,16 +8,25 @@ if (typeof window !== 'undefined') {
 }
 
 interface ScrollRevealTextProps {
-  paragraphs: {
+  paragraphs?: {
     text: string;
     className?: string;
     highlightText?: string;
     highlightClassName?: string;
   }[];
+  children?: React.ReactNode;
   containerClassName?: string;
 }
 
-export function ScrollRevealText({ paragraphs, containerClassName = "" }: ScrollRevealTextProps) {
+export function revealText(str: string, baseClass: string = "") {
+  return str.split(" ").map((word, i) => (
+    <span key={word + i} className={`reveal-word inline-block ${baseClass}`}>
+      {word}&nbsp;
+    </span>
+  ));
+}
+
+export function ScrollRevealText({ paragraphs, children, containerClassName = "" }: ScrollRevealTextProps) {
   const container = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
@@ -40,7 +49,6 @@ export function ScrollRevealText({ paragraphs, containerClassName = "" }: Scroll
     );
   }, { scope: container });
 
-  // Split both parts into words
   const renderWords = (str: string, baseClass: string) => {
     return str.split(" ").map((word, i) => (
       <span key={word + i} className={`reveal-word inline-block ${baseClass}`}>
@@ -51,7 +59,8 @@ export function ScrollRevealText({ paragraphs, containerClassName = "" }: Scroll
 
   return (
     <div ref={container} className={containerClassName}>
-      {paragraphs.map((p, index) => (
+      {children}
+      {paragraphs && paragraphs.map((p, index) => (
         <p key={index} className={p.className || ""}>
           {renderWords(p.text, "")}
           {p.highlightText && renderWords(p.highlightText, p.highlightClassName || "")}
