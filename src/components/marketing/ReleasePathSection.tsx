@@ -31,6 +31,9 @@ type CountdownTone = "light" | "teal" | "ink";
 const BETA_TARGET = new Date("2026-07-28T00:00:00-04:00");
 const MVP2_TARGET = new Date("2026-09-28T00:00:00-04:00");
 const INITIAL_COUNTDOWN_NOW = new Date("2026-07-26T00:00:00-04:00").getTime();
+const APP_LOGIN_URL = import.meta.env.VITE_APP_URL?.trim()
+  ? `${import.meta.env.VITE_APP_URL.trim().replace(/\/+$/, "")}/app/login`
+  : "/app/login";
 
 const includedBetaFeatures = [
   "Student onboarding",
@@ -578,11 +581,11 @@ function ExpandedBeta({ now, onClose }: { now: number; onClose: () => void }) {
         <div className="release-beta-intro__launch" data-release-detail>
           <ReleaseDate dark>Launch target · July 28, 2026</ReleaseDate>
           <LiveCountdown target={BETA_TARGET} now={now} tone="teal" />
-          <a href="#beta" className="release-primary-cta">
+          <a href={APP_LOGIN_URL} className="release-primary-cta">
             <UserRoundPlus />
-            Join the supported beta
+            Open ScholaPort
           </a>
-          <a href="#beta" className="release-text-link">
+          <a href="#beta-access" className="release-text-link">
             Request a future route <ArrowRight />
           </a>
         </div>

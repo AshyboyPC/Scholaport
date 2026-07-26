@@ -30,6 +30,7 @@ import {
 import { ClayAsset } from "@/components/journey/JourneyVisuals";
 import { FaqSection } from "@/components/marketing/FaqSection";
 import { ReleasePathSection } from "@/components/marketing/ReleasePathSection";
+import { BetaAccessGateway } from "@/components/marketing/BetaAccessGateway";
 import heroBgImage from "@/assets/images/hero-bg.png";
 import footerBgImage from "@/assets/images/footer-bg.png";
 import featureShowcaseImg from "@/assets/images/feature-showcase.png";
@@ -433,9 +434,9 @@ function WelcomePage() {
           {/* BUTTON (Always absolute) */}
           <div className={`absolute top-1/2 -translate-y-1/2 transition-all ${isScrolled ? "duration-[400ms]" : "duration-100"} ease-[cubic-bezier(0.16,1,0.3,1)] ${isScrolled ? "right-2 opacity-100 pointer-events-auto" : "right-2 opacity-0 pointer-events-none"
             }`}>
-            <a href="#home" className={`marketing-button transition-colors duration-500 h-[46px] ${isScrolled ? "marketing-button--ink" : "marketing-button--light"
+            <a href="#beta-access" className={`marketing-button transition-colors duration-500 h-[46px] ${isScrolled ? "marketing-button--ink" : "marketing-button--light"
               }`}>
-              Join waitlist
+              Check eligibility
             </a>
           </div>
 
@@ -477,7 +478,7 @@ function WelcomePage() {
         {/* Foreground Content (Centered in the empty space) */}
         <div className="relative z-10 w-full max-w-4xl mx-auto px-5 text-center">
           <ScrollRevealText>
-            <p className="mb-6 text-[0.96rem] md:text-[1.08rem] leading-[1.7] text-[#101a3f] font-[500] text-left md:text-center">
+            <p className="mb-6 text-[1rem] md:text-[1.13rem] leading-[1.7] text-[#101a3f] font-[500] text-left md:text-center">
               {revealText("Global education is moving faster than the systems built to recognize it. UNESCO reported that ")}
               {revealText("6.9 million students", "font-[800] text-[#01a995]")}
               {revealText(" now study outside their home countries, ")}
@@ -492,7 +493,7 @@ function WelcomePage() {
               {revealText("87%", "font-[800] text-[#01a995]")}
               {revealText(" of students overall. When curricula, languages, grading systems, credit units, and local graduation rules do not align, years of completed learning can become unclear at the exact moment families must make course-placement and graduation decisions.")}
             </p>
-            <p className="text-[0.96rem] md:text-[1.08rem] leading-[1.7] text-[#101a3f] font-[500] text-left md:text-center">
+            <p className="text-[1rem] md:text-[1.13rem] leading-[1.7] text-[#101a3f] font-[500] text-left md:text-center">
               {revealText("Based on our review of publicly documented education and credential platforms, ")}
               {revealText("ScholaPort is the world’s first student-owned, pre-counselor academic mobility system", "font-[800] text-[#01a995]")}
               {revealText(" built specifically for internationally transferring high-school students. Traditional credential services produce evaluation reports mainly for admissions, employment, licensing, or immigration. ")}
@@ -701,7 +702,7 @@ function WelcomePage() {
               </div>
 
               {/* CTA Button */}
-              <a href="#home" className="inline-flex items-center gap-3 rounded-full bg-[#0a175a] px-7 py-4 text-sm font-bold text-white shadow-lg transition-transform hover:-translate-y-0.5 mb-8">
+              <a href="#release-path" className="inline-flex items-center gap-3 rounded-full bg-[#0a175a] px-7 py-4 text-sm font-bold text-white shadow-lg transition-transform hover:-translate-y-0.5 mb-8">
                 See what the beta includes &rarr;
               </a>
             </div>
@@ -1532,28 +1533,15 @@ function WelcomePage() {
           </div>
 
           <h2 className="mb-6 text-[clamp(2.5rem,6vw,5.5rem)] font-[800] leading-[1.0] tracking-[-0.04em] text-[#0a175a]" style={{ fontFamily: "Gumriot" }}>
-            JOIN THE BETA.
+            FIND YOUR NEXT STEP.
           </h2>
 
-          <p className="mb-10 max-w-md text-[1.04rem] leading-[1.65] text-[#273a6a] font-[600]">
-            Scholaport is rolling out in cohorts. Add your email to secure a spot in our upcoming beta release.
+          <p className="mb-10 max-w-xl text-[1.04rem] leading-[1.65] text-[#273a6a] font-[600]">
+            Supported students can open ScholaPort now. Everyone else can identify the route they
+            need and join the expansion waitlist.
           </p>
 
-          <form className="flex w-full max-w-[520px] items-center rounded-full bg-[#07545d]/65 p-2 pl-6 shadow-2xl backdrop-blur-lg border border-white/20 hover:border-white/40 transition-colors duration-300">
-            <input
-              type="email"
-              placeholder="Enter your email address..."
-              className="flex-1 bg-transparent text-[1.05rem] font-[560] text-white placeholder-white/50 outline-none w-full"
-              required
-            />
-            <button type="submit" className="marketing-button marketing-button--light h-[54px] rounded-full px-10 shrink-0 text-[0.85rem]">
-              Sign up
-            </button>
-          </form>
-
-          <p className="mt-5 text-[0.76rem] text-[#1b2b5c] font-[650]">
-            By clicking Sign up you're confirming that you agree with our Terms and Conditions.
-          </p>
+          <BetaAccessGateway />
         </div>
 
         {/* EXISTING FOOTER CONTENT (Sits over the extended solid #02263d background) */}
@@ -1569,7 +1557,7 @@ function WelcomePage() {
               <div className="marketing-footer__links">
                 <a href="#how-it-works">How it works</a>
                 <a href="#beta">Private beta</a>
-                <a href="#home">Join waitlist</a>
+                <a href="#beta-access">Check eligibility</a>
               </div>
               <div className="marketing-footer__note text-white/50">
                 <span>Scholaport is a planning workspace.</span>
