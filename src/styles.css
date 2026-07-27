@@ -29,6 +29,33 @@ body {
   color: #101a3f;
 }
 
+.marketing-page section[id] {
+  scroll-margin-top: 5.5rem;
+}
+
+.marketing-page h1,
+.marketing-page h2 {
+  text-wrap: balance;
+}
+
+.marketing-purpose-section {
+  isolation: isolate;
+}
+
+.marketing-purpose-frame {
+  width: min(1320px, calc(100% - clamp(1.5rem, 5vw, 5rem)));
+  padding: clamp(9rem, 12vw, 12rem) clamp(2rem, 10vw, 10rem);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+.marketing-purpose-copy {
+  position: relative;
+  z-index: 1;
+  max-width: 690px;
+}
+
 .marketing-shell {
   width: min(1180px, calc(100% - 40px));
   margin-inline: auto;
@@ -833,7 +860,7 @@ body {
   overflow: hidden;
   padding: 78px 0 0;
   color: #fff;
-  background-color: transparent;
+  background-color: #0b4358;
 }
 
 .marketing-footer__grid {
@@ -873,13 +900,16 @@ body {
 }
 
 .marketing-footer__wordmark {
-  margin-bottom: -0.28em;
+  box-sizing: border-box;
+  width: min(100%, 1400px);
+  max-width: 100%;
+  margin: 0 0 -0.15em 0;
+  padding: 0.05em clamp(0.85rem, 2.4vw, 2.5rem) 0;
   font-family: "Gumriot", var(--font-display);
-  font-size: clamp(3.75rem, 14vw, 12.5rem);
+  font-size: clamp(2.3rem, 9.2vw, 9.2rem);
   font-weight: normal;
-  letter-spacing: 0.02em;
-  line-height: 1;
-  padding-top: 0.05em;
+  letter-spacing: -0.015em;
+  line-height: 0.94;
   text-align: center;
   white-space: nowrap;
   opacity: 0.95;
@@ -889,6 +919,7 @@ body {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  transform: translateY(15%);
 }
 
 .marketing-hero-beta-button {
@@ -979,6 +1010,19 @@ body {
 }
 
 @media (max-width: 940px) {
+  .marketing-purpose-frame {
+    width: calc(100% - 2rem);
+    padding: clamp(4rem, 9vw, 5.5rem) clamp(1.75rem, 7vw, 4rem);
+    border: 2px solid rgb(86 163 207 / 35%);
+    border-radius: clamp(2.25rem, 7vw, 4rem);
+    background-image: none !important;
+    box-shadow:
+      0 0 0 8px #fffdf8,
+      0 0 0 10px rgb(86 163 207 / 21%),
+      0 0 0 18px #fffdf8,
+      0 0 0 20px rgb(86 163 207 / 13%);
+  }
+
   .marketing-hero {
     min-height: auto;
   }
@@ -1020,6 +1064,16 @@ body {
     border-top: 1px solid rgb(255 255 255 / 16%);
     border-left: 0;
   }
+
+  .marketing-footer__grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 34px;
+  }
+
+  .marketing-footer__note {
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 680px) {
@@ -1054,6 +1108,48 @@ body {
 
   .marketing-hero {
     padding: 122px 0 55px;
+  }
+
+  .marketing-purpose-frame {
+    width: calc(100% - 1rem);
+    padding: 3.75rem 1.25rem 4.25rem;
+    border-radius: 2.25rem;
+  }
+
+  .motion-systems-visual > div {
+    transform: scale(1.02) !important;
+  }
+
+  #features {
+    padding-inline: 1rem;
+    padding-block: 4.5rem;
+  }
+
+  #features .bento-card {
+    min-width: 0;
+    padding: 1.35rem;
+  }
+
+  #features .bento-anchor {
+    min-height: auto;
+  }
+
+  #features .bento-anchor > div:first-child {
+    max-width: 100%;
+  }
+
+  #features .bento-anchor > img {
+    position: relative;
+    top: auto;
+    right: auto;
+    width: min(88%, 17rem);
+    margin: 1rem auto 0;
+    transform: none;
+  }
+
+  #features .bento-anchor > div:last-child {
+    width: 100%;
+    margin-top: 1rem;
   }
 
   .marketing-hero h1 {
@@ -1184,8 +1280,25 @@ body {
     padding-bottom: 54px;
   }
 
+  .marketing-footer__note {
+    grid-column: auto;
+    grid-template-columns: 1fr;
+  }
+
   .marketing-footer__wordmark {
-    font-size: clamp(3.8rem, 15.2vw, 6.6rem);
+    padding-inline: clamp(0.7rem, 3vw, 1.25rem);
+    font-size: clamp(2.3rem, 9.2vw, 6rem);
+  }
+}
+
+@media (max-width: 420px) {
+  .marketing-footer__links {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .marketing-footer__wordmark {
+    font-size: clamp(2rem, 9vw, 2.4rem);
+    letter-spacing: -0.025em;
   }
 }
 
