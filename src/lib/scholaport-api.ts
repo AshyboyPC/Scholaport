@@ -67,6 +67,16 @@ export const StudentProfileInputSchema = StudentProfileSchema.pick({
 });
 export type StudentProfileInput = z.infer<typeof StudentProfileInputSchema>;
 
+export const BetaFeedbackCategorySchema = z.enum(["bug", "confusing", "idea", "other"]);
+export type BetaFeedbackCategory = z.infer<typeof BetaFeedbackCategorySchema>;
+
+export const BetaFeedbackInputSchema = z.object({
+  category: BetaFeedbackCategorySchema,
+  message: z.string().trim().min(10).max(2000),
+  page_path: z.string().trim().min(1).max(500),
+});
+export type BetaFeedbackInput = z.infer<typeof BetaFeedbackInputSchema>;
+
 export const TranscriptSchema = z.object({
   id: z.string().uuid(),
   user_id: z.string().uuid(),
@@ -735,6 +745,17 @@ export async function getCurrentProfile(): Promise<StudentProfile | null> {
     .maybeSingle();
   throwIfError(error);
   return data ? StudentProfileSchema.parse(data) : null;
+}
+
+export async function submitBetaFeedback(input: BetaFeedbackInput): Promise<void> {
+  const client = requireSupabase();
+  const userId = await getUserId();
+  const parsed = BetaFeedbackInputSchema.parse(input);
+  const { error } = await client.from("beta_feedback").insert({
+    ...parsed,
+    user_id: userId,
+  });
+  throwIfError(error);
 }
 
 export async function upsertCurrentProfile(input: StudentProfileInput): Promise<StudentProfile> {

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import type { AcademicRankInput } from "@/lib/academic-ranks";
 import { supabase } from "@/lib/supabase";
 
 type SupabaseApiError = {
@@ -33,6 +34,26 @@ export const AcademicRankIdSchema = z.enum([
   "passage-ready",
 ]);
 
+export const AcademicRankMetricsSchema = z.object({
+  profileReady: z.boolean(),
+  passportComplete: z.boolean(),
+  poriComplete: z.boolean(),
+  transcriptConfirmed: z.boolean(),
+  courseCount: z.number().int().nonnegative(),
+  reviewedCourseCount: z.number().int().nonnegative(),
+  mappedCourseCount: z.number().int().nonnegative(),
+  resolvedMappingCount: z.number().int().nonnegative(),
+  mappedCredits: z.number().nonnegative(),
+  gapAnalysisReady: z.boolean(),
+  gapRequirementCount: z.number().int().nonnegative(),
+  plannedGapRequirementCount: z.number().int().nonnegative(),
+  roadmapReady: z.boolean(),
+  completedRoadmapItems: z.number().int().nonnegative(),
+  completedHighPriorityRoadmapItems: z.number().int().nonnegative(),
+  totalRoadmapItems: z.number().int().nonnegative(),
+  packetReady: z.boolean(),
+});
+
 export const AcademicRankRecordSchema = z.object({
   user_id: z.string().uuid(),
   current_rank_id: AcademicRankIdSchema,
@@ -48,6 +69,13 @@ export const AcademicRankRecordSchema = z.object({
 });
 
 export type AcademicRankRecord = z.infer<typeof AcademicRankRecordSchema>;
+
+export function parseAcademicRankMetrics(
+  metrics: Record<string, unknown> | null | undefined,
+): AcademicRankInput | null {
+  const parsed = AcademicRankMetricsSchema.safeParse(metrics);
+  return parsed.success ? parsed.data : null;
+}
 
 async function selectAcademicRank(userId: string) {
   if (!supabase) return null;

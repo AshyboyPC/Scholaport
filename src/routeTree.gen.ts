@@ -25,6 +25,7 @@ import { Route as AppLoginRouteImport } from './routes/app.login'
 import { Route as AppGuideRouteImport } from './routes/app.guide'
 import { Route as AppGapsRouteImport } from './routes/app.gaps'
 import { Route as AppAdvisorRouteImport } from './routes/app.advisor'
+import { Route as ApiWaitlistRouteImport } from './routes/api/waitlist'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as ApiAdvisorRouteImport } from './routes/api/advisor'
 import { Route as AppChatIndexRouteImport } from './routes/app.chat.index'
@@ -114,6 +115,11 @@ const AppAdvisorRoute = AppAdvisorRouteImport.update({
   path: '/app/advisor',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiWaitlistRoute = ApiWaitlistRouteImport.update({
+  id: '/api/waitlist',
+  path: '/api/waitlist',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiChatRoute = ApiChatRouteImport.update({
   id: '/api/chat',
   path: '/api/chat',
@@ -159,6 +165,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/api/advisor': typeof ApiAdvisorRoute
   '/api/chat': typeof ApiChatRoute
+  '/api/waitlist': typeof ApiWaitlistRoute
   '/app/advisor': typeof AppAdvisorRoute
   '/app/gaps': typeof AppGapsRoute
   '/app/guide': typeof AppGuideRoute
@@ -185,6 +192,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/api/advisor': typeof ApiAdvisorRoute
   '/api/chat': typeof ApiChatRoute
+  '/api/waitlist': typeof ApiWaitlistRoute
   '/app/advisor': typeof AppAdvisorRoute
   '/app/gaps': typeof AppGapsRoute
   '/app/guide': typeof AppGuideRoute
@@ -212,6 +220,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/api/advisor': typeof ApiAdvisorRoute
   '/api/chat': typeof ApiChatRoute
+  '/api/waitlist': typeof ApiWaitlistRoute
   '/app/advisor': typeof AppAdvisorRoute
   '/app/gaps': typeof AppGapsRoute
   '/app/guide': typeof AppGuideRoute
@@ -240,6 +249,7 @@ export interface FileRouteTypes {
     | '/'
     | '/api/advisor'
     | '/api/chat'
+    | '/api/waitlist'
     | '/app/advisor'
     | '/app/gaps'
     | '/app/guide'
@@ -266,6 +276,7 @@ export interface FileRouteTypes {
     | '/'
     | '/api/advisor'
     | '/api/chat'
+    | '/api/waitlist'
     | '/app/advisor'
     | '/app/gaps'
     | '/app/guide'
@@ -292,6 +303,7 @@ export interface FileRouteTypes {
     | '/'
     | '/api/advisor'
     | '/api/chat'
+    | '/api/waitlist'
     | '/app/advisor'
     | '/app/gaps'
     | '/app/guide'
@@ -319,6 +331,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ApiAdvisorRoute: typeof ApiAdvisorRoute
   ApiChatRoute: typeof ApiChatRoute
+  ApiWaitlistRoute: typeof ApiWaitlistRoute
   AppAdvisorRoute: typeof AppAdvisorRoute
   AppGapsRoute: typeof AppGapsRoute
   AppGuideRoute: typeof AppGuideRoute
@@ -456,6 +469,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAdvisorRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/waitlist': {
+      id: '/api/waitlist'
+      path: '/api/waitlist'
+      fullPath: '/api/waitlist'
+      preLoaderRoute: typeof ApiWaitlistRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/chat': {
       id: '/api/chat'
       path: '/api/chat'
@@ -519,6 +539,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ApiAdvisorRoute: ApiAdvisorRoute,
   ApiChatRoute: ApiChatRoute,
+  ApiWaitlistRoute: ApiWaitlistRoute,
   AppAdvisorRoute: AppAdvisorRoute,
   AppGapsRoute: AppGapsRoute,
   AppGuideRoute: AppGuideRoute,

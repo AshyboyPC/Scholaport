@@ -20,6 +20,7 @@ import {
 } from "@/components/journey/JourneyVisuals";
 import { PassportEmblem } from "@/components/passport/AcademicPassport";
 import { useAcademicPassportPreferences } from "@/hooks/use-academic-passport";
+import { invalidateAcademicRank } from "@/hooks/use-academic-rank";
 import { notifyError, notifySuccess } from "@/lib/app-feedback";
 import {
   addManualTranscriptCourse,
@@ -90,6 +91,7 @@ function TranscriptPage() {
       queryClient.invalidateQueries({ queryKey: ["transcript-courses"] }),
       queryClient.invalidateQueries({ queryKey: ["credit-mappings"] }),
       queryClient.invalidateQueries({ queryKey: ["passport-summary"] }),
+      invalidateAcademicRank(queryClient),
     ]);
   }
 
@@ -248,11 +250,7 @@ function TranscriptPage() {
           </button>
         }
         art={
-          <ClayScene
-            asset="transcript-upload"
-            eager
-            className="transcript-clay-scene"
-          >
+          <ClayScene asset="transcript-upload" eager className="transcript-clay-scene">
             {isProcessing && (
               <div className="absolute bottom-[5%] right-[2%] z-10 rounded-[22px] bg-white/94 p-4 text-[#0A175A] shadow-[0_16px_36px_rgba(0,0,0,.2)]">
                 <DocumentStack processing />
@@ -272,9 +270,12 @@ function TranscriptPage() {
         </div>
       </JourneyStage>
 
-      <div className="mx-auto grid max-w-7xl gap-5 xl:grid-cols-[minmax(0,1fr)_330px]">
+      <div
+        id="transcript-workspace"
+        className="rank-task-target mx-auto grid max-w-7xl gap-5 xl:grid-cols-[minmax(0,1fr)_330px]"
+      >
         <main className="space-y-5">
-          <section className="journey-paper overflow-hidden">
+          <section id="course-review" className="rank-task-target journey-paper overflow-hidden">
             <div className="flex flex-col gap-4 border-b border-[#E8EBF0] p-5 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-center gap-3">
                 <span className="grid h-11 w-11 place-items-center rounded-[14px] bg-[#0A175A]/8 text-[#0A175A]">
@@ -920,7 +921,10 @@ function CreditMappingReview({
   onRefresh: () => Promise<void>;
 }) {
   return (
-    <section className="schola-record-surface border border-[#CDD3DE]/70 bg-white p-5 shadow-card">
+    <section
+      id="credit-mapping-review"
+      className="rank-task-target schola-record-surface border border-[#CDD3DE]/70 bg-white p-5 shadow-card"
+    >
       <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_180px] sm:items-center">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>

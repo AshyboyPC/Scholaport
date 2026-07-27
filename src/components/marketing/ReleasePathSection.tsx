@@ -20,7 +20,7 @@ import {
 import ExpandCards from "@/components/ui/expand-cards";
 import betaRouteArt from "@/assets/images/release-path-3d/beta-route-v2.png";
 import betaVerticalRouteArt from "@/assets/images/release-path-3d/beta-vertical-route.png";
-import mvp2MobileArt from "@/assets/images/release-path-3d/mvp2-mobile-v2.png";
+import mvp2MobileArt from "@/assets/images/release-path-3d/mvp2-mobile-v3.png";
 import poriMascot from "@/assets/pori-mascot.png";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -181,6 +181,7 @@ export function ReleasePathSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const transitionLockRef = useRef(false);
   const floatingTweenRef = useRef<gsap.core.Tween | null>(null);
+  const betaReleased = now >= BETA_TARGET.getTime();
 
   const startFloatingArtwork = useCallback(() => {
     const artwork = sectionRef.current?.querySelectorAll("[data-release-art]");
@@ -310,6 +311,16 @@ export function ReleasePathSection() {
     };
   }, [morphTo, view]);
 
+  useEffect(() => {
+    if (!betaReleased) return;
+
+    floatingTweenRef.current?.kill();
+    if (view !== "neutral" && !transitionLockRef.current) {
+      setView("neutral");
+    }
+    startFloatingArtwork();
+  }, [betaReleased, startFloatingArtwork, view]);
+
   useGSAP(
     () => {
       const section = sectionRef.current;
@@ -318,6 +329,11 @@ export function ReleasePathSection() {
       const media = gsap.matchMedia();
 
       media.add("(prefers-reduced-motion: no-preference)", () => {
+        const eyebrow = section.querySelector(".release-eyebrow");
+        const surfaces = section.querySelectorAll("[data-flip-id]");
+        const artwork = section.querySelectorAll("[data-release-art]");
+        const seamArrow = section.querySelector(".release-neutral__seam-arrow");
+        const milestoneBanner = section.querySelector(".release-milestone-banner");
         const timeline = gsap.timeline({
           defaults: { ease: "power3.out" },
           scrollTrigger: {
@@ -327,14 +343,17 @@ export function ReleasePathSection() {
           },
         });
 
-        timeline
-          .fromTo(
-            ".release-eyebrow",
+        if (eyebrow) {
+          timeline.fromTo(
+            eyebrow,
             { autoAlpha: 0, y: 12, scale: 0.96 },
             { autoAlpha: 1, y: 0, scale: 1, duration: 0.48 },
-          )
-          .fromTo(
-            "[data-flip-id]",
+          );
+        }
+
+        if (surfaces.length) {
+          timeline.fromTo(
+            surfaces,
             { autoAlpha: 0, y: 42, scale: 0.97 },
             {
               autoAlpha: 1,
@@ -345,9 +364,12 @@ export function ReleasePathSection() {
               ease: "expo.out",
             },
             0.08,
-          )
-          .fromTo(
-            ".release-card__art",
+          );
+        }
+
+        if (artwork.length) {
+          timeline.fromTo(
+            artwork,
             { autoAlpha: 0, y: 24, scale: 0.94 },
             {
               autoAlpha: 1,
@@ -358,9 +380,12 @@ export function ReleasePathSection() {
               ease: "power3.out",
             },
             0.24,
-          )
-          .fromTo(
-            ".release-neutral__seam-arrow",
+          );
+        }
+
+        if (seamArrow) {
+          timeline.fromTo(
+            seamArrow,
             { autoAlpha: 0, scale: 0.62, rotation: -24 },
             {
               autoAlpha: 1,
@@ -370,8 +395,19 @@ export function ReleasePathSection() {
               ease: "back.out(1.45)",
             },
             0.46,
-          )
-          .call(startFloatingArtwork);
+          );
+        }
+
+        if (milestoneBanner) {
+          timeline.fromTo(
+            milestoneBanner,
+            { autoAlpha: 0, y: 12 },
+            { autoAlpha: 1, y: 0, duration: 0.48, ease: "power3.out" },
+            0.42,
+          );
+        }
+
+        timeline.call(startFloatingArtwork);
 
         return () => {
           timeline.kill();
@@ -395,7 +431,9 @@ export function ReleasePathSection() {
       aria-label="ScholaPort release path"
     >
       <div className="release-shell">
-        {view === "neutral" ? (
+        {betaReleased ? (
+          <PostBetaRelease now={now} />
+        ) : view === "neutral" ? (
           <NeutralReleaseCards now={now} onExpand={morphTo} />
         ) : view === "beta" ? (
           <ExpandedBeta now={now} onClose={() => morphTo("neutral")} />
@@ -405,9 +443,11 @@ export function ReleasePathSection() {
       </div>
 
       <p className="sr-only" aria-live="polite">
-        {view === "neutral"
-          ? "Both release cards are visible."
-          : `${view === "beta" ? "Private Beta 1.0" : "MVP 2.0"} is fully expanded. Press Escape to return.`}
+        {betaReleased
+          ? "Private Beta 1.0 is released. The full MVP 2.0 release card is visible."
+          : view === "neutral"
+            ? "Both release cards are visible."
+            : `${view === "beta" ? "Private Beta 1.0" : "MVP 2.0"} is fully expanded. Press Escape to return.`}
       </p>
 
       <style>{releaseStyles}</style>
@@ -541,6 +581,21 @@ function NeutralReleaseCards({
         <div className="release-neutral__seam-arrow" aria-hidden="true">
           <ArrowRight />
         </div>
+      </div>
+    </div>
+  );
+}
+
+function PostBetaRelease({ now }: { now: number }) {
+  return (
+    <div className="release-post-beta">
+      <ExpandedMvp2 now={now} />
+      <div className="release-milestone-banner" role="status">
+        <span className="release-milestone-banner__icon" aria-hidden="true">
+          <Check />
+        </span>
+        <strong>BETA 1.0 RELEASED</strong>
+        <time dateTime="2026-07-28">JULY 28, 2026</time>
       </div>
     </div>
   );
@@ -699,9 +754,9 @@ function FeatureList({
   );
 }
 
-function ExpandedMvp2({ now, onClose }: { now: number; onClose: () => void }) {
+function ExpandedMvp2({ now, onClose }: { now: number; onClose?: () => void }) {
   const handleSurfaceClick = (event: React.MouseEvent<HTMLElement>) => {
-    if ((event.target as HTMLElement).closest("a, button")) return;
+    if (!onClose || (event.target as HTMLElement).closest("a, button")) return;
     onClose();
   };
 
@@ -710,13 +765,15 @@ function ExpandedMvp2({ now, onClose }: { now: number; onClose: () => void }) {
       data-release-surface
       data-flip-id="release-mvp2"
       className="release-expanded release-expanded--mvp2"
-      onClick={handleSurfaceClick}
+      onClick={onClose ? handleSurfaceClick : undefined}
     >
       <div className="release-mvp-scene">
-        <button type="button" className="release-back release-back--light" onClick={onClose}>
-          <ArrowLeft />
-          <span className="sr-only">Return to both release cards</span>
-        </button>
+        {onClose ? (
+          <button type="button" className="release-back release-back--light" onClick={onClose}>
+            <ArrowLeft />
+            <span className="sr-only">Return to both release cards</span>
+          </button>
+        ) : null}
         <div className="release-mvp-scene__index" data-release-detail aria-hidden="true">
           <span>02</span>
           <div>
@@ -729,14 +786,15 @@ function ExpandedMvp2({ now, onClose }: { now: number; onClose: () => void }) {
           src={mvp2MobileArt}
           alt="ScholaPort mobile Academic Passport and route-planning concept"
         />
-        <img src={poriMascot} alt="Pori" className="release-mvp-scene__pori" />
       </div>
 
       <div className="release-mvp-copy">
-        <button type="button" className="release-back release-back--ink" onClick={onClose}>
-          <ArrowLeft />
-          <span>Back to both releases</span>
-        </button>
+        {onClose ? (
+          <button type="button" className="release-back release-back--ink" onClick={onClose}>
+            <ArrowLeft />
+            <span>Back to both releases</span>
+          </button>
+        ) : null}
 
         <div className="release-expanded__eyebrow release-expanded__eyebrow--teal" data-release-detail>
           NEXT RELEASE
@@ -768,7 +826,7 @@ function ExpandedMvp2({ now, onClose }: { now: number; onClose: () => void }) {
           <FlowStep icon={<MapPin />} label="VALIDATED ROUTES" />
         </div>
 
-        <a href="#beta" className="release-notify">
+        <a href="#beta-access" className="release-notify">
           <Bell />
           Notify me at validation
         </a>
@@ -873,6 +931,49 @@ const releaseStyles = `
   .release-neutral__cards[data-engaged-card="beta"] [data-expand-card="mvp2"],
   .release-neutral__cards[data-engaged-card="mvp2"] [data-expand-card="beta"] {
     flex-grow: 0.975;
+  }
+
+  .release-post-beta .release-expanded {
+    margin-top: 0;
+  }
+
+  .release-milestone-banner {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    min-height: 66px;
+    margin-top: 0.85rem;
+    border-radius: 18px;
+    padding: 0.85rem 1.15rem;
+    color: white;
+    background: #0a175a;
+    font-size: 0.74rem;
+    font-weight: 820;
+    letter-spacing: 0.08em;
+  }
+
+  .release-milestone-banner__icon {
+    display: grid;
+    place-items: center;
+    width: 2.1rem;
+    height: 2.1rem;
+    flex: 0 0 auto;
+    border-radius: 10px;
+    color: #0a175a;
+    background: #9ff2e6;
+  }
+
+  .release-milestone-banner__icon svg {
+    width: 1rem;
+    height: 1rem;
+    stroke-width: 2.6;
+  }
+
+  .release-milestone-banner time {
+    margin-left: auto;
+    color: rgba(159, 242, 230, 0.82);
+    font-size: 0.66rem;
+    letter-spacing: 0.1em;
   }
 
   .release-card {
@@ -1164,9 +1265,9 @@ const releaseStyles = `
   }
 
   .release-card__art--mvp2 {
-    left: 12%;
-    bottom: 0;
-    width: 76%;
+    left: 9%;
+    bottom: -0.35rem;
+    width: 82%;
   }
 
   .release-card__footer {
@@ -1653,9 +1754,7 @@ const releaseStyles = `
     position: absolute;
     z-index: 0;
     inset: 0;
-    background:
-      radial-gradient(circle at 16% 70%, rgba(255, 249, 241, 0.3), transparent 22%),
-      linear-gradient(105deg, transparent 0 58%, rgba(255, 249, 241, 0.1) 58% 58.25%, transparent 58.25%);
+    background: radial-gradient(circle at 18% 72%, rgba(255, 249, 241, 0.28), transparent 24%);
     content: "";
     pointer-events: none;
   }
@@ -1671,20 +1770,11 @@ const releaseStyles = `
     position: absolute;
     z-index: 2;
     left: 50%;
-    bottom: -1%;
-    width: 126%;
+    bottom: 2%;
+    width: 112%;
     max-width: none;
     transform: translateX(-50%);
     filter: drop-shadow(0 28px 28px rgba(33, 78, 100, 0.2));
-  }
-
-  .release-mvp-scene__pori {
-    position: absolute;
-    z-index: 5;
-    right: 7%;
-    bottom: 10%;
-    width: 18%;
-    filter: drop-shadow(0 16px 14px rgba(33, 78, 100, 0.2));
   }
 
   .release-mvp-scene__index {
@@ -1978,6 +2068,18 @@ const releaseStyles = `
       min-height: 600px;
       border-radius: 24px;
       padding: 1.35rem;
+    }
+
+    .release-milestone-banner {
+      min-height: 58px;
+      gap: 0.65rem;
+      border-radius: 15px;
+      padding: 0.7rem 0.8rem;
+      font-size: 0.66rem;
+    }
+
+    .release-milestone-banner time {
+      font-size: 0.56rem;
     }
 
     .release-card__top {

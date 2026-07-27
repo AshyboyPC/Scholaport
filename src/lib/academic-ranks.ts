@@ -43,7 +43,19 @@ export type AcademicRankCheck = {
   label: string;
   complete: boolean;
   value?: string;
+  destination: AcademicRankDestination;
+  hash?: string;
+  action: string;
 };
+
+export type AcademicRankDestination =
+  | "/app/onboarding"
+  | "/app/profile"
+  | "/app/pori"
+  | "/app/transcript"
+  | "/app/gaps"
+  | "/app/roadmap"
+  | "/app/packet";
 
 export type AcademicRankDefinition = {
   id: AcademicRankId;
@@ -51,7 +63,8 @@ export type AcademicRankDefinition = {
   name: string;
   kicker: string;
   description: string;
-  destination: string;
+  destination: AcademicRankDestination;
+  hash?: string;
   action: string;
 };
 
@@ -76,7 +89,7 @@ export const ACADEMIC_RANKS: readonly AcademicRankDefinition[] = [
     name: "Wayfinder",
     kicker: "Your journey begins",
     description: "Set your academic identity and make this workspace yours.",
-    destination: "/profile",
+    destination: "/app/onboarding",
     action: "Build your profile",
   },
   {
@@ -85,7 +98,8 @@ export const ACADEMIC_RANKS: readonly AcademicRankDefinition[] = [
     name: "Passport Holder",
     kicker: "Identity ready",
     description: "Complete your profile, Academic Passport, and Pori companion.",
-    destination: "/profile",
+    destination: "/app/profile",
+    hash: "academic-passport-builder",
     action: "Finish your Passport",
   },
   {
@@ -95,7 +109,8 @@ export const ACADEMIC_RANKS: readonly AcademicRankDefinition[] = [
     kicker: "Transcript confirmed",
     description:
       "Review at least three imported courses, resolve every row, and confirm the record.",
-    destination: "/transcript",
+    destination: "/app/transcript",
+    hash: "course-review",
     action: "Review transcript",
   },
   {
@@ -104,7 +119,8 @@ export const ACADEMIC_RANKS: readonly AcademicRankDefinition[] = [
     name: "Credit Mapper",
     kicker: "Credits connected",
     description: "Map at least 80% of courses, resolve each mapping, and identify three credits.",
-    destination: "/transcript",
+    destination: "/app/transcript",
+    hash: "credit-mapping-review",
     action: "Map your credits",
   },
   {
@@ -113,7 +129,8 @@ export const ACADEMIC_RANKS: readonly AcademicRankDefinition[] = [
     name: "Gap Navigator",
     kicker: "Requirements understood",
     description: "Analyze destination requirements and give every open gap a next action.",
-    destination: "/gaps",
+    destination: "/app/gaps",
+    hash: "gap-analysis",
     action: "Analyze requirements",
   },
   {
@@ -122,7 +139,8 @@ export const ACADEMIC_RANKS: readonly AcademicRankDefinition[] = [
     name: "Route Builder",
     kicker: "Plan in motion",
     description: "Create your roadmap, complete two actions, and close one high-priority step.",
-    destination: "/roadmap",
+    destination: "/app/roadmap",
+    hash: "roadmap-actions",
     action: "Work your roadmap",
   },
   {
@@ -131,7 +149,8 @@ export const ACADEMIC_RANKS: readonly AcademicRankDefinition[] = [
     name: "Passage Ready",
     kicker: "Counselor handoff ready",
     description: "Complete half your roadmap and generate a current counselor-ready packet.",
-    destination: "/packet",
+    destination: "/app/packet",
+    hash: "packet-actions",
     action: "Prepare your packet",
   },
 ] as const;
@@ -141,15 +160,38 @@ function checksForRank(rank: AcademicRankDefinition, input: AcademicRankInput) {
   const coverageLabel = `${Math.round(coverage * 100)}% mapped`;
 
   const checks: Record<AcademicRankId, AcademicRankCheck[]> = {
-    wayfinder: [{ id: "account", label: "Create your Scholaport workspace", complete: true }],
+    wayfinder: [
+      {
+        id: "account",
+        label: "Create your Scholaport workspace",
+        complete: true,
+        destination: "/app/profile",
+        action: "Open profile",
+      },
+    ],
     "passport-holder": [
-      { id: "profile", label: "Complete your academic profile", complete: input.profileReady },
+      {
+        id: "profile",
+        label: "Complete your academic profile",
+        complete: input.profileReady,
+        destination: "/app/onboarding",
+        action: "Complete profile setup",
+      },
       {
         id: "passport",
         label: "Save your Academic Passport",
         complete: input.passportComplete,
+        destination: "/app/profile",
+        hash: "academic-passport-builder",
+        action: "Finish your Passport",
       },
-      { id: "pori", label: "Finish your Pori companion", complete: input.poriComplete },
+      {
+        id: "pori",
+        label: "Finish your Pori companion",
+        complete: input.poriComplete,
+        destination: "/app/pori",
+        action: "Customize Pori",
+      },
     ],
     "record-keeper": [
       {
@@ -157,17 +199,26 @@ function checksForRank(rank: AcademicRankDefinition, input: AcademicRankInput) {
         label: "Add at least three transcript courses",
         complete: input.courseCount >= 3,
         value: `${input.courseCount} course${input.courseCount === 1 ? "" : "s"}`,
+        destination: "/app/transcript",
+        hash: "transcript-workspace",
+        action: "Add transcript courses",
       },
       {
         id: "course-review",
         label: "Review every imported course row",
         complete: input.courseCount >= 3 && input.reviewedCourseCount >= input.courseCount,
         value: `${input.reviewedCourseCount} of ${input.courseCount} reviewed`,
+        destination: "/app/transcript",
+        hash: "course-review",
+        action: "Review course rows",
       },
       {
         id: "confirm",
         label: "Confirm your transcript",
         complete: input.transcriptConfirmed,
+        destination: "/app/transcript",
+        hash: "course-review",
+        action: "Confirm transcript",
       },
     ],
     "credit-mapper": [
@@ -176,6 +227,9 @@ function checksForRank(rank: AcademicRankDefinition, input: AcademicRankInput) {
         label: "Map at least 80% of transcript courses",
         complete: input.courseCount > 0 && coverage >= 0.8,
         value: coverageLabel,
+        destination: "/app/transcript",
+        hash: "credit-mapping-review",
+        action: "Generate course mappings",
       },
       {
         id: "mapping-review",
@@ -183,12 +237,18 @@ function checksForRank(rank: AcademicRankDefinition, input: AcademicRankInput) {
         complete:
           input.mappedCourseCount > 0 && input.resolvedMappingCount >= input.mappedCourseCount,
         value: `${input.resolvedMappingCount} of ${input.mappedCourseCount} resolved`,
+        destination: "/app/transcript",
+        hash: "credit-mapping-review",
+        action: "Review mappings",
       },
       {
         id: "credits",
         label: "Identify at least three mapped credits",
         complete: input.mappedCredits >= 3,
         value: `${formatCredits(input.mappedCredits)} credits`,
+        destination: "/app/transcript",
+        hash: "credit-mapping-review",
+        action: "Complete credit mapping",
       },
     ],
     "gap-navigator": [
@@ -196,12 +256,18 @@ function checksForRank(rank: AcademicRankDefinition, input: AcademicRankInput) {
         id: "analysis",
         label: "Complete a destination gap analysis",
         complete: input.gapAnalysisReady,
+        destination: "/app/gaps",
+        hash: "gap-analysis",
+        action: "Run gap analysis",
       },
       {
         id: "gap-requirements",
         label: "Review every destination requirement",
         complete: input.gapRequirementCount > 0,
         value: `${input.gapRequirementCount} requirements`,
+        destination: "/app/gaps",
+        hash: "gap-requirements",
+        action: "Review requirements",
       },
       {
         id: "gap-actions",
@@ -210,21 +276,37 @@ function checksForRank(rank: AcademicRankDefinition, input: AcademicRankInput) {
           input.gapRequirementCount > 0 &&
           input.plannedGapRequirementCount >= input.gapRequirementCount,
         value: `${input.plannedGapRequirementCount} of ${input.gapRequirementCount} planned`,
+        destination: "/app/gaps",
+        hash: "gap-requirements",
+        action: "Plan open gaps",
       },
     ],
     "route-builder": [
-      { id: "roadmap", label: "Generate your academic roadmap", complete: input.roadmapReady },
+      {
+        id: "roadmap",
+        label: "Generate your academic roadmap",
+        complete: input.roadmapReady,
+        destination: "/app/roadmap",
+        hash: "roadmap-overview",
+        action: "Generate roadmap",
+      },
       {
         id: "first-action",
         label: "Complete at least two roadmap actions",
         complete: input.completedRoadmapItems >= 2,
         value: `${input.completedRoadmapItems} of ${input.totalRoadmapItems}`,
+        destination: "/app/roadmap",
+        hash: "roadmap-actions",
+        action: "Complete roadmap actions",
       },
       {
         id: "priority-action",
         label: "Complete one high-priority roadmap action",
         complete: input.completedHighPriorityRoadmapItems > 0,
         value: `${input.completedHighPriorityRoadmapItems} completed`,
+        destination: "/app/roadmap",
+        hash: "roadmap-actions",
+        action: "Open priority actions",
       },
     ],
     "passage-ready": [
@@ -235,11 +317,17 @@ function checksForRank(rank: AcademicRankDefinition, input: AcademicRankInput) {
           input.totalRoadmapItems > 0 &&
           input.completedRoadmapItems >= Math.max(3, Math.ceil(input.totalRoadmapItems / 2)),
         value: `${input.completedRoadmapItems} of ${input.totalRoadmapItems}`,
+        destination: "/app/roadmap",
+        hash: "roadmap-actions",
+        action: "Continue your roadmap",
       },
       {
         id: "packet",
         label: "Generate a current counselor packet",
         complete: input.packetReady,
+        destination: "/app/packet",
+        hash: "packet-actions",
+        action: "Generate counselor packet",
       },
     ],
   };

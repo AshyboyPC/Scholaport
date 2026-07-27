@@ -17,6 +17,7 @@ import {
 import { ClayScene, JourneyStage } from "@/components/journey/JourneyVisuals";
 import { PassportEmblem } from "@/components/passport/AcademicPassport";
 import { useAcademicPassportPreferences } from "@/hooks/use-academic-passport";
+import { invalidateAcademicRank } from "@/hooks/use-academic-rank";
 import { notifyError, notifySuccess } from "@/lib/app-feedback";
 import {
   addManualRoadmapItem,
@@ -66,6 +67,7 @@ function RoadmapPage() {
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["roadmap"] });
       await queryClient.invalidateQueries({ queryKey: ["passport-summary"] });
+      await invalidateAcademicRank(queryClient);
     },
   });
 
@@ -92,31 +94,33 @@ function RoadmapPage() {
       title="A planning preview built from your saved gap analysis."
       description="Roadmap items are saved to your Scholaport account. Your school or counselor makes final scheduling and credit decisions."
     >
-      {query.isLoading ? (
-        <State text="Loading your saved roadmap…" />
-      ) : query.error ? (
-        <State
-          text={query.error instanceof Error ? query.error.message : "Unable to load roadmap."}
-          error
-        />
-      ) : blocked ? (
-        <PrerequisiteState state={blocked} />
-      ) : !query.data?.roadmap ? (
-        <ActionState
-          title="Generate academic roadmap"
-          body="Your saved gap analysis is ready. Scholaport can convert those gap rows into a prioritized planning preview."
-          button="Generate academic roadmap"
-          processing={processing}
-          onClick={() => void runRoadmap(false)}
-        />
-      ) : (
-        <RoadmapDashboard
-          data={query.data}
-          passportEmblem={undefined}
-          processing={processing}
-          onRegenerate={() => void runRoadmap(true)}
-        />
-      )}
+      <div id="roadmap-overview" className="rank-task-target">
+        {query.isLoading ? (
+          <State text="Loading your saved roadmap…" />
+        ) : query.error ? (
+          <State
+            text={query.error instanceof Error ? query.error.message : "Unable to load roadmap."}
+            error
+          />
+        ) : blocked ? (
+          <PrerequisiteState state={blocked} />
+        ) : !query.data?.roadmap ? (
+          <ActionState
+            title="Generate academic roadmap"
+            body="Your saved gap analysis is ready. Scholaport can convert those gap rows into a prioritized planning preview."
+            button="Generate academic roadmap"
+            processing={processing}
+            onClick={() => void runRoadmap(false)}
+          />
+        ) : (
+          <RoadmapDashboard
+            data={query.data}
+            passportEmblem={undefined}
+            processing={processing}
+            onRegenerate={() => void runRoadmap(true)}
+          />
+        )}
+      </div>
     </PassportShell>
   );
 }
@@ -209,6 +213,7 @@ function RoadmapDashboard({
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["roadmap"] });
       await queryClient.invalidateQueries({ queryKey: ["passport-summary"] });
+      await invalidateAcademicRank(queryClient);
     },
   });
 
@@ -316,7 +321,7 @@ function RoadmapDashboard({
       {showManual && roadmap && <ManualItemForm roadmapId={roadmap.id} />}
 
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1.25fr)_minmax(320px,.75fr)]">
-        <main className="space-y-4">
+        <main id="roadmap-actions" className="rank-task-target space-y-4">
           <ItemGroup
             title="Immediate next steps"
             items={grouped.immediate}
@@ -598,6 +603,7 @@ function ManualItemForm({ roadmapId }: { roadmapId: string }) {
       setTitle("");
       setDescription("");
       await queryClient.invalidateQueries({ queryKey: ["roadmap"] });
+      await invalidateAcademicRank(queryClient);
       notifySuccess("Manual roadmap item added.");
     },
     onError: (error) => {

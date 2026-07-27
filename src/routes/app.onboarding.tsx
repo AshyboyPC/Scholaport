@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft, ArrowRight, Check, RefreshCw } from "lucide-react";
 import { useEffect, useState } from "react";
 import { ScholaportLogo } from "@/components/ScholaportLogo";
@@ -17,6 +17,7 @@ import {
   type AcademicPassportPreferences,
 } from "@/lib/academic-passport";
 import { useAcademicPassportPreferences } from "@/hooks/use-academic-passport";
+import { invalidateAcademicRank } from "@/hooks/use-academic-rank";
 import { useInterfacePreferences } from "@/hooks/use-interface-preferences";
 import { notifyError, notifySuccess } from "@/lib/app-feedback";
 import { upsertCurrentProfile } from "@/lib/scholaport-api";
@@ -51,6 +52,7 @@ const OTHER_OPTION = "__other__";
 
 function Onboarding() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { user, profile, refreshProfile, signOut } = useAuth();
   const currentYear = new Date().getFullYear();
   const graduationYearOptions = Array.from({ length: 10 }, (_, index) => currentYear + index);
@@ -368,6 +370,7 @@ function Onboarding() {
       });
       if (!customizationAlreadySaved) await updatePassportPreferences(preferencesToSave);
       await refreshProfile();
+      await invalidateAcademicRank(queryClient, user.id);
       notifySuccess("Your Scholaport passport is ready.", "complete");
       await navigate({ to: "/", replace: true });
     } catch (cause) {

@@ -183,9 +183,10 @@ if (!import.meta.env.DEV) {
   const allowedRoute = routeDefinitions.some(([path]) => path === requestedRoute)
     ? requestedRoute
     : "/";
+  const requestedHash = window.location.hash;
   const router = createRouter({
     routeTree: rootRoute.addChildren(routes),
-    history: createMemoryHistory({ initialEntries: [allowedRoute] }),
+    history: createMemoryHistory({ initialEntries: [`${allowedRoute}${requestedHash}`] }),
     context: { queryClient },
     defaultPreloadStaleTime: Number.POSITIVE_INFINITY,
   });

@@ -13,6 +13,7 @@ import { useAcademicPassportPreferences } from "@/hooks/use-academic-passport";
 import { useAcademicRank } from "@/hooks/use-academic-rank";
 import { useInterfacePreferences } from "@/hooks/use-interface-preferences";
 import { isAcademicPassportComplete } from "@/lib/academic-passport";
+import { parseAcademicRankMetrics } from "@/lib/academic-rank-api";
 import { calculateAcademicRank, deriveAcademicRankInput } from "@/lib/academic-ranks";
 import { DEFAULT_PORI_PREFERENCES, isPoriComplete, poriAsset } from "@/lib/pori";
 import { playRankCue } from "@/lib/rank-sound";
@@ -60,21 +61,22 @@ function AcademicProfilePage() {
   const courses = coursesQuery.data ?? roadmapQuery.data?.transcriptCourses ?? [];
   const mappings = mappingsQuery.data ?? roadmapQuery.data?.creditMappings ?? [];
   const roadmapItems = roadmapQuery.data?.items ?? summaryQuery.data?.roadmapItems ?? [];
+  const derivedRankInput = deriveAcademicRankInput({
+    profile,
+    passportComplete: isAcademicPassportComplete(preferences),
+    poriComplete: isPoriComplete(preferences.pori),
+    transcript: summaryQuery.data?.transcript ?? roadmapQuery.data?.transcript,
+    courses,
+    mappings,
+    gapAnalysis: roadmapQuery.data?.gapAnalysis ?? summaryQuery.data?.gapAnalysis,
+    gapRequirements: roadmapQuery.data?.gapRequirements ?? summaryQuery.data?.gapRequirements ?? [],
+    roadmap: roadmapQuery.data?.roadmap ?? summaryQuery.data?.roadmap,
+    roadmapItems,
+    packet: packetQuery.data?.packet,
+  });
+  const backendRankInput = parseAcademicRankMetrics(rankQuery.data?.metrics);
   const rankProgress = calculateAcademicRank(
-    deriveAcademicRankInput({
-      profile,
-      passportComplete: isAcademicPassportComplete(preferences),
-      poriComplete: isPoriComplete(preferences.pori),
-      transcript: summaryQuery.data?.transcript ?? roadmapQuery.data?.transcript,
-      courses,
-      mappings,
-      gapAnalysis: roadmapQuery.data?.gapAnalysis ?? summaryQuery.data?.gapAnalysis,
-      gapRequirements:
-        roadmapQuery.data?.gapRequirements ?? summaryQuery.data?.gapRequirements ?? [],
-      roadmap: roadmapQuery.data?.roadmap ?? summaryQuery.data?.roadmap,
-      roadmapItems,
-      packet: packetQuery.data?.packet,
-    }),
+    backendRankInput ?? derivedRankInput,
     rankQuery.data?.current_level,
   );
   const passportSetup = getPassportSetupSummary(preferences);
@@ -119,10 +121,10 @@ function AcademicProfilePage() {
           Calculating your rank from saved academic records…
         </div>
       ) : (
-        <AcademicRankRoute progress={rankProgress} />
+        <AcademicRankRoute progress={rankProgress} backendSynced={Boolean(backendRankInput)} />
       )}
 
-      <section id="pori-companion" className="profile-customization-section">
+      <section id="pori-companion" className="profile-customization-section rank-task-target">
         <div className="profile-customization-heading">
           <div>
             <p className="journey-eyebrow">My Pori</p>
@@ -186,7 +188,11 @@ function AcademicProfilePage() {
         </div>
       </section>
 
-      <section className="profile-customization-section" aria-labelledby="passport-builder-title">
+      <section
+        id="academic-passport-builder"
+        className="profile-customization-section rank-task-target"
+        aria-labelledby="passport-builder-title"
+      >
         <div className="profile-customization-heading">
           <div>
             <p className="journey-eyebrow">Academic Passport</p>

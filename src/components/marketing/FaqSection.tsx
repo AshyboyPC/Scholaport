@@ -124,7 +124,7 @@ const scenePositions = [
 ];
 
 export function FaqSection() {
-  const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
   const accordionId = useId();
   const sectionRef = useRef<HTMLElement>(null);
 
@@ -134,6 +134,13 @@ export function FaqSection() {
       if (!section) return;
 
       const media = gsap.matchMedia();
+      const resetAccordion = ScrollTrigger.create({
+        trigger: section,
+        start: "top bottom",
+        end: "bottom top",
+        onLeave: () => setOpenIndex(null),
+        onLeaveBack: () => setOpenIndex(null),
+      });
 
       media.add("(prefers-reduced-motion: no-preference)", () => {
         const desktop = window.matchMedia("(min-width: 901px)").matches;
@@ -204,7 +211,10 @@ export function FaqSection() {
         return () => timeline.kill();
       });
 
-      return () => media.revert();
+      return () => {
+        resetAccordion.kill();
+        media.revert();
+      };
     },
     { scope: sectionRef },
   );

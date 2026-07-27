@@ -17,6 +17,7 @@ import {
   JourneyStage,
   RequirementStructure,
 } from "@/components/journey/JourneyVisuals";
+import { invalidateAcademicRank } from "@/hooks/use-academic-rank";
 import {
   getGapAnalysis,
   regenerateGapAnalysis,
@@ -45,6 +46,7 @@ function GapAnalysis() {
       if (regenerate) await regenerateGapAnalysis(transcript.id);
       else await startGapAnalysis(transcript.id);
       await queryClient.invalidateQueries({ queryKey: ["gap-analysis"] });
+      await invalidateAcademicRank(queryClient);
       notifySuccess("Graduation gap preview updated.", "generate");
     } catch (error) {
       notifyError(error instanceof Error ? error.message : "Unable to run gap analysis.");
@@ -66,34 +68,40 @@ function GapAnalysis() {
       title="Scholaport preview of what looks satisfied, missing, or unclear."
       description="This is a counselor-ready preview. Final graduation and transfer-credit decisions are made by your school."
     >
-      {query.isLoading ? (
-        <State text="Loading your graduation gap preview…" />
-      ) : query.error ? (
-        <State
-          text={query.error instanceof Error ? query.error.message : "Unable to load gap analysis."}
-          error
-        />
-      ) : blocked ? (
-        <PrerequisiteState state={blocked} />
-      ) : !analysis ? (
-        <ActionState
-          title="Run graduation gap analysis"
-          body="Your confirmed courses and probable credit mappings are ready. Scholaport can now compare them with the selected destination framework."
-          button="Run graduation gap analysis"
-          processing={processing}
-          onClick={() => void runGapAnalysis(false)}
-        />
-      ) : (
-        <Dashboard
-          analysis={analysis}
-          requirements={requirements}
-          processing={processing}
-          destinationFramework={
-            profile?.destination_framework_label ?? profile?.target_state ?? "Destination framework"
-          }
-          onRegenerate={() => void runGapAnalysis(true)}
-        />
-      )}
+      <div id="gap-analysis" className="rank-task-target">
+        {query.isLoading ? (
+          <State text="Loading your graduation gap preview…" />
+        ) : query.error ? (
+          <State
+            text={
+              query.error instanceof Error ? query.error.message : "Unable to load gap analysis."
+            }
+            error
+          />
+        ) : blocked ? (
+          <PrerequisiteState state={blocked} />
+        ) : !analysis ? (
+          <ActionState
+            title="Run graduation gap analysis"
+            body="Your confirmed courses and probable credit mappings are ready. Scholaport can now compare them with the selected destination framework."
+            button="Run graduation gap analysis"
+            processing={processing}
+            onClick={() => void runGapAnalysis(false)}
+          />
+        ) : (
+          <Dashboard
+            analysis={analysis}
+            requirements={requirements}
+            processing={processing}
+            destinationFramework={
+              profile?.destination_framework_label ??
+              profile?.target_state ??
+              "Destination framework"
+            }
+            onRegenerate={() => void runGapAnalysis(true)}
+          />
+        )}
+      </div>
     </PassportShell>
   );
 }
@@ -288,7 +296,7 @@ function Dashboard({
       </JourneyStage>
 
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1.25fr)_minmax(320px,.75fr)]">
-        <main className="space-y-4">
+        <main id="gap-requirements" className="rank-task-target space-y-4">
           <RequirementGroup title="Still missing" icon={<PremiumWarningIcon />} items={red} />
           <RequirementGroup
             title="Needs counselor review"

@@ -8,6 +8,7 @@ import {
   PremiumTranscriptIcon,
 } from "@/components/icons/PremiumIcon";
 import { ClayScene, CounselorSeal, JourneyStage } from "@/components/journey/JourneyVisuals";
+import { invalidateAcademicRank } from "@/hooks/use-academic-rank";
 import { notifyError, notifySuccess } from "@/lib/app-feedback";
 import {
   generateCounselorPacket,
@@ -57,6 +58,7 @@ function PacketPage() {
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["counselor-packet"] });
       await queryClient.invalidateQueries({ queryKey: ["passport-summary"] });
+      await invalidateAcademicRank(queryClient);
     },
   });
 
@@ -80,30 +82,32 @@ function PacketPage() {
       title="A printable counselor preview from your saved Scholaport workflow."
       description="This packet summarizes saved profile, transcript, mapping, gap, and roadmap records. Final decisions are made by the school or counselor."
     >
-      {query.isLoading ? (
-        <State text="Loading saved packet data…" />
-      ) : query.error ? (
-        <State
-          error
-          text={query.error instanceof Error ? query.error.message : "Unable to load packet."}
-        />
-      ) : blocked ? (
-        <PrerequisiteState state={blocked} />
-      ) : !query.data?.packet ? (
-        <ActionState
-          title="Generate counselor packet"
-          body="Your saved transcript, mappings, gap analysis, and roadmap are ready to assemble into a packet preview."
-          button="Generate counselor packet"
-          processing={generateMutation.isPending}
-          onClick={() => void runPacket(false)}
-        />
-      ) : (
-        <PacketPreview
-          data={query.data}
-          processing={generateMutation.isPending}
-          onRegenerate={() => void runPacket(true)}
-        />
-      )}
+      <div id="packet-actions" className="rank-task-target">
+        {query.isLoading ? (
+          <State text="Loading saved packet data…" />
+        ) : query.error ? (
+          <State
+            error
+            text={query.error instanceof Error ? query.error.message : "Unable to load packet."}
+          />
+        ) : blocked ? (
+          <PrerequisiteState state={blocked} />
+        ) : !query.data?.packet ? (
+          <ActionState
+            title="Generate counselor packet"
+            body="Your saved transcript, mappings, gap analysis, and roadmap are ready to assemble into a packet preview."
+            button="Generate counselor packet"
+            processing={generateMutation.isPending}
+            onClick={() => void runPacket(false)}
+          />
+        ) : (
+          <PacketPreview
+            data={query.data}
+            processing={generateMutation.isPending}
+            onRegenerate={() => void runPacket(true)}
+          />
+        )}
+      </div>
     </PassportShell>
   );
 }

@@ -1,7 +1,8 @@
 import { Link, useLocation } from "@tanstack/react-router";
 import { Menu, MoreHorizontal, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/components/AuthProvider";
+import { BetaFeedbackDialog } from "@/components/BetaFeedbackDialog";
 import {
   PremiumAdvisorIcon,
   PremiumGapIcon,
@@ -20,6 +21,7 @@ import { GlassSurface } from "@/components/journey/GlassSurface";
 import { PassportEmblem } from "@/components/passport/AcademicPassport";
 import { useAcademicPassportPreferences } from "@/hooks/use-academic-passport";
 import { useI18n } from "@/lib/i18n";
+import { scheduleRankTaskFocus } from "@/lib/rank-task-navigation";
 import { cn } from "@/lib/utils";
 
 type NavItem = {
@@ -66,6 +68,11 @@ export function PassportShell({
   const displayName = profile
     ? [profile.first_name, profile.last_name].filter(Boolean).join(" ")
     : "ScholaPort student";
+
+  useEffect(() => {
+    if (!location.hash) return;
+    return scheduleRankTaskFocus(location.hash);
+  }, [location.hash, location.pathname]);
 
   return (
     <div
@@ -238,6 +245,8 @@ export function PassportShell({
           <div className="passport-enter">{children}</div>
         </main>
       </div>
+
+      <BetaFeedbackDialog pagePath={location.pathname} />
 
       <GlassSurface
         as="nav"

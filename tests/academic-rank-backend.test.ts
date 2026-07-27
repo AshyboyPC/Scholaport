@@ -8,6 +8,9 @@ const migration = readFileSync(
 );
 const rankApi = readFileSync("src/lib/academic-rank-api.ts", "utf8");
 const rankHook = readFileSync("src/hooks/use-academic-rank.ts", "utf8");
+const rankRoute = readFileSync("src/components/profile/AcademicRankRoute.tsx", "utf8");
+const passportShell = readFileSync("src/components/PassportShell.tsx", "utf8");
+const profileRoute = readFileSync("src/routes/app.profile.tsx", "utf8");
 const passportApi = readFileSync("src/lib/academic-passport-api.ts", "utf8");
 const passportHook = readFileSync("src/hooks/use-academic-passport.ts", "utf8");
 const feedback = readFileSync("src/lib/app-feedback.ts", "utf8");
@@ -66,6 +69,29 @@ test("the client reads rank state and subscribes to realtime backend changes", (
   assert.match(rankHook, /academic_rank_progress/);
   assert.match(rankHook, /crypto\.randomUUID\(\)/);
   assert.match(rankApi, /isOptionalRankSchemaError/);
+  assert.match(rankApi, /AcademicRankMetricsSchema/);
+  assert.match(profileRoute, /parseAcademicRankMetrics\(rankQuery\.data\?\.metrics\)/);
+  assert.match(profileRoute, /backendRankInput \?\? derivedRankInput/);
+  assert.match(rankHook, /invalidateAcademicRank/);
+});
+
+test("rank tasks focus exact same-page targets and announce live progress", () => {
+  assert.match(passportShell, /scheduleRankTaskFocus\(location\.hash\)/);
+  assert.match(rankRoute, /replayCurrentRankTarget/);
+  assert.match(rankRoute, /aria-live="polite"/);
+  assert.match(rankRoute, /Live from saved records/);
+});
+
+test("rank-bearing save flows invalidate the live backend snapshot", () => {
+  for (const route of [
+    "src/routes/app.onboarding.tsx",
+    "src/routes/app.transcript.tsx",
+    "src/routes/app.gaps.tsx",
+    "src/routes/app.roadmap.tsx",
+    "src/routes/app.packet.tsx",
+  ]) {
+    assert.match(readFileSync(route, "utf8"), /invalidateAcademicRank/);
+  }
 });
 
 test("app feedback centralizes strategic sound-aware success and error cues", () => {

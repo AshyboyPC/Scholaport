@@ -1,9 +1,15 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient, type QueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { getAcademicRankFromSupabase } from "@/lib/academic-rank-api";
 import { supabase } from "@/lib/supabase";
 
 export const ACADEMIC_RANK_QUERY_KEY = "academic-rank";
+
+export function invalidateAcademicRank(queryClient: QueryClient, userId?: string | null) {
+  return queryClient.invalidateQueries({
+    queryKey: userId ? [ACADEMIC_RANK_QUERY_KEY, userId] : [ACADEMIC_RANK_QUERY_KEY],
+  });
+}
 
 export function useAcademicRank(userId: string | null | undefined) {
   const queryClient = useQueryClient();

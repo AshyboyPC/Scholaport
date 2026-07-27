@@ -4,11 +4,17 @@
   "compatibility_date": "2026-06-20",
   "compatibility_flags": ["nodejs_compat"],
   "main": "./dist/server/server.js",
+  "keep_vars": true,
   "assets": {
     "directory": "./dist/client",
-    "binding": "ASSETS"
+    "binding": "ASSETS",
   },
+  "send_email": [
+    {
+      "name": "EMAIL",
+    },
+  ],
   "observability": {
-    "enabled": true
-  }
+    "enabled": true,
+  },
 }

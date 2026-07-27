@@ -380,10 +380,7 @@ export function AcademicPassportBuilder({
   };
 
   return (
-    <section
-      id="academic-passport-builder"
-      className={cn("passport-customizer", compact && "passport-customizer--compact")}
-    >
+    <section className={cn("passport-customizer", compact && "passport-customizer--compact")}>
       <div className="passport-customizer__preview">
         <div className="passport-customizer__preview-heading">
           <div>

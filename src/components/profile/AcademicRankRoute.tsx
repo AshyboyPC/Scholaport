@@ -9,6 +9,7 @@ import recordKeeper from "@/assets/ranks/record-keeper.png";
 import routeBuilder from "@/assets/ranks/route-builder.png";
 import wayfinder from "@/assets/ranks/wayfinder.png";
 import type { AcademicRankId, AcademicRankProgress } from "@/lib/academic-ranks";
+import { scheduleRankTaskFocus } from "@/lib/rank-task-navigation";
 import { cn } from "@/lib/utils";
 
 const rankAssets: Record<AcademicRankId, string> = {
@@ -36,9 +37,16 @@ const desktopRoutePath =
 const mobileRoutePath =
   "M58 190 C58 290 94 350 78 470 C63 575 36 655 54 750 C78 845 96 930 78 1030 C54 1125 39 1215 56 1310 C78 1405 98 1500 80 1590 C64 1675 45 1780 62 1870";
 
-export function AcademicRankRoute({ progress }: { progress: AcademicRankProgress }) {
+export function AcademicRankRoute({
+  progress,
+  backendSynced = false,
+}: {
+  progress: AcademicRankProgress;
+  backendSynced?: boolean;
+}) {
   const currentIndex = progress.current.level - 1;
   const nextPercent = Math.round(progress.nextProgress * 100);
+  const primaryNextCheck = progress.nextChecks.find((check) => !check.complete);
   const routeProgress = progress.next
     ? Math.min(1, (currentIndex + progress.nextProgress) / (progress.ranks.length - 1))
     : 1;
@@ -46,16 +54,44 @@ export function AcademicRankRoute({ progress }: { progress: AcademicRankProgress
   return (
     <>
       <section className="academic-rank-hero" aria-labelledby="current-rank-title">
+        <p className="sr-only" aria-live="polite">
+          Current level {progress.current.level}, {progress.current.name}.
+          {progress.next ? ` Progress to ${progress.next.name}: ${nextPercent} percent.` : ""}
+        </p>
         <div className="academic-rank-hero__copy">
           <div className="flex flex-wrap items-center gap-2">
             <span className="academic-rank-level">Level {progress.current.level} of 7</span>
             <span className="academic-rank-status">Current rank</span>
+            {backendSynced && (
+              <span className="academic-rank-live">
+                <i aria-hidden="true" />
+                Live from saved records
+              </span>
+            )}
           </div>
           <p className="mt-5 text-xs font-black uppercase text-[#62E5D5]">
             {progress.current.kicker}
           </p>
           <h2 id="current-rank-title">{progress.current.name}</h2>
           <p>{progress.current.description}</p>
+          {primaryNextCheck && (
+            <div className="academic-rank-next-task">
+              <div>
+                <span>Best next step</span>
+                <strong>{primaryNextCheck.label}</strong>
+              </div>
+              <Link
+                to={primaryNextCheck.destination}
+                hash={primaryNextCheck.hash}
+                className="academic-rank-next-task__action"
+                onClick={() => {
+                  replayCurrentRankTarget(primaryNextCheck.destination, primaryNextCheck.hash);
+                }}
+              >
+                {primaryNextCheck.action} <ArrowRight aria-hidden="true" />
+              </Link>
+            </div>
+          )}
           <div className="academic-rank-metrics" aria-label="Current academic progress">
             <span>
               <strong>{formatCredits(progress.metrics.mappedCredits)}</strong> mapped credits
@@ -69,22 +105,24 @@ export function AcademicRankRoute({ progress }: { progress: AcademicRankProgress
             </span>
           </div>
           {progress.next ? (
-            <div className="academic-rank-next">
-              <div>
-                <span>Next: {progress.next.name}</span>
-                <strong>{nextPercent}%</strong>
+            <>
+              <div className="academic-rank-next">
+                <div>
+                  <span>Next: {progress.next.name}</span>
+                  <strong>{nextPercent}%</strong>
+                </div>
+                <div
+                  className="academic-rank-next__track"
+                  role="progressbar"
+                  aria-label={`Progress to ${progress.next.name}`}
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  aria-valuenow={nextPercent}
+                >
+                  <span style={{ width: `${nextPercent}%` }} />
+                </div>
               </div>
-              <div
-                className="academic-rank-next__track"
-                role="progressbar"
-                aria-label={`Progress to ${progress.next.name}`}
-                aria-valuemin={0}
-                aria-valuemax={100}
-                aria-valuenow={nextPercent}
-              >
-                <span style={{ width: `${nextPercent}%` }} />
-              </div>
-            </div>
+            </>
           ) : (
             <p className="academic-rank-complete-message">
               Every current Scholaport rank is earned. Keep your records and packet current.
@@ -133,6 +171,7 @@ export function AcademicRankRoute({ progress }: { progress: AcademicRankProgress
                     ? "next"
                     : "locked";
             const showChecks = state === "next";
+            const firstIncompleteCheck = rank.checks.find((check) => !check.complete);
             return (
               <li
                 key={rank.id}
@@ -171,20 +210,66 @@ export function AcademicRankRoute({ progress }: { progress: AcademicRankProgress
                   <p>{rank.description}</p>
                   {showChecks && (
                     <ul className="academic-rank-checks">
-                      {rank.checks.map((check) => (
-                        <li key={check.id} className={check.complete ? "is-complete" : undefined}>
-                          <span>{check.complete ? <Check /> : null}</span>
-                          <div>
-                            {check.label}
-                            {check.value && <small>{check.value}</small>}
-                          </div>
-                        </li>
-                      ))}
+                      {rank.checks.map((check) => {
+                        const content = (
+                          <>
+                            <span className="academic-rank-checks__status">
+                              {check.complete ? <Check /> : null}
+                            </span>
+                            <div>
+                              {check.label}
+                              {check.value && <small>{check.value}</small>}
+                              {!check.complete && (
+                                <small className="academic-rank-checks__action-label">
+                                  {check.action}
+                                </small>
+                              )}
+                            </div>
+                            {!check.complete && (
+                              <ArrowRight
+                                className="academic-rank-checks__arrow"
+                                aria-hidden="true"
+                              />
+                            )}
+                          </>
+                        );
+                        return (
+                          <li
+                            key={check.id}
+                            className={check.complete ? "is-complete" : "is-actionable"}
+                          >
+                            {check.complete ? (
+                              <div className="academic-rank-checks__row">{content}</div>
+                            ) : (
+                              <Link
+                                to={check.destination}
+                                hash={check.hash}
+                                className="academic-rank-checks__row academic-rank-checks__link"
+                                aria-label={`${check.action}: ${check.label}`}
+                                onClick={() => {
+                                  replayCurrentRankTarget(check.destination, check.hash);
+                                }}
+                              >
+                                {content}
+                              </Link>
+                            )}
+                          </li>
+                        );
+                      })}
                     </ul>
                   )}
                   {state === "next" && (
-                    <Link to={rank.destination} className="academic-rank-step__action">
-                      {rank.action} <ArrowRight />
+                    <Link
+                      to={firstIncompleteCheck?.destination ?? rank.destination}
+                      hash={firstIncompleteCheck?.hash ?? rank.hash}
+                      className="academic-rank-step__action"
+                      onClick={() => {
+                        const destination = firstIncompleteCheck?.destination ?? rank.destination;
+                        const hash = firstIncompleteCheck?.hash ?? rank.hash;
+                        replayCurrentRankTarget(destination, hash);
+                      }}
+                    >
+                      {firstIncompleteCheck?.action ?? rank.action} <ArrowRight />
                     </Link>
                   )}
                 </div>
@@ -195,6 +280,14 @@ export function AcademicRankRoute({ progress }: { progress: AcademicRankProgress
       </section>
     </>
   );
+}
+
+function replayCurrentRankTarget(destination: string, hash?: string) {
+  if (!hash || typeof window === "undefined" || window.location.pathname !== destination) return;
+  const currentHash = decodeURIComponent(window.location.hash.replace(/^#/, ""));
+  if (currentHash === decodeURIComponent(hash.replace(/^#/, ""))) {
+    scheduleRankTaskFocus(hash);
+  }
 }
 
 function RouteTrack({

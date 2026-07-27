@@ -63,6 +63,19 @@ import trustMapSection from "@/assets/images/trust-map-section.png";
 
 gsap.registerPlugin(ScrollTrigger);
 
+const APP_BASE_URL = import.meta.env.VITE_APP_URL?.trim().replace(/\/+$/, "") ?? "";
+const appHref = (path: string) => (APP_BASE_URL ? `${APP_BASE_URL}${path}` : path);
+const marketingSectionLinks = [
+  { href: "#philosophy", label: "Purpose" },
+  { href: "#infrastructure", label: "Systems" },
+  { href: "#audience", label: "Audience" },
+  { href: "#features", label: "Features" },
+  { href: "#how-it-works", label: "Process" },
+  { href: "#trust-product", label: "Trust" },
+  { href: "#release-path", label: "Releases" },
+  { href: "#faq", label: "FAQ" },
+] as const;
+
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
@@ -127,6 +140,12 @@ function WelcomePage() {
           { y: 12, opacity: 0 },
           { y: 0, opacity: 1, duration: 1, ease: "power2.out" },
           0.86,
+        )
+        .fromTo(
+          ".motion-hero-actions",
+          { y: 12, opacity: 0 },
+          { y: 0, opacity: 1, duration: 0.8, ease: "power2.out" },
+          1.02,
         );
 
       gsap.to(heroBackdrop, {
@@ -401,34 +420,28 @@ function WelcomePage() {
 
         {/* MORPHING NAVIGATION */}
         <nav className={`fixed z-50 left-1/2 -translate-x-1/2 transition-all ${isScrolled ? "duration-500" : "duration-150"} ease-[cubic-bezier(0.16,1,0.3,1)] flex items-center ${isScrolled
-            ? "top-4 w-max h-[64px] pl-[180px] pr-[174px] rounded-[32px] bg-white/76 border border-white/42 shadow-[0_10px_32px_rgba(7,17,63,0.1),inset_0_1px_0_rgba(255,255,255,0.72)] backdrop-blur-[18px] saturate-[1.1] text-[#344061]"
+            ? "top-4 w-max h-[64px] pl-[170px] pr-[112px] rounded-[32px] bg-white/76 border border-white/42 shadow-[0_10px_32px_rgba(7,17,63,0.1),inset_0_1px_0_rgba(255,255,255,0.72)] backdrop-blur-[18px] saturate-[1.1] text-[#344061]"
             : "top-4 w-[200px] h-[64px] rounded-[32px] bg-transparent border border-transparent shadow-none backdrop-blur-none text-white"
           }`}>
 
           {/* LOGO (Always absolute) */}
-          <Link to="/" aria-label="Scholaport home" className={`absolute top-1/2 -translate-y-1/2 transition-all ${isScrolled ? "duration-500" : "duration-150"} ease-[cubic-bezier(0.16,1,0.3,1)] ${isScrolled ? "left-6" : "left-1/2 -translate-x-1/2"
+          <a href="#home" aria-label="Return to the ScholaPort hero" className={`absolute top-1/2 -translate-y-1/2 transition-all ${isScrolled ? "duration-500" : "duration-150"} ease-[cubic-bezier(0.16,1,0.3,1)] ${isScrolled ? "left-6" : "left-1/2 -translate-x-1/2"
             }`}>
             <ScholaportLogo className="h-7 sm:h-8 transition-colors duration-500" showWordmark inverse={!isScrolled} />
-          </Link>
+          </a>
 
           {/* LINKS CONTAINER */}
-          <div className={`hidden lg:flex items-center transition-all ${isScrolled ? "duration-[400ms]" : "duration-100"} ease-[cubic-bezier(0.16,1,0.3,1)] ${isScrolled ? "w-max gap-1 mx-auto opacity-100" : "w-0 opacity-0 overflow-hidden pointer-events-none"
+          <div className={`hidden lg:flex items-center transition-all ${isScrolled ? "duration-[400ms]" : "duration-100"} ease-[cubic-bezier(0.16,1,0.3,1)] ${isScrolled ? "w-max gap-0.5 mx-auto opacity-100" : "w-0 opacity-0 overflow-hidden pointer-events-none"
             }`}>
-
-            {/* LEFT LINKS */}
-            <div className="flex items-center gap-1">
-              <a href="#philosophy" className={`transition-all duration-300 text-[0.78rem] whitespace-nowrap px-5 py-2.5 hover:bg-black/5 rounded-full font-[800]`}>Benefits</a>
-              <a href="#infrastructure" className={`transition-all duration-300 text-[0.78rem] whitespace-nowrap px-5 py-2.5 hover:bg-black/5 rounded-full font-[800]`}>Infrastructure</a>
-            </div>
-
-            {/* SPACER FOR LOGO (only active when not scrolled) */}
-            <div className="w-0 opacity-0"></div>
-
-            {/* RIGHT LINKS */}
-            <div className="flex items-center gap-1">
-              <a href="#how-it-works" className={`transition-all duration-300 text-[0.78rem] whitespace-nowrap px-5 py-2.5 hover:bg-black/5 rounded-full font-[800]`}>Process</a>
-              <a href="#beta" className={`transition-all duration-300 text-[0.78rem] whitespace-nowrap px-5 py-2.5 hover:bg-black/5 rounded-full font-[800]`}>Evidence</a>
-            </div>
+            {marketingSectionLinks.map((item) => (
+              <a
+                key={item.href}
+                href={item.href}
+                className="whitespace-nowrap rounded-full px-3.5 py-2.5 text-[0.76rem] font-[800] transition-all duration-300 hover:bg-black/5"
+              >
+                {item.label}
+              </a>
+            ))}
           </div>
 
           {/* BUTTON (Always absolute) */}
@@ -436,7 +449,7 @@ function WelcomePage() {
             }`}>
             <a href="#beta-access" className={`marketing-button transition-colors duration-500 h-[46px] ${isScrolled ? "marketing-button--ink" : "marketing-button--light"
               }`}>
-              Check eligibility
+              Access
             </a>
           </div>
 
@@ -457,11 +470,19 @@ function WelcomePage() {
             Scholaport turns a stack of coursework into a student-owned path for the next school
             system, without pretending the hard questions are simple.
           </p>
+          <a href="#beta-access" className="motion-hero-actions marketing-hero-beta-button mt-8">
+            <span className="marketing-hero-beta-button__copy">
+              <strong>Open beta</strong>
+            </span>
+            <span className="marketing-hero-beta-button__route" aria-hidden="true">
+              <ArrowRight />
+            </span>
+          </a>
         </div>
       </header>
 
       {/* INTRODUCTION SECTION (HYPERLIQUID REFERENCE) */}
-      <section className="relative w-full flex flex-col items-center justify-center min-h-[780px] md:min-h-[1020px] lg:min-h-[1120px] py-12 md:py-20 overflow-hidden">
+      <section id="philosophy" className="relative w-full flex flex-col items-center justify-center min-h-[780px] md:min-h-[1020px] lg:min-h-[1120px] py-12 md:py-20 overflow-hidden">
         {/* Background Image Layer */}
         <div className="absolute inset-0 pointer-events-none flex items-center justify-center w-full scale-[1.15] md:scale-[1.25] lg:scale-[1.32]">
           <div
@@ -528,7 +549,9 @@ function WelcomePage() {
                     Data Sources & Population Definitions
                   </h4>
                   <button 
+                    type="button"
                     onClick={() => setShowSourcesModal(false)} 
+                    aria-label="Close data sources"
                     className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 font-bold transition-colors"
                   >
                     ✕
@@ -561,6 +584,7 @@ function WelcomePage() {
                 <div className="mt-6 pt-4 border-t border-gray-100 flex items-center justify-between text-[11px] text-[#526079]">
                   <span>Last Reviewed: July 2026</span>
                   <button 
+                    type="button"
                     onClick={() => setShowSourcesModal(false)}
                     className="rounded-full bg-[#0a175a] px-5 py-2 text-xs font-bold text-white hover:bg-[#0a175a]/90 transition-colors"
                   >
@@ -575,6 +599,7 @@ function WelcomePage() {
         {/* Sources Disclosure Button (Hidden when modal is open so it never overlaps the modal popup) */}
         <div className={`absolute bottom-4 md:bottom-6 left-1/2 -translate-x-1/2 transition-opacity duration-200 ${showSourcesModal ? 'opacity-0 pointer-events-none z-0' : 'z-20'}`}>
           <button 
+            type="button"
             onClick={() => setShowSourcesModal(true)}
             className="inline-flex items-center gap-1.5 text-xs font-bold text-[#01a995] hover:text-[#0a175a] bg-[#f0fbf7]/90 hover:bg-[#e1f5ee] px-4 py-2 rounded-full border border-[#d9f2e9] transition-all shadow-sm cursor-pointer backdrop-blur-sm"
           >
@@ -586,7 +611,7 @@ function WelcomePage() {
       </section>
 
       {/* FEATURE SHOWCASE (DESIGN REFERENCE) */}
-      <section className="motion-systems mx-auto w-full max-w-7xl px-5 py-24 md:px-8">
+      <section id="infrastructure" className="motion-systems mx-auto w-full max-w-7xl px-5 py-24 md:px-8">
         {/* Top Header Area */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
           <div className="max-w-3xl">
@@ -604,11 +629,6 @@ function WelcomePage() {
             <p className="mt-6 text-[1.1rem] leading-[1.65] text-[#526079] font-[560] max-w-2xl">
               A Tamil Nadu HSC record is not the same as an Andhra Pradesh Intermediate record. Georgia and Texas do not follow the same graduation framework. ScholaPort models every supported route by its actual board, curriculum, and destination jurisdiction instead of forcing students through one generic national template.
             </p>
-          </div>
-          <div className="shrink-0 mb-2">
-            <a href="#philosophy" className="inline-flex h-12 items-center justify-center rounded-full bg-[#0a175a] px-8 text-[0.9rem] font-[700] text-white hover:bg-[#0a175a]/90 transition-colors shadow-lg">
-              View Current Coverage
-            </a>
           </div>
         </div>
 
@@ -672,7 +692,7 @@ function WelcomePage() {
       </section>
 
       {/* WHO SCHOLAPORT IS FOR SECTION */}
-      <section ref={whoForRef} className="mx-auto w-full max-w-[1400px] px-5 py-20 md:px-8 lg:py-24">
+      <section id="audience" ref={whoForRef} className="mx-auto w-full max-w-[1400px] px-5 py-20 md:px-8 lg:py-24">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
 
           {/* LEFT COLUMN: Header & Info (4 Cols on lg) */}
@@ -709,12 +729,12 @@ function WelcomePage() {
 
             {/* Navigation Arrows */}
             <div className="hidden lg:flex items-center gap-3 mt-6">
-              <button className="flex h-12 w-12 items-center justify-center rounded-2xl border border-gray-200 bg-white text-[#0a175a] hover:bg-gray-50 transition-colors shadow-sm">
+              <a href="#infrastructure" aria-label="Return to education systems" className="flex h-12 w-12 items-center justify-center rounded-2xl border border-gray-200 bg-white text-[#0a175a] hover:bg-gray-50 transition-colors shadow-sm">
                 <ArrowLeft className="w-5 h-5" />
-              </button>
-              <button className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#0a175a] text-white hover:bg-[#0a175a]/90 transition-colors shadow-sm">
+              </a>
+              <a href="#features" aria-label="Continue to ScholaPort features" className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#0a175a] text-white hover:bg-[#0a175a]/90 transition-colors shadow-sm">
                 <ArrowRight className="w-5 h-5" />
-              </button>
+              </a>
             </div>
           </div>
 
@@ -772,9 +792,9 @@ function WelcomePage() {
                     Support record gathering, deadline tracking, and question preparation using the student’s organized workflow.
                   </p>
                 </div>
-                <button className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#ffe8e0] text-[#ff7a59] hover:bg-[#ff7a59] hover:text-white transition-colors">
+                <a href="#how-it-works" aria-label="See how families can prepare" className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#ffe8e0] text-[#ff7a59] hover:bg-[#ff7a59] hover:text-white transition-colors">
                   <ArrowRight className="w-3.5 h-3.5" />
-                </button>
+                </a>
               </div>
 
             </div>
@@ -830,9 +850,9 @@ function WelcomePage() {
                     Use the student-provided planning packet as context for intake, placement review, and the questions that still require a school decision.
                   </p>
                 </div>
-                <button className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#d9f2e9] text-[#01a995] hover:bg-[#01a995] hover:text-white transition-colors">
+                <a href="#trust-product" aria-label="Review ScholaPort evidence and safeguards" className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#d9f2e9] text-[#01a995] hover:bg-[#01a995] hover:text-white transition-colors">
                   <ArrowRight className="w-3.5 h-3.5" />
-                </button>
+                </a>
               </div>
 
             </div>
@@ -847,7 +867,7 @@ function WelcomePage() {
 
 
       {/* FEATURES BENTO SECTION */}
-      <section className="mx-auto w-full max-w-[1400px] px-6 py-24 md:px-10">
+      <section id="features" className="mx-auto w-full max-w-[1400px] px-6 py-24 md:px-10">
         <div className="inline-flex items-center gap-2 rounded-full bg-[#3b82f6]/15 px-4 py-1.5 mb-6 border border-[#3b82f6]/20 backdrop-blur-sm">
           <PremiumDocumentsIcon className="w-3.5 h-3.5 text-[#3b82f6]" />
           <span className="text-[0.68rem] font-[800] uppercase tracking-wider text-[#3b82f6]">
@@ -909,9 +929,9 @@ function WelcomePage() {
                 <div className="text-center"><div className="text-xl font-bold">5</div><div className="text-[10px] text-[#a5b4c9]">Matched</div></div>
                 <div className="text-center"><div className="text-xl font-bold">5</div><div className="text-[10px] text-[#a5b4c9]">Confirmed</div></div>
               </div>
-              <button className="w-full rounded-full bg-[#01a995] py-2 text-xs font-bold text-white transition-colors hover:bg-[#018b7a]">
+              <a href={appHref("/app/gaps")} className="block w-full rounded-full bg-[#01a995] py-2 text-center text-xs font-bold text-white transition-colors hover:bg-[#018b7a]">
                 View gap analysis &rarr;
-              </button>
+              </a>
             </div>
           </article>
 
@@ -955,9 +975,9 @@ function WelcomePage() {
 
             <img src={bentoGap} alt="Gap Analysis" className="absolute right-[-8%] bottom-6 w-[110%] object-contain drop-shadow-xl z-0 pointer-events-none" />
 
-            <button className="z-10 mt-48 w-max rounded-full bg-white px-5 py-2 text-xs font-bold text-[#0a175a] shadow-sm transition-shadow hover:shadow-md border border-[#f0e6e0]">
+            <a href={appHref("/app/gaps")} className="z-10 mt-48 w-max rounded-full bg-white px-5 py-2 text-xs font-bold text-[#0a175a] shadow-sm transition-shadow hover:shadow-md border border-[#f0e6e0]">
               Open gap analysis &rarr;
-            </button>
+            </a>
           </article>
 
           {/* Make Pori your own (1x1) */}
@@ -996,9 +1016,9 @@ function WelcomePage() {
               </div>
             </div>
             <img src={bentoRoadmap} alt="Academic Roadmap" className="absolute -right-6 -bottom-6 w-[120%] object-contain drop-shadow-xl z-0 pointer-events-none" />
-            <button className="z-10 mt-20 w-max rounded-full bg-white px-5 py-2 text-xs font-bold text-[#0a175a] shadow-sm transition-shadow hover:shadow-md border border-[#e2ede9]">
+            <a href={appHref("/app/roadmap")} className="z-10 mt-20 w-max rounded-full bg-white px-5 py-2 text-xs font-bold text-[#0a175a] shadow-sm transition-shadow hover:shadow-md border border-[#e2ede9]">
               View roadmap &rarr;
-            </button>
+            </a>
           </article>
 
           {/* Counselor Packet (1x1) */}
@@ -1013,10 +1033,10 @@ function WelcomePage() {
               </p>
             </div>
             <img src={bentoPacket} alt="Counselor Packet" className="absolute -right-6 -bottom-6 w-[75%] object-contain drop-shadow-xl z-0 pointer-events-none" />
-            <button className="z-10 mt-auto w-max rounded-full bg-white px-4 py-2 text-xs font-bold text-[#0a175a] shadow-sm transition-shadow hover:shadow-md border border-[#e2ebf5] flex items-center gap-2">
+            <a href={appHref("/app/packet")} className="z-10 mt-auto w-max rounded-full bg-white px-4 py-2 text-xs font-bold text-[#0a175a] shadow-sm transition-shadow hover:shadow-md border border-[#e2ebf5] flex items-center gap-2">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
               Print / Save PDF
-            </button>
+            </a>
           </article>
 
           {/* Academic Passport (1x1) */}
@@ -1054,9 +1074,9 @@ function WelcomePage() {
               </div>
             </div>
             <img src={bentoPassport} alt="Academic Passport" className="absolute -right-8 top-1/2 -translate-y-1/2 w-[62%] md:w-[68%] lg:w-[72%] max-h-[115%] object-contain drop-shadow-2xl z-0 pointer-events-none scale-110" />
-            <button className="z-10 mt-auto w-max rounded-full bg-white px-4 py-2 text-xs font-bold text-[#0a175a] shadow-sm transition-shadow hover:shadow-md border border-[#e2ede9]">
+            <a href={appHref("/app/profile")} className="z-10 mt-auto w-max rounded-full bg-white px-4 py-2 text-xs font-bold text-[#0a175a] shadow-sm transition-shadow hover:shadow-md border border-[#e2ede9]">
               Customize Passport &rarr;
-            </button>
+            </a>
           </article>
 
           {/* Level Progression (2x1) */}
@@ -1479,7 +1499,7 @@ function WelcomePage() {
           {/* ROW 5: BOTTOM FLOATING CTA ACTION BUTTON */}
           <div className="flex justify-center mt-10">
             <a
-              href="/reference-coverage"
+              href={appHref("/app/reference-coverage")}
               className="inline-flex items-center gap-3 bg-white border border-[#d9f2e9] shadow-[0_8px_30px_rgba(10,23,90,0.06)] hover:shadow-xl rounded-full px-8 py-3.5 transition-all text-xs font-[800] text-[#0a175a] hover:-translate-y-0.5"
             >
               <div className="w-6 h-6 rounded-full bg-[#e6f7f3] border border-[#c3ede3] flex items-center justify-center text-[#01a995]">
@@ -1497,74 +1517,56 @@ function WelcomePage() {
       <ReleasePathSection />
       <FaqSection />
 
-      {/* NEW FOOTER / WAITLIST SECTION */}
+      {/* PRIVATE BETA CTA + FOOTER */}
       <section
-        className="motion-footer relative w-full overflow-hidden pt-40 pb-0 text-white rounded-t-[40px] md:rounded-t-[60px] transform-gpu"
-        style={{
-          background:
-            "linear-gradient(180deg, #d9f1ec 0px, #8dcac2 300px, #286f76 590px, #02263d 800px)",
-        }}
+        id="beta-access"
+        className="motion-footer relative w-full overflow-hidden bg-transparent px-3 pb-0 pt-6 transform-gpu sm:px-5"
       >
-
-        {/* Background Landscape Image */}
-        <div className="motion-footer-landscape absolute inset-x-0 top-0 h-[800px] w-full" style={{
-          backgroundImage: `url(${footerBgImage})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'top center',
-          backgroundRepeat: 'no-repeat',
-        }}>
-          {/* Teal-aqua wash keeps the invitation grounded while blending into the deep footer. */}
+        <div className="relative mx-auto flex min-h-[580px] max-w-[1400px] items-center justify-center overflow-hidden rounded-[36px] bg-[#032d43] px-5 py-16 sm:rounded-[44px]">
           <div
-            className="absolute inset-0"
+            className="motion-footer-landscape absolute -inset-[8%]"
             style={{
-              background:
-                "linear-gradient(180deg, rgba(17, 112, 111, 0.18) 0%, rgba(20, 104, 110, 0.34) 52%, rgba(2, 38, 61, 0.96) 100%)",
+              backgroundImage: `url(${footerBgImage})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat",
             }}
           />
-        </div>
-
-        {/* Foreground Content */}
-        <div className="motion-footer-content relative z-10 mx-auto flex max-w-5xl flex-col items-center px-5 text-center">
-          <div className="inline-flex items-center gap-2 rounded-full bg-[#075e63]/55 px-4 py-1.5 mb-5 border border-white/20 backdrop-blur-sm">
-            <PremiumLockIcon className="w-3.5 h-3.5 text-[#d7fff8]" />
-            <span className="text-[0.68rem] font-[800] uppercase tracking-wider text-[#d7fff8]">
-              PRIVATE BETA ACCESS
-            </span>
+          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(1,31,47,0.24)_0%,rgba(5,54,70,0.48)_62%,#0b4358_100%)]" />
+          <div className="motion-footer-content relative z-10 flex w-full justify-center">
+            <BetaAccessGateway />
           </div>
-
-          <h2 className="mb-6 text-[clamp(2.5rem,6vw,5.5rem)] font-[800] leading-[1.0] tracking-[-0.04em] text-[#0a175a]" style={{ fontFamily: "Gumriot" }}>
-            FIND YOUR NEXT STEP.
-          </h2>
-
-          <p className="mb-10 max-w-xl text-[1.04rem] leading-[1.65] text-[#273a6a] font-[600]">
-            Supported students can open ScholaPort now. Everyone else can identify the route they
-            need and join the expansion waitlist.
-          </p>
-
-          <BetaAccessGateway />
         </div>
 
-        {/* EXISTING FOOTER CONTENT (Sits over the extended solid #02263d background) */}
-        <div className="relative z-10 mt-32 w-full pt-10">
+        <div
+          className="relative z-10 mx-auto mt-3 w-full max-w-[1400px] overflow-hidden rounded-t-[36px] px-5 pt-14 sm:rounded-t-[44px] sm:px-10"
+          style={{
+            background: "#0b4358",
+          }}
+        >
           <footer className="marketing-footer !bg-transparent !pt-0">
             <div className="marketing-shell marketing-footer__grid">
               <div className="marketing-footer__brand">
                 <ScholaportLogo className="h-11" showWordmark inverse />
-                <p className="text-white/70">
+                <p>
                   A clear academic passage for students carrying their learning across school systems.
                 </p>
               </div>
               <div className="marketing-footer__links">
-                <a href="#how-it-works">How it works</a>
-                <a href="#beta">Private beta</a>
-                <a href="#beta-access">Check eligibility</a>
+                <a href="#home">Home</a>
+                {marketingSectionLinks.map((item) => (
+                  <a key={item.href} href={item.href}>
+                    {item.label}
+                  </a>
+                ))}
+                <a href="#beta-access">Access</a>
               </div>
-              <div className="marketing-footer__note text-white/50">
+              <div className="marketing-footer__note">
                 <span>Scholaport is a planning workspace.</span>
                 <span>Schools retain final academic decision-making.</span>
               </div>
             </div>
-            <div className="marketing-footer__wordmark text-white/10" aria-hidden="true">
+            <div className="marketing-footer__wordmark" aria-hidden="true">
               SCHOLAPORT
             </div>
           </footer>

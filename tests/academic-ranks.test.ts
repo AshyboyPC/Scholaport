@@ -33,6 +33,38 @@ test("rank progress begins at Wayfinder and names every concrete next requiremen
   assert.equal(progress.nextProgress, 0);
 });
 
+test("every unfinished rank requirement points to a concrete product task", () => {
+  const progress = calculateAcademicRank(emptyProgress);
+  assert.deepEqual(
+    progress.nextChecks.map(({ id, destination, hash, action }) => ({
+      id,
+      destination,
+      hash,
+      action,
+    })),
+    [
+      {
+        id: "profile",
+        destination: "/app/onboarding",
+        hash: undefined,
+        action: "Complete profile setup",
+      },
+      {
+        id: "passport",
+        destination: "/app/profile",
+        hash: "academic-passport-builder",
+        action: "Finish your Passport",
+      },
+      {
+        id: "pori",
+        destination: "/app/pori",
+        hash: undefined,
+        action: "Customize Pori",
+      },
+    ],
+  );
+});
+
 test("a later artifact cannot bypass the sequential rank gates", () => {
   const progress = calculateAcademicRank({
     ...emptyProgress,
