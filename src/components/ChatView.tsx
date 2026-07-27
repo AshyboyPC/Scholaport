@@ -17,7 +17,7 @@ import {
   type PromptInputMessage,
 } from "@/components/ai-elements/prompt-input";
 import { Shimmer } from "@/components/ai-elements/shimmer";
-import { GraduationCap } from "lucide-react";
+import { PremiumGraduationIcon } from "@/components/icons/PremiumIcon";
 import { getThread, saveThreadMessages } from "@/lib/threads";
 import { ScholaportLogo } from "@/components/ScholaportLogo";
 
@@ -101,7 +101,7 @@ export function ChatView({ threadId }: { threadId: string }) {
                 {m.role === "assistant" && (
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
                     <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-primary/10 text-primary">
-                      <GraduationCap className="h-3 w-3" />
+                      <PremiumGraduationIcon className="h-3 w-3" />
                     </span>
                     Scholaport
                   </div>

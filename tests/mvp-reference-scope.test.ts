@@ -221,10 +221,14 @@ test("onboarding clears stale upstream selections and persists source jurisdicti
   assert.match(onboarding, /source_jurisdiction_label: sourceJurisdiction\.name/);
 });
 
-test("profile and auth guard use unsupported-MVP detection", () => {
+test("settings and auth guard use unsupported-MVP detection while profile owns progression", () => {
   const profile = readFileSync("src/routes/profile.tsx", "utf8");
+  const settings = readFileSync("src/routes/settings.tsx", "utf8");
   const root = readFileSync("src/routes/__root.tsx", "utf8");
-  assert.match(profile, /getMvpProfileUnsupportedReasons/);
-  assert.match(profile, /Reselect MVP route/);
+  assert.match(profile, /AcademicRankRoute/);
+  assert.match(profile, /AcademicPassportBuilder/);
+  assert.match(profile, /PoriAvatar/);
+  assert.match(settings, /getMvpProfileUnsupportedReasons/);
+  assert.match(settings, /Reselect MVP route/);
   assert.match(root, /profileUnsupportedForMvp/);
 });

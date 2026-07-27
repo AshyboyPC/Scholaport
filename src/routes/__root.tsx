@@ -9,26 +9,39 @@ import {
   useLocation,
   useNavigate,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useSyncExternalStore, type ReactNode } from "react";
+import { AlertCircle } from "lucide-react";
 
-import "@fontsource/sora/400.css";
-import "@fontsource/sora/600.css";
-import "@fontsource/sora/700.css";
 import "@fontsource/manrope/400.css";
 import "@fontsource/manrope/500.css";
 import "@fontsource/manrope/600.css";
+import "@fontsource/manrope/700.css";
+import "@fontsource/manrope/800.css";
+import "@fontsource/noto-sans-tamil/400.css";
+import "@fontsource/noto-sans-tamil/600.css";
+import "@fontsource/noto-sans-tamil/700.css";
+import "@fontsource/noto-sans-telugu/400.css";
+import "@fontsource/noto-sans-telugu/600.css";
+import "@fontsource/noto-sans-telugu/700.css";
+import "@fontsource/noto-sans-devanagari/400.css";
+import "@fontsource/noto-sans-devanagari/600.css";
+import "@fontsource/noto-sans-devanagari/700.css";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider, useAuth } from "@/components/AuthProvider";
 import { ScholaportLogo } from "@/components/ScholaportLogo";
+import { DocumentStack } from "@/components/journey/JourneyVisuals";
 import { getMvpProfileUnsupportedReasons } from "@/lib/mvp-reference-scope";
+import { useInterfacePreferences } from "@/hooks/use-interface-preferences";
+import { I18nProvider } from "@/lib/i18n";
+import { SmoothScroll } from "@/components/SmoothScroll";
 
 function NotFoundComponent() {
   return (
-    <div className="flex min-h-dvh items-center justify-center bg-background px-4">
-      <div className="max-w-md text-center">
+    <div className="flex min-h-dvh items-center justify-center bg-[#07113F] px-4">
+      <div className="journey-paper max-w-md p-8 text-center">
         <h1 className="font-display text-7xl font-bold text-foreground">404</h1>
         <h2 className="mt-4 font-display text-xl font-semibold">Page not found</h2>
         <p className="mt-2 text-sm text-muted-foreground">
@@ -37,7 +50,7 @@ function NotFoundComponent() {
         <div className="mt-6">
           <Link
             to="/"
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            className="inline-flex min-h-12 items-center justify-center rounded-2xl bg-[#0A175A] px-5 text-sm font-bold text-white shadow-[0_8px_20px_rgba(10,23,90,.16)]"
           >
             Go home
           </Link>
@@ -55,8 +68,8 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   }, [error]);
 
   return (
-    <div className="flex min-h-dvh items-center justify-center bg-background px-4">
-      <div className="max-w-md text-center">
+    <div className="flex min-h-dvh items-center justify-center bg-[#FFE1D8] px-4">
+      <div className="journey-paper max-w-md p-8 text-center">
         <h1 className="font-display text-xl font-semibold tracking-tight">This page didn't load</h1>
         <p className="mt-2 text-sm text-muted-foreground">
           Something went wrong on our end. Try again or head back home.
@@ -67,13 +80,13 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
               router.invalidate();
               reset();
             }}
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            className="inline-flex min-h-12 items-center justify-center rounded-2xl bg-[#0A175A] px-5 text-sm font-bold text-white shadow-[0_8px_20px_rgba(10,23,90,.16)]"
           >
             Try again
           </button>
           <a
             href="/"
-            className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent"
+            className="inline-flex min-h-12 items-center justify-center rounded-2xl border border-input bg-white px-5 text-sm font-bold"
           >
             Go home
           </a>
@@ -121,8 +134,21 @@ function RootShell({ children }: { children: ReactNode }) {
     <html lang="en">
       <head>
         <HeadContent />
+        <style dangerouslySetInnerHTML={{ __html: `
+          body { opacity: 0; visibility: hidden; }
+          body.fonts-loaded { opacity: 1; visibility: visible; }
+        ` }} />
+        <script dangerouslySetInnerHTML={{ __html: `
+          window.addEventListener('DOMContentLoaded', () => {
+            if (document.fonts && document.fonts.ready) {
+              document.fonts.ready.then(() => document.body.classList.add('fonts-loaded'));
+            } else {
+              setTimeout(() => document.body.classList.add('fonts-loaded'), 100);
+            }
+          });
+        `}} />
       </head>
-      <body>
+      <body suppressHydrationWarning>
         {children}
         <Scripts />
       </body>
@@ -130,46 +156,91 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+function subscribeToNetwork(callback: () => void) {
+  window.addEventListener("online", callback);
+  window.addEventListener("offline", callback);
+  return () => {
+    window.removeEventListener("online", callback);
+    window.removeEventListener("offline", callback);
+  };
+}
+
+function getNetworkSnapshot() {
+  return navigator.onLine;
+}
+
+function getServerNetworkSnapshot() {
+  return true;
+}
+
+function NetworkBanner() {
+  const isOnline = useSyncExternalStore(subscribeToNetwork, getNetworkSnapshot, getServerNetworkSnapshot);
+
+  if (isOnline) return null;
+
+  return (
+    <div className="fixed top-0 left-0 right-0 z-[100] flex items-center justify-center gap-2 bg-[#E65234] px-4 py-2 text-sm font-bold text-white shadow-[0_4px_12px_rgba(230,82,52,0.3)] animate-in slide-in-from-top-full duration-300">
+      <AlertCircle className="h-4 w-4" />
+      <span>No internet connection. Please check your network.</span>
+    </div>
+  );
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <AuthGate />
-      </AuthProvider>
-      <Toaster position="top-center" richColors />
-    </QueryClientProvider>
+    <SmoothScroll>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <AuthGate />
+        </AuthProvider>
+        <NetworkBanner />
+        <Toaster position="top-center" richColors />
+      </QueryClientProvider>
+    </SmoothScroll>
   );
 }
 
 function AuthGate() {
-  const { configured, loading, user, profile, error } = useAuth();
+  const { profile } = useAuth();
+  const { preferences } = useInterfacePreferences(profile?.user_id, profile?.preferred_language);
+  return (
+    <I18nProvider language={preferences.language}>
+      <AuthGateContent />
+    </I18nProvider>
+  );
+}
+
+function AuthGateContent() {
+  const { configured, loading, user, profile, error, retryAuth, returnToSignIn } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
-  const isLogin = location.pathname === "/login";
-  const isOnboarding = location.pathname === "/onboarding";
-  const isProfile = location.pathname === "/profile";
+  const isLogin = location.pathname === "/app/login";
+  const isWelcome = location.pathname === "/";
+  const isOnboarding = location.pathname === "/app/onboarding";
+  const isProfile = location.pathname === "/app/profile" || location.pathname === "/app/settings";
   const profileUnsupportedForMvp = profile
     ? getMvpProfileUnsupportedReasons(profile).length > 0
     : false;
 
   useEffect(() => {
+    if (isWelcome) return;
     if (!configured || loading || error) return;
     if (!user && !isLogin) {
-      void navigate({ to: "/login", replace: true });
+      void navigate({ to: "/app/login", replace: true });
       return;
     }
     if (user && !profile && !isOnboarding) {
-      void navigate({ to: "/onboarding", replace: true });
+      void navigate({ to: "/app/onboarding", replace: true });
       return;
     }
     if (user && profile && profileUnsupportedForMvp && !isOnboarding && !isProfile) {
-      void navigate({ to: "/onboarding", replace: true });
+      void navigate({ to: "/app/onboarding", replace: true });
       return;
     }
     if (user && profile && !profileUnsupportedForMvp && (isLogin || isOnboarding)) {
-      void navigate({ to: "/", replace: true });
+      void navigate({ to: "/app", replace: true });
     }
   }, [
     configured,
@@ -181,8 +252,12 @@ function AuthGate() {
     isLogin,
     isOnboarding,
     isProfile,
+    isWelcome,
     navigate,
   ]);
+
+  // The public product page should remain reachable even when local auth is offline.
+  if (isWelcome) return <Outlet />;
 
   if (!configured) {
     return (
@@ -200,7 +275,33 @@ function AuthGate() {
       />
     );
   if (error)
-    return <FullPageStatus title="Scholaport could not load your account" description={error} />;
+    return (
+      <FullPageStatus
+        title="We couldn't reach your passport"
+        description={
+          error.toLowerCase().includes("failed to fetch")
+            ? "The secure account service is not reachable right now. Check your connection, then retry—or return to sign in to clear a stale session."
+            : error
+        }
+      >
+        <button
+          type="button"
+          onClick={retryAuth}
+          className="inline-flex min-h-12 items-center justify-center rounded-2xl bg-[#0A175A] px-5 text-sm font-bold text-white shadow-[0_8px_20px_rgba(10,23,90,.16)] transition-transform active:translate-y-1 active:shadow-none"
+        >
+          Try again
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            void returnToSignIn().finally(() => window.location.assign("/app/login"));
+          }}
+          className="inline-flex min-h-12 items-center justify-center rounded-2xl border border-[#CDD3DE] bg-white px-5 text-sm font-bold text-[#0A175A]"
+        >
+          Return to sign in
+        </button>
+      </FullPageStatus>
+    );
   if (
     (!user && !isLogin) ||
     (user && !profile && !isOnboarding) ||
@@ -214,15 +315,26 @@ function AuthGate() {
   return <Outlet />;
 }
 
-function FullPageStatus({ title, description }: { title: string; description: string }) {
+function FullPageStatus({
+  title,
+  description,
+  children,
+}: {
+  title: string;
+  description: string;
+  children?: ReactNode;
+}) {
   return (
-    <div className="grid min-h-dvh place-items-center bg-[#F6F8FB] px-5">
-      <div className="max-w-lg rounded-[24px] border border-[#CDD3DE]/70 bg-white p-8 text-center shadow-card">
-        <ScholaportLogo className="mx-auto h-14" />
-        <h1 className="mt-6 font-display text-2xl font-black tracking-[-0.04em] text-[#0A175A]">
+    <div className="grid min-h-dvh place-items-center bg-background px-5">
+      <div className="flex max-w-lg flex-col items-center text-center">
+        <ScholaportLogo className="h-16" animatedLoader={true} />
+        <h1 className="mt-8 font-display text-2xl font-bold tracking-[-0.04em] text-[#0A175A]">
           {title}
         </h1>
         <p className="mt-3 text-sm leading-6 text-[#5A6380]">{description}</p>
+        {children ? (
+          <div className="mt-6 flex flex-wrap justify-center gap-3">{children}</div>
+        ) : null}
       </div>
     </div>
   );

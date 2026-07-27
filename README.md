@@ -90,6 +90,11 @@ Other countries (China, Mexico, Philippines, Pakistan, Canada, UK, Australia, Ge
 - Live background queues for OCR and asynchronous processing
 - Production deployment and hosting at scale
 
+## Current project reports
+
+- Product design, overhaul, assets, Academic Passport, visual audits, verification, and complete screenshot evidence: [`docs/scholaport-design-master.md`](./docs/scholaport-design-master.md)
+- Living technical and reference-foundation progress through July 19, 2026: [`SCHOLAPORT_REFERENCE_FOUNDATION_PROGRESS_REPORT.md`](./SCHOLAPORT_REFERENCE_FOUNDATION_PROGRESS_REPORT.md)
+
 ## Verification
 
 ```bash
@@ -114,4 +119,3 @@ pnpm build
 - Row Level Security enforces ownership on every student-data table
 - Transcript files are stored in a private Supabase Storage bucket under user-scoped paths
 - All outputs remain cautious and counselor-review safe
-

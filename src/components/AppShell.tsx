@@ -1,24 +1,22 @@
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
-import {
-  GraduationCap,
-  MessageCircle,
-  FileText,
-  ListChecks,
-  Menu,
-  Plus,
-  Trash2,
-} from "lucide-react";
+import { Menu, Plus, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
+import {
+  PremiumAdvisorIcon,
+  PremiumGapIcon,
+  PremiumGraduationIcon,
+  PremiumTranscriptIcon,
+} from "@/components/icons/PremiumIcon";
 import { ScholaportLogo } from "@/components/ScholaportLogo";
 import { createThread, deleteThread, listThreads, type ThreadRecord } from "@/lib/threads";
 import { cn } from "@/lib/utils";
 
 const TABS = [
-  { to: "/chat", label: "Chat", icon: MessageCircle, match: "/chat" },
-  { to: "/transcript", label: "Transcript", icon: FileText, match: "/transcript" },
-  { to: "/gaps", label: "Gaps", icon: ListChecks, match: "/gaps" },
+  { to: "/app/chat", label: "Chat", icon: PremiumAdvisorIcon, match: "/app/chat" },
+  { to: "/app/transcript", label: "Transcript", icon: PremiumTranscriptIcon, match: "/app/transcript" },
+  { to: "/app/gaps", label: "Gaps", icon: PremiumGapIcon, match: "/app/gaps" },
 ];
 
 export function AppShell({
@@ -50,7 +48,7 @@ export function AppShell({
         </div>
         <Link to="/" aria-label="Home">
           <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 text-primary">
-            <GraduationCap className="h-4 w-4" />
+            <PremiumGraduationIcon className="h-4 w-4" />
           </span>
         </Link>
       </header>
@@ -99,7 +97,7 @@ function ThreadsSheet({ activeThreadId }: { activeThreadId?: string }) {
   const onNew = () => {
     const t = createThread({ title: "New chat" });
     setOpen(false);
-    navigate({ to: "/chat/$threadId", params: { threadId: t.id } });
+    navigate({ to: "/app/chat/$threadId", params: { threadId: t.id } });
   };
 
   return (
@@ -141,7 +139,7 @@ function ThreadsSheet({ activeThreadId }: { activeThreadId?: string }) {
                   onClick={() => {
                     setOpen(false);
                     navigate({
-                      to: "/chat/$threadId",
+                      to: "/app/chat/$threadId",
                       params: { threadId: t.id },
                     });
                   }}
@@ -174,13 +172,13 @@ function ThreadsSheet({ activeThreadId }: { activeThreadId?: string }) {
                       const remaining = listThreads();
                       if (remaining.length > 0) {
                         navigate({
-                          to: "/chat/$threadId",
+                          to: "/app/chat/$threadId",
                           params: { threadId: remaining[0]!.id },
                         });
                       } else {
                         const fresh = createThread({ title: "New chat" });
                         navigate({
-                          to: "/chat/$threadId",
+                          to: "/app/chat/$threadId",
                           params: { threadId: fresh.id },
                         });
                       }

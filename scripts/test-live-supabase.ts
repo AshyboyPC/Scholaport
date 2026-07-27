@@ -69,6 +69,34 @@ try {
   assert(Boolean(anonymousInsert.error), "Anonymous user inserted reference data.");
   const countries = await clientA.from("countries").select("id,iso3,name,coverage_status");
   if (countries.error) throw countries.error;
+
+  const passportWrite = await clientA
+    .from("academic_passports")
+    .upsert(
+      {
+        user_id: userAId,
+        preferences: { template: "classic", pori: { status: "not-started" } },
+        pori_preferences: { status: "not-started" },
+        card_preferences: { template: "classic" },
+        completion_state: "in-progress",
+        last_completed_step: 1,
+      },
+      { onConflict: "user_id" },
+    )
+    .select("user_id,preferences,pori_preferences,card_preferences,revision")
+    .single();
+  if (passportWrite.error) throw passportWrite.error;
+  assert(passportWrite.data.revision >= 1, "Academic Passport revision was not recorded.");
+
+  const rankRefresh = await clientA.rpc("refresh_my_academic_rank");
+  if (rankRefresh.error) throw rankRefresh.error;
+  const rankRead = await clientA
+    .from("academic_rank_progress")
+    .select("user_id,current_rank_id,current_level,calculated_level,earned_rank_ids")
+    .eq("user_id", userAId)
+    .single();
+  if (rankRead.error) throw rankRead.error;
+  assert(rankRead.data.current_level >= 1, "Academic rank row was not initialized.");
   assert(countries.data.length >= 20, "Authenticated public reference SELECT failed.");
 
   const mvpSource = ["IND", "CHN", "MEX", "PHL", "PAK"];
@@ -179,6 +207,8 @@ try {
   console.log("student_profile_owner_isolation=PASS");
   console.log("student_profile_upsert_idempotency=PASS");
   console.log("mvp_country_presence=PASS");
+  console.log("academic_passport_sync=PASS");
+  console.log("academic_rank_refresh=PASS");
 } finally {
   await admin.from("countries").delete().eq("id", temporaryCountryId);
   if (userAId) await admin.auth.admin.deleteUser(userAId);
