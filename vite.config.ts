@@ -41,6 +41,9 @@ function developmentQaHtml(): Plugin {
 }
 
 export default defineConfig({
+  nitro: {
+    preset: "vercel",
+  },
   vite: {
     plugins: [developmentQaHtml()],
     optimizeDeps: {
