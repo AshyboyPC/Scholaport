@@ -28,7 +28,7 @@ gsap.registerPlugin(ScrollTrigger);
 type ReleaseView = "neutral" | "beta" | "mvp2";
 type CountdownTone = "light" | "teal" | "ink";
 
-const BETA_TARGET = new Date("2026-07-28T00:00:00-04:00");
+const BETA_TARGET = new Date("2026-07-30T00:00:00-04:00");
 const MVP2_TARGET = new Date("2026-09-28T00:00:00-04:00");
 const INITIAL_COUNTDOWN_NOW = new Date("2026-07-26T00:00:00-04:00").getTime();
 const APP_LOGIN_URL = import.meta.env.VITE_APP_URL?.trim()
@@ -508,7 +508,7 @@ function NeutralReleaseCards({
                     </div>
                     <div className="release-card__rule" />
                     <div className="release-card__date-block" data-release-detail>
-                      <ReleaseDate dark>Launch target · July 28, 2026</ReleaseDate>
+                      <ReleaseDate dark>Launch target · July 30, 2026</ReleaseDate>
                       <LiveCountdown target={BETA_TARGET} now={now} tone="light" compact />
                       <div className="release-card__chips">
                         <span>WEB BETA</span>
@@ -595,7 +595,7 @@ function PostBetaRelease({ now }: { now: number }) {
           <Check />
         </span>
         <strong>BETA 1.0 RELEASED</strong>
-        <time dateTime="2026-07-28">JULY 28, 2026</time>
+        <time dateTime="2026-07-30">JULY 30, 2026</time>
       </div>
     </div>
   );
@@ -634,7 +634,7 @@ function ExpandedBeta({ now, onClose }: { now: number; onClose: () => void }) {
         </div>
 
         <div className="release-beta-intro__launch" data-release-detail>
-          <ReleaseDate dark>Launch target · July 28, 2026</ReleaseDate>
+          <ReleaseDate dark>Launch target · July 30, 2026</ReleaseDate>
           <LiveCountdown target={BETA_TARGET} now={now} tone="teal" />
           <a href={APP_LOGIN_URL} className="release-primary-cta">
             <UserRoundPlus />

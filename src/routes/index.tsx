@@ -94,6 +94,17 @@ function WelcomePage() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [showSourcesModal, setShowSourcesModal] = useState(false);
+
+  useEffect(() => {
+    if (showSourcesModal) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [showSourcesModal]);
   const timelineRef = useRef<HTMLDivElement>(null);
   const bentoGridRef = useRef<HTMLDivElement>(null);
   const whoForRef = useRef<HTMLDivElement>(null);
@@ -481,20 +492,20 @@ function WelcomePage() {
         <nav
           className={`fixed z-50 left-1/2 hidden -translate-x-1/2 items-center transition-all xl:flex ${isScrolled ? "duration-500" : "duration-150"} ease-[cubic-bezier(0.16,1,0.3,1)] ${
             isScrolled
-              ? "top-4 w-max h-[64px] pl-[72px] pr-[112px] rounded-[32px] bg-white/76 border border-white/42 shadow-[0_10px_32px_rgba(7,17,63,0.1),inset_0_1px_0_rgba(255,255,255,0.72)] backdrop-blur-[18px] saturate-[1.1] text-[#344061]"
+              ? "top-4 w-max h-[64px] pl-[84px] pr-[112px] rounded-[32px] bg-white/76 border border-white/42 shadow-[0_10px_32px_rgba(7,17,63,0.1),inset_0_1px_0_rgba(255,255,255,0.72)] backdrop-blur-[18px] saturate-[1.1] text-[#344061]"
               : "top-4 w-[200px] h-[64px] rounded-[32px] bg-transparent border border-transparent shadow-none backdrop-blur-none text-white"
           }`}
         >
-          {/* LOGO (Always absolute) */}
+          {/* LOGO (Always absolute, centered vertically) */}
           <a
             href="#home"
             aria-label="Return to the ScholaPort hero"
             className={`absolute top-1/2 -translate-y-1/2 transition-all ${isScrolled ? "duration-500" : "duration-150"} ease-[cubic-bezier(0.16,1,0.3,1)] ${
-              isScrolled ? "left-5" : "left-1/2 -translate-x-1/2"
+              isScrolled ? "left-4" : "left-1/2 -translate-x-1/2"
             }`}
           >
             <ScholaportLogo
-              className="h-7 sm:h-8 transition-colors duration-500"
+              className="h-9 sm:h-10 transition-colors duration-500"
               showWordmark={!isScrolled}
               inverse={!isScrolled}
             />
