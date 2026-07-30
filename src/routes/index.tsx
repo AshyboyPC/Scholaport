@@ -636,7 +636,7 @@ function WelcomePage() {
         >
           <div className="marketing-purpose-copy mx-auto w-full">
             <ScrollRevealText>
-              <p className="mb-6 text-[1rem] md:text-[1.13rem] leading-[1.7] text-[#101a3f] font-[500] text-left md:text-center">
+              <p className="mb-6 text-[0.9rem] md:text-[1rem] leading-[1.7] text-[#101a3f] font-[500] text-left md:text-center">
                 {revealText(
                   "Global education is moving faster than the systems built to recognize it. UNESCO reported that ",
                 )}
@@ -657,7 +657,7 @@ function WelcomePage() {
                   " of students overall. When curricula, languages, grading systems, credit units, and local graduation rules do not align, years of completed learning can become unclear at the exact moment families must make course-placement and graduation decisions.",
                 )}
               </p>
-              <p className="text-[1rem] md:text-[1.13rem] leading-[1.7] text-[#101a3f] font-[500] text-left md:text-center">
+              <p className="text-[0.9rem] md:text-[1rem] leading-[1.7] text-[#101a3f] font-[500] text-left md:text-center">
                 {revealText(
                   "Based on our review of publicly documented education and credential platforms, ",
                 )}
@@ -1132,7 +1132,7 @@ function WelcomePage() {
         <div ref={bentoGridRef} className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
           {/* Transcript Review (2x2) */}
           <article className="bento-card bento-anchor col-span-1 md:col-span-2 lg:row-span-2 lg:col-span-2 flex flex-col justify-between overflow-hidden rounded-[24px] bg-[#0a175a] p-8 lg:p-10 text-white relative">
-            <div className="z-10 w-full max-w-[60%]">
+            <div className="z-10 w-full md:max-w-[60%]">
               <span className="text-[0.65rem] font-[900] uppercase tracking-[0.14em] text-[#01a995] mb-4 block">
                 TRANSCRIPT REVIEW
               </span>
@@ -1170,7 +1170,7 @@ function WelcomePage() {
             <img
               src={bentoTranscript}
               alt="Transcript Upload"
-              className="absolute -right-4 top-1/2 -translate-y-1/2 w-[55%] lg:w-[48%] object-contain drop-shadow-2xl z-0 pointer-events-none"
+              className="absolute -right-12 md:-right-4 top-1/2 -translate-y-1/2 w-[75%] md:w-[55%] lg:w-[48%] object-contain drop-shadow-2xl z-0 pointer-events-none opacity-30 md:opacity-100"
             />
 
             <div className="z-10 mt-12 self-start rounded-[16px] border border-white/10 bg-[#07113f]/80 p-5 backdrop-blur-md">
@@ -1243,7 +1243,7 @@ function WelcomePage() {
             <img
               src={bentoGap}
               alt="Gap Analysis"
-              className="absolute right-[-8%] bottom-6 w-[110%] object-contain drop-shadow-xl z-0 pointer-events-none"
+              className="absolute -right-[15%] md:right-[-8%] -bottom-4 md:bottom-6 w-[130%] md:w-[110%] object-contain drop-shadow-xl z-0 pointer-events-none opacity-30 md:opacity-100"
             />
 
             <a
@@ -1256,7 +1256,7 @@ function WelcomePage() {
 
           {/* Make Pori your own (1x1) */}
           <article className="bento-card bento-capability col-span-1 flex flex-col justify-between overflow-hidden rounded-[24px] bg-[#f0fbf7] p-8 text-[#0a175a] relative">
-            <div className="z-10 w-1/2">
+            <div className="z-10 w-[70%] md:w-1/2">
               <span className="text-[0.65rem] font-[900] uppercase tracking-[0.14em] text-[#01a995] mb-2 block">
                 Your companion
               </span>
@@ -1277,7 +1277,7 @@ function WelcomePage() {
             <img
               src={poriMascot}
               alt="Pori Customization"
-              className="absolute right-0 -bottom-2 w-[60%] object-contain drop-shadow-lg z-0 pointer-events-none"
+              className="absolute -right-4 md:right-0 -bottom-4 md:-bottom-2 w-[70%] md:w-[60%] object-contain drop-shadow-lg z-0 pointer-events-none opacity-30 md:opacity-100"
             />
           </article>
 
@@ -1300,7 +1300,7 @@ function WelcomePage() {
             <img
               src={bentoRoadmap}
               alt="Academic Roadmap"
-              className="absolute -right-6 -bottom-6 w-[120%] object-contain drop-shadow-xl z-0 pointer-events-none"
+              className="absolute -right-12 md:-right-6 -bottom-12 md:-bottom-6 w-[140%] md:w-[120%] object-contain drop-shadow-xl z-0 pointer-events-none opacity-30 md:opacity-100"
             />
             <a
               href={appHref("/app/roadmap")}
@@ -1312,7 +1312,7 @@ function WelcomePage() {
 
           {/* Counselor Packet (1x1) */}
           <article className="bento-card bento-capability col-span-1 flex flex-col justify-between overflow-hidden rounded-[24px] bg-[#f0f6ff] p-8 text-[#0a175a] relative">
-            <div className="z-10 w-2/3">
+            <div className="z-10 w-[85%] md:w-2/3">
               <span className="text-[0.65rem] font-[900] uppercase tracking-[0.14em] text-[#3b82f6] mb-2 block">
                 COUNSELOR PACKET
               </span>
@@ -1326,7 +1326,7 @@ function WelcomePage() {
             <img
               src={bentoPacket}
               alt="Counselor Packet"
-              className="absolute -right-6 -bottom-6 w-[75%] object-contain drop-shadow-xl z-0 pointer-events-none"
+              className="absolute -right-10 md:-right-6 -bottom-10 md:-bottom-6 w-[90%] md:w-[75%] object-contain drop-shadow-xl z-0 pointer-events-none opacity-30 md:opacity-100"
             />
             <a
               href={appHref("/app/packet")}
@@ -1352,7 +1352,7 @@ function WelcomePage() {
 
           {/* Academic Passport (1x1) */}
           <article className="bento-card bento-capability col-span-1 flex flex-col justify-between overflow-hidden rounded-[24px] bg-[#f0fbf7] p-8 text-[#0a175a] relative">
-            <div className="z-10 w-3/5">
+            <div className="z-10 w-[85%] md:w-3/5">
               <span className="text-[0.65rem] font-[900] uppercase tracking-[0.14em] text-[#01a995] mb-2 block">
                 ACADEMIC PASSPORT
               </span>
@@ -1407,7 +1407,7 @@ function WelcomePage() {
             <img
               src={bentoPassport}
               alt="Academic Passport"
-              className="absolute -right-8 top-1/2 -translate-y-1/2 w-[62%] md:w-[68%] lg:w-[72%] max-h-[115%] object-contain drop-shadow-2xl z-0 pointer-events-none scale-110"
+              className="absolute -right-16 md:-right-8 top-1/2 -translate-y-1/2 w-[85%] md:w-[68%] lg:w-[72%] max-h-[115%] object-contain drop-shadow-2xl z-0 pointer-events-none scale-110 opacity-30 md:opacity-100"
             />
             <a
               href={appHref("/app/profile")}

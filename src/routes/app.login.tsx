@@ -68,7 +68,7 @@ function LoginPage() {
     if (!email.trim()) return notifyError("Enter your email address first.");
     try {
       const { error } = await requireSupabase().auth.resetPasswordForEmail(email.trim(), {
-        redirectTo: `${window.location.origin}/login`,
+        redirectTo: `${window.location.origin}/app/login`,
       });
       if (error) throw error;
       notifySuccess("Password reset email sent.");
