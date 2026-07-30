@@ -9,6 +9,10 @@ import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import type { Plugin } from "vite";
 
+if (process.env.VERCEL || process.env.NOW_BUILDER) {
+  process.env.NITRO_PRESET = "vercel";
+}
+
 function developmentQaHtml(): Plugin {
   return {
     name: "scholaport-development-qa-html",
