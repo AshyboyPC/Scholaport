@@ -1015,6 +1015,33 @@ const releaseStyles = `
 
   .release-card--mvp2 {
     background: #087f78;
+    color: #FFFDF8;
+  }
+
+  .release-card--mvp2 .release-card__label {
+    background: rgba(255, 253, 248, 0.16);
+    color: #FF7A59;
+    font-size: 0.85rem;
+    font-weight: 850;
+    letter-spacing: 0.1em;
+  }
+
+  .release-card--mvp2 .release-card__number {
+    color: #FFFDF8;
+    font-weight: 850;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+  }
+
+  .release-card--mvp2 .release-card__heading h3 {
+    color: #FFFDF8;
+    font-weight: 750;
+  }
+
+  .release-card--mvp2 .release-card__chips span {
+    background: rgba(255, 253, 248, 0.2);
+    color: #FFFDF8;
+    border: 1px solid rgba(255, 253, 248, 0.35);
+    font-weight: 800;
   }
 
   .release-card__top {
