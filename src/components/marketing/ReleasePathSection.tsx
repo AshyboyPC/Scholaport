@@ -1014,9 +1014,7 @@ const releaseStyles = `
   }
 
   .release-card--mvp2 {
-    background:
-      radial-gradient(circle at 78% 27%, rgba(255, 249, 241, 0.2), transparent 35%),
-      linear-gradient(145deg, #2f7379 0%, #5f9f9a 58%, #a4d1c7 100%);
+    background: #087f78;
   }
 
   .release-card__top {
@@ -1745,9 +1743,7 @@ const releaseStyles = `
     min-height: 780px;
     overflow: hidden;
     isolation: isolate;
-    background:
-      radial-gradient(circle at 38% 18%, rgba(255, 249, 241, 0.52), transparent 32%),
-      linear-gradient(145deg, #c9dfeb 0%, #95bfd0 52%, #79aaa9 100%);
+    background: #087f78;
   }
 
   .release-mvp-scene::before {
