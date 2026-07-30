@@ -636,7 +636,7 @@ function WelcomePage() {
         >
           <div className="marketing-purpose-copy mx-auto w-full">
             <ScrollRevealText>
-              <p className="mb-6 text-[0.9rem] md:text-[1rem] leading-[1.7] text-[#101a3f] font-[500] text-left md:text-center">
+              <p className="mb-6 text-[0.82rem] md:text-[0.92rem] leading-[1.6] text-[#101a3f] font-[500] text-left md:text-center">
                 {revealText(
                   "Global education is moving faster than the systems built to recognize it. UNESCO reported that ",
                 )}
@@ -657,7 +657,7 @@ function WelcomePage() {
                   " of students overall. When curricula, languages, grading systems, credit units, and local graduation rules do not align, years of completed learning can become unclear at the exact moment families must make course-placement and graduation decisions.",
                 )}
               </p>
-              <p className="text-[0.9rem] md:text-[1rem] leading-[1.7] text-[#101a3f] font-[500] text-left md:text-center">
+              <p className="text-[0.82rem] md:text-[0.92rem] leading-[1.6] text-[#101a3f] font-[500] text-left md:text-center">
                 {revealText(
                   "Based on our review of publicly documented education and credential platforms, ",
                 )}

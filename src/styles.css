@@ -51,17 +51,17 @@ body {
   width: 100vw;
   max-width: 1800px;
   aspect-ratio: 1672 / 941;
-  padding: 12% 16%;
+  padding: 14% 17%;
   background-position: center;
   background-repeat: no-repeat;
-  background-size: 102%;
+  background-size: contain;
 }
 
 .marketing-purpose-copy {
   position: relative;
   z-index: 1;
   width: 100%;
-  max-width: 760px;
+  max-width: 720px;
 }
 
 .marketing-shell {
