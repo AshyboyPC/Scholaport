@@ -28,6 +28,8 @@ import "@fontsource/noto-sans-devanagari/600.css";
 import "@fontsource/noto-sans-devanagari/700.css";
 
 import appCss from "../styles.css?url";
+import scholaportFaviconAsset from "@/assets/scholaport-favicon.png";
+import scholaportLogoAsset from "@/assets/scholaport-logo.png";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider, useAuth } from "@/components/AuthProvider";
@@ -119,9 +121,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "Translate transcripts, map credits, and cross into your new school system with confidence.",
       },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
+      { property: "og:image", content: scholaportLogoAsset },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:image", content: scholaportLogoAsset },
     ],
-    links: [{ rel: "stylesheet", href: appCss }],
+    links: [
+      { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
+      { rel: "icon", href: scholaportFaviconAsset, type: "image/png" },
+      { rel: "shortcut icon", href: scholaportFaviconAsset, type: "image/png" },
+      { rel: "apple-touch-icon", href: scholaportFaviconAsset },
+      { rel: "stylesheet", href: appCss },
+    ],
   }),
   shellComponent: RootShell,
   component: RootComponent,
