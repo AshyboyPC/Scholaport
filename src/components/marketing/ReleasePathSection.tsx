@@ -774,11 +774,11 @@ function ExpandedMvp2({ now, onClose }: { now: number; onClose?: () => void }) {
             <span className="sr-only">Return to both release cards</span>
           </button>
         ) : null}
-        <div className="release-mvp-scene__index" data-release-detail aria-hidden="true">
-          <span>02</span>
+        <div className="release-mvp-scene__index !text-[#FFFDF8]" data-release-detail aria-hidden="true">
+          <span className="!text-[#FFFDF8]">02</span>
           <div>
-            <small>MOBILE WORKFLOW</small>
-            <strong>Passport · Plan · Validate</strong>
+            <small className="!text-[#FFFDF8]">MOBILE WORKFLOW</small>
+            <strong className="!text-[#FFFDF8]">Passport · Plan · Validate</strong>
           </div>
         </div>
         <img
@@ -1532,10 +1532,6 @@ const releaseStyles = `
     background: #00bba5;
   }
 
-  .release-mvp-copy .release-expanded__accent {
-    background: #FF7A59;
-  }
-
   .release-beta-intro p,
   .release-mvp-copy > p {
     margin: 0;
@@ -1850,15 +1846,16 @@ const releaseStyles = `
   }
 
   .release-mvp-scene__index small {
-    color: #1f6f75;
-    font-size: 0.62rem;
+    color: #FFFDF8 !important;
+    font-size: 0.72rem;
     font-weight: 850;
     letter-spacing: 0.14em;
   }
 
   .release-mvp-scene__index strong {
+    color: #FFFDF8 !important;
     max-width: 12rem;
-    font-size: 0.82rem;
+    font-size: 0.88rem;
     line-height: 1.3;
   }
 
