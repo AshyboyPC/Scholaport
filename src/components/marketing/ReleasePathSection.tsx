@@ -1842,7 +1842,7 @@ const releaseStyles = `
     display: grid;
     gap: 0.38rem;
     padding-left: 1rem;
-    box-shadow: inset 2px 0 rgba(31, 111, 117, 0.42);
+    box-shadow: inset 2px 0 rgba(255, 253, 248, 0.85);
   }
 
   .release-mvp-scene__index small {

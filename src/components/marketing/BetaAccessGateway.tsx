@@ -24,6 +24,28 @@ function getAppLoginUrl() {
   return appUrl ? `${appUrl}/app/login` : "/app/login";
 }
 
+function SolarPointOnMapIcon({ className = "h-7 w-7" }: { className?: string }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      className={className}
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <path
+        d="M3 13.037c0-1.103 0-1.655.393-1.976c.139-.114.308-.206.497-.269c.532-.177 1.231-.002 2.629.346c1.067.267 1.6.4 2.14.386q.298-.008.588-.059c.525-.093.993-.326 1.929-.793l1.382-.69c1.2-.599 1.799-.898 2.487-.967s1.372.102 2.739.443l1.165.29c.99.247 1.485.371 1.768.665s.283.685.283 1.466v6.084c0 1.103 0 1.655-.393 1.976a1.6 1.6 0 0 1-.497.269c-.532.177-1.231.003-2.629-.346c-1.067-.267-1.6-.4-2.14-.386a4 4 0 0 0-.588.059c-.525.093-.993.326-1.929.793l-1.382.69c-1.2.599-1.799.898-2.487.967s-1.372-.102-2.739-.443l-1.165-.29c-.99-.247-1.485-.371-1.768-.665S3 19.902 3 19.121z"
+        opacity="0.45"
+      />
+      <path
+        fillRule="evenodd"
+        d="M12 2C8.686 2 6 4.552 6 7.7c0 3.124 1.915 6.769 4.903 8.072a2.76 2.76 0 0 0 2.194 0C16.085 14.47 18 10.824 18 7.7C18 4.552 15.314 2 12 2m0 8a2 2 0 1 0 0-4a2 2 0 0 0 0 4"
+        clipRule="evenodd"
+      />
+    </svg>
+  );
+}
+
 export function BetaAccessGateway() {
   const [source, setSource] = useState("");
   const [destination, setDestination] = useState("");
@@ -77,7 +99,7 @@ export function BetaAccessGateway() {
   return (
     <div className="w-full max-w-[760px] text-center">
       <span className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-[#eafff9] text-[#07545d] shadow-[0_12px_30px_rgba(0,0,0,0.18)]">
-        <Route className="h-6 w-6" />
+        <SolarPointOnMapIcon className="h-7 w-7" />
       </span>
 
       <div className="mt-6 text-[0.68rem] font-[850] uppercase tracking-[0.16em] text-[#9ff2e6]">
