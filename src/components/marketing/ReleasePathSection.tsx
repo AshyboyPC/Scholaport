@@ -542,10 +542,10 @@ function NeutralReleaseCards({
                 <>
                   <div className="release-card__content">
                     <div className="release-card__top" data-release-detail>
-                      <div className="release-card__number">02</div>
+                      <div className="release-card__number !text-[#FFFDF8] !font-[850] drop-shadow-md">02</div>
                       <div className="release-card__heading">
-                        <span className="release-card__label">NEXT RELEASE</span>
-                        <h3>ScholaPort is being designed for iOS and Android.</h3>
+                        <span className="release-card__label !bg-[#FFFDF8]/20 !text-[#FF7A59] !font-[850] !text-[0.85rem] !tracking-[0.1em]">NEXT RELEASE</span>
+                        <h3 className="!text-[#FFFDF8] !font-[750]">ScholaPort is being designed for iOS and Android.</h3>
                       </div>
                     </div>
                     <div className="release-card__rule" />
@@ -553,9 +553,9 @@ function NeutralReleaseCards({
                       <ReleaseDate dark>Planned target · September 28, 2026</ReleaseDate>
                       <LiveCountdown target={MVP2_TARGET} now={now} tone="light" compact />
                       <div className="release-card__chips">
-                        <span>iOS · PLANNED</span>
-                        <span>ANDROID · PLANNED</span>
-                        <span>ROUTES · IN VALIDATION</span>
+                        <span className="!bg-[#FFFDF8]/20 !text-[#FFFDF8] !border-white/40 !font-[800]">iOS · PLANNED</span>
+                        <span className="!bg-[#FFFDF8]/20 !text-[#FFFDF8] !border-white/40 !font-[800]">ANDROID · PLANNED</span>
+                        <span className="!bg-[#FFFDF8]/20 !text-[#FFFDF8] !border-white/40 !font-[800]">ROUTES · IN VALIDATION</span>
                       </div>
                     </div>
                   </div>
@@ -1505,7 +1505,10 @@ const releaseStyles = `
   }
 
   .release-expanded__eyebrow--teal {
-    color: #008f82;
+    color: #FF7A59;
+    font-size: 0.88rem;
+    font-weight: 850;
+    letter-spacing: 0.1em;
   }
 
   .release-beta-intro h2,
@@ -1527,6 +1530,10 @@ const releaseStyles = `
     margin: 1.8rem 0;
     border-radius: 999px;
     background: #00bba5;
+  }
+
+  .release-mvp-copy .release-expanded__accent {
+    background: #FF7A59;
   }
 
   .release-beta-intro p,
@@ -1808,15 +1815,31 @@ const releaseStyles = `
     display: flex;
     align-items: center;
     gap: 1.1rem;
-    color: #0a285f;
+    color: #FFFDF8;
   }
 
   .release-mvp-scene__index > span {
-    color: rgba(255, 249, 241, 0.62);
+    color: #FFFDF8;
     font-size: clamp(4.8rem, 7vw, 7rem);
-    font-weight: 820;
+    font-weight: 850;
     line-height: 0.82;
     letter-spacing: -0.08em;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  .release-mvp-scene__index small {
+    display: block;
+    color: #FFFDF8;
+    font-size: 0.76rem;
+    font-weight: 850;
+    letter-spacing: 0.1em;
+  }
+
+  .release-mvp-scene__index strong {
+    display: block;
+    color: #FFFDF8;
+    font-size: 0.95rem;
+    font-weight: 800;
   }
 
   .release-mvp-scene__index > div {

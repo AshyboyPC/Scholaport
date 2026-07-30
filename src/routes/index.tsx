@@ -1980,7 +1980,7 @@ function WelcomePage() {
         id="beta-access"
         className="motion-footer relative w-full bg-transparent px-3 pb-5 pt-6 transform-gpu sm:px-5 sm:pb-7"
       >
-        <div className="relative mx-auto w-full max-w-[1400px] overflow-hidden rounded-[30px] bg-[#0b4358] sm:rounded-[44px]">
+        <div className="relative mx-auto w-full max-w-[1400px] overflow-hidden rounded-[30px] bg-[#0a175a] sm:rounded-[44px]">
           <div
             className="motion-footer-scene relative flex min-h-[580px] items-center justify-center overflow-hidden px-4 py-14 sm:px-5 sm:py-16"
             style={{
@@ -1999,7 +1999,7 @@ function WelcomePage() {
                 backgroundRepeat: "no-repeat",
               }}
             />
-            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(1,31,47,0.24)_0%,rgba(5,54,70,0.48)_62%,#0b4358_100%)]" />
+            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(10,23,90,0.45)_0%,rgba(10,23,90,0.75)_62%,#0a175a_100%)]" />
             <div className="motion-footer-content relative z-10 flex w-full justify-center">
               <BetaAccessGateway />
             </div>
@@ -2009,7 +2009,7 @@ function WelcomePage() {
 
       {/* SITE FOOTER */}
       <div className="w-full bg-transparent px-3 sm:px-5">
-        <footer className="marketing-footer mx-auto w-full max-w-[1400px] rounded-t-[30px] bg-[#0b4358] px-5 pt-14 sm:rounded-t-[44px] sm:px-10">
+        <footer className="marketing-footer mx-auto w-full max-w-[1400px] rounded-t-[30px] bg-[#0a175a] px-5 pt-14 sm:rounded-t-[44px] sm:px-10">
           <div className="marketing-shell marketing-footer__grid">
             <div className="marketing-footer__brand">
               <ScholaportLogo className="h-11" showWordmark inverse />
